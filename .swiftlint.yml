@@ -1,0 +1,20 @@
+# Включаем или отключаем правила
+disabled_rules:
+  - trailing_whitespace
+  - line_length
+
+# Максимальная длина строки
+line_length: 120
+
+# Минимальная необходимая документация для публичных методов
+required_docs:
+  - public
+
+# Игнорируемые пути (например, сгенерированный код)
+excluded:
+  - Pods
+  - Generated
+
+opt_in_rules:
+  - empty_count
+  - force_unwrapping

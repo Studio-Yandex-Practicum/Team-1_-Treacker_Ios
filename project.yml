@@ -1,0 +1,130 @@
+name: SpendWise
+options:
+  bundleIdPrefix: KV.Lyashenko.SpendWise
+  deploymentTarget:
+    iOS: "18.0"
+
+settings:
+  SUPPORTED_DEVICE_FAMILIES: 1
+  UISupportedInterfaceOrientations:
+    - UIInterfaceOrientationPortrait
+    - UIInterfaceOrientationPortraitUpsideDown
+
+packages:
+  SwiftLint:
+    url: https://github.com/realm/SwiftLint.git
+    from: 0.58.2
+
+targets:
+  SpendWise:
+    type: application
+    platform: iOS
+    sources: ["SpendWise"]
+    dependencies:
+      - target: Core
+      - target: Auth
+      - target: Expenses
+      - target: Analytics
+      - target: Settings
+      - target: UIComponents
+      - target: Persistence
+      - target: Router
+    bundleId: KV.Lyashenko.SpendWise
+    deploymentTarget: "18.0"
+    preBuildScripts:
+      - script: |
+          export PATH="$PATH:/opt/homebrew/bin"
+          if which swiftlint > /dev/null; then
+            swiftlint
+          else
+            echo "warning: SwiftLint не установлен. Установите через SPM или Homebrew"
+          fi
+
+  Core:
+    type: framework
+    platform: iOS
+    sources: ["Core"]
+    bundleId: KV.Lyashenko.SpendWise.Core
+    deploymentTarget: "18.0"
+    info:
+      path: SpendWise/Info.plist
+
+  Auth:
+    type: framework
+    platform: iOS
+    sources: ["Auth"]
+    dependencies:
+      - target: Core
+      - target: Router
+    bundleId: KV.Lyashenko.SpendWise.Auth
+    deploymentTarget: "18.0"
+    info:
+      path: SpendWise/Info.plist
+
+  Expenses:
+    type: framework
+    platform: iOS
+    sources: ["Expenses"]
+    dependencies:
+      - target: Core
+      - target: Persistence
+    bundleId: KV.Lyashenko.SpendWise.Expenses
+    deploymentTarget: "18.0"
+    info:
+      path: SpendWise/Info.plist
+
+  Analytics:
+    type: framework
+    platform: iOS
+    sources: ["Analytics"]
+    dependencies:
+      - target: Core
+    bundleId: KV.Lyashenko.SpendWise.Analytics
+    deploymentTarget: "18.0"
+    info:
+      path: SpendWise/Info.plist
+
+  Settings:
+    type: framework
+    platform: iOS
+    sources: ["Settings"]
+    dependencies:
+      - target: Core
+      - target: UIComponents
+    bundleId: KV.Lyashenko.SpendWise.Settings
+    deploymentTarget: "18.0"
+    info:
+      path: SpendWise/Info.plist
+
+  UIComponents:
+    type: framework
+    platform: iOS
+    sources: ["UIComponents"]
+    dependencies:
+      - target: Core
+    bundleId: KV.Lyashenko.SpendWise.UIComponents
+    deploymentTarget: "18.0"
+    info:
+      path: SpendWise/Info.plist
+
+  Persistence:
+    type: framework
+    platform: iOS
+    sources: ["Persistence"]
+    dependencies:
+      - target: Core
+    bundleId: KV.Lyashenko.SpendWise.Persistence
+    deploymentTarget: "18.0"
+    info:
+      path: SpendWise/Info.plist
+
+  Router:
+    type: framework
+    platform: iOS
+    sources: ["Router"]
+    dependencies:
+      - target: Core
+    bundleId: KV.Lyashenko.SpendWise.Router
+    deploymentTarget: "18.0"
+    info:
+      path: SpendWise/Info.plist
