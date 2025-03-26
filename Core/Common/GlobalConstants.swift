@@ -7,8 +7,6 @@
 
 import Foundation
 
-import Foundation
-
 enum GlobalConstants {
 //    // Date
 //    static let today = "Сегодня"

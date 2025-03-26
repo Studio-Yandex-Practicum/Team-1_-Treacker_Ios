@@ -6,10 +6,6 @@ disabled_rules:
 # Максимальная длина строки
 line_length: 120
 
-# Минимальная необходимая документация для публичных методов
-required_docs:
-  - public
-
 # Игнорируемые пути (например, сгенерированный код)
 excluded:
   - Pods
@@ -18,3 +14,10 @@ excluded:
 opt_in_rules:
   - empty_count
   - force_unwrapping
+  - implicit_return
+  - unused_import
+  - private_outlet
+  - redundant_optional_initialization
+
+  # Можно явно задавать уровень серьезности для правил
+force_unwrapping: error

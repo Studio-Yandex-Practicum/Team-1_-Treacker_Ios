@@ -1,25 +1,31 @@
 name: SpendWise
 options:
-  bundleIdPrefix: KV.Lyashenko.SpendWise
-  deploymentTarget:
+    bundleIdPrefix: KV.Lyashenko.SpendWise
+    deploymentTarget:
     iOS: "18.0"
 
 settings:
-  SUPPORTED_DEVICE_FAMILIES: 1
-  UISupportedInterfaceOrientations:
-    - UIInterfaceOrientationPortrait
-    - UIInterfaceOrientationPortraitUpsideDown
+    SUPPORTED_DEVICE_FAMILIES: 1
+    UISupportedInterfaceOrientations:
+        - UIInterfaceOrientationPortrait
+        - UIInterfaceOrientationPortraitUpsideDown
 
 packages:
   SwiftLint:
     url: https://github.com/realm/SwiftLint.git
     from: 0.58.2
+  FirebaseSDK:
+    url: https://github.com/firebase/firebase-ios-sdk
+    from: 11.10.0
 
 targets:
   SpendWise:
     type: application
     platform: iOS
-    sources: ["SpendWise"]
+    sources:
+      - path: SpendWise
+        excludes:
+          - Supporting SpendWise/Resouces/Info.plist
     dependencies:
       - target: Core
       - target: Auth
@@ -29,8 +35,12 @@ targets:
       - target: UIComponents
       - target: Persistence
       - target: Router
-    bundleId: KV.Lyashenko.SpendWise
+    bundleId: KV.Lyashenko.SpendWise.SpendWise
     deploymentTarget: "18.0"
+    settings:
+        base:
+          PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise'
+          INFOPLIST_FILE: SpendWise/Resouces/Info.plist
     preBuildScripts:
       - script: |
           export PATH="$PATH:/opt/homebrew/bin"
@@ -43,88 +53,131 @@ targets:
   Core:
     type: framework
     platform: iOS
-    sources: ["Core"]
+    sources:
+      - path: Core
+        excludes:
+          - Supporting SpendWise/Resouces/Info.plist
     bundleId: KV.Lyashenko.SpendWise.Core
     deploymentTarget: "18.0"
-    info:
-      path: SpendWise/Info.plist
+    settings:
+        base:
+          PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Core'
+          INFOPLIST_FILE: SpendWise/Resouces/Info.plist
 
   Auth:
     type: framework
     platform: iOS
-    sources: ["Auth"]
+    sources:
+      - path: Auth
+        excludes:
+          - Supporting SpendWise/Resouces/Info.plist
     dependencies:
       - target: Core
-      - target: Router
+      - package: FirebaseSDK
+        product: FirebaseAuth
     bundleId: KV.Lyashenko.SpendWise.Auth
     deploymentTarget: "18.0"
-    info:
-      path: SpendWise/Info.plist
+    settings:
+        base:
+          PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Auth'
+          INFOPLIST_FILE: SpendWise/Resouces/Info.plist
 
   Expenses:
     type: framework
     platform: iOS
-    sources: ["Expenses"]
+    sources:
+      - path: Expenses
+        excludes:
+          - Supporting SpendWise/Resouces/Info.plist
     dependencies:
       - target: Core
       - target: Persistence
     bundleId: KV.Lyashenko.SpendWise.Expenses
     deploymentTarget: "18.0"
-    info:
-      path: SpendWise/Info.plist
+    settings:
+        base:
+          PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Expenses'
+          INFOPLIST_FILE: SpendWise/Resouces/Info.plist
 
   Analytics:
     type: framework
     platform: iOS
-    sources: ["Analytics"]
+    sources:
+      - path: Analytics
+        excludes:
+          - Supporting SpendWise/Resouces/Info.plist
     dependencies:
       - target: Core
     bundleId: KV.Lyashenko.SpendWise.Analytics
     deploymentTarget: "18.0"
-    info:
-      path: SpendWise/Info.plist
+    settings:
+        base:
+          PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Analytics'
+          INFOPLIST_FILE: SpendWise/Resouces/Info.plist
 
   Settings:
     type: framework
     platform: iOS
-    sources: ["Settings"]
+    sources:
+      - path: Settings
+        excludes:
+          - Supporting SpendWise/Resouces/Info.plist
     dependencies:
       - target: Core
       - target: UIComponents
     bundleId: KV.Lyashenko.SpendWise.Settings
     deploymentTarget: "18.0"
-    info:
-      path: SpendWise/Info.plist
+    settings:
+        base:
+          PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Settings'
+          INFOPLIST_FILE: SpendWise/Resouces/Info.plist
 
   UIComponents:
     type: framework
     platform: iOS
-    sources: ["UIComponents"]
+    sources:
+      - path: UIComponents
+        excludes:
+          - Supporting SpendWise/Resouces/Info.plist
     dependencies:
       - target: Core
     bundleId: KV.Lyashenko.SpendWise.UIComponents
     deploymentTarget: "18.0"
-    info:
-      path: SpendWise/Info.plist
+    settings:
+        base:
+          PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.UIComponents'
+          INFOPLIST_FILE: SpendWise/Resouces/Info.plist
 
   Persistence:
     type: framework
     platform: iOS
-    sources: ["Persistence"]
+    sources:
+      - path: Persistence
+        excludes:
+          - Supporting SpendWise/Resouces/Info.plist
     dependencies:
       - target: Core
     bundleId: KV.Lyashenko.SpendWise.Persistence
     deploymentTarget: "18.0"
-    info:
-      path: SpendWise/Info.plist
+    settings:
+        base:
+          PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Persistence'
+          INFOPLIST_FILE: SpendWise/Resouces/Info.plist
 
   Router:
     type: framework
     platform: iOS
-    sources: ["Router"]
+    sources:
+      - path: Router
+        excludes:
+          - Supporting SpendWise/Resouces/Info.plist
     dependencies:
       - target: Core
+      - target: Expenses
+      - target: Auth
     bundleId: KV.Lyashenko.SpendWise.Router
     deploymentTarget: "18.0"
-    info:
-      path: SpendWise/Info.plist
+    settings:
+        base:
+          PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Router'
+          INFOPLIST_FILE: SpendWise/Resouces/Info.plist
