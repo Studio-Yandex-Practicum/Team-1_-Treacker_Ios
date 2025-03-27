@@ -21,13 +21,15 @@ public final class Router {
     }
 
     func routeToMainFlow() {
-        let mainVC = ExpenseListViewController(viewModel: ExpenseListViewModel())
+        let viewModel = ExpenseListViewModel()
+        let mainVC = ExpenseListViewController(viewModel: viewModel)
         let nav = UINavigationController(rootViewController: mainVC)
         setRootViewController(nav)
     }
 
     func routeToAuthFlow() {
-        let authVC = AuthViewController()
+        let viewModel = AuthViewModel()
+        let authVC = AuthViewController(viewModel: viewModel)
         let nav = UINavigationController(rootViewController: authVC)
         setRootViewController(nav)
     }

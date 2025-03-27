@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum GlobalConstants {
+public enum GlobalConstants {
 //    // Date
 //    static let today = "Сегодня"
 //    static let yesterday = "Вчера"
@@ -18,16 +18,15 @@ enum GlobalConstants {
 
 //    // CustomActionSheetController
 //    static let copyLink = "Скопировать ссылку"
-//
+
 //    // Common
 //    static let cancel = "Отмена"
-//
-//    // Error
-//    static let invalidMIMEType = "Неподдерживаемый тип изображения"
-//    static let downloadFailed = "Ошибка загрузки:"
-//    static let imageProcessingFailed = "Не удалось обработать изображение"
-//    static let cancelled = "Операция отменена"
-//
+
+    // Error
+    public static let firebaseNotConfigured = "Firebase не настроен"
+    public static let googleSignInFailed = "Не удалось выполнить вход через Google"
+    public static let invalidAppleToken = "Ошибка авторизации через Apple"
+
 //    // NewsDetailViewController
 //    static let headerTitle = "Новости"
 }
