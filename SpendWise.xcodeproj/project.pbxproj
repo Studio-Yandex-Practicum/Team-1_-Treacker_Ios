@@ -449,7 +449,6 @@
 			children = (
 				F2EC43B8D243742E16BF30D1 /* AppDelegate.swift */,
 				32264475CE0E7382B03FD435 /* SceneDelegate.swift */,
-				24E1B715E8A0E82BF8B46092 /* SpendWise.xcdatamodeld */,
 				F9341813818211FA3E0768BC /* Resouces */,
 			);
 			path = SpendWise;
@@ -512,6 +511,7 @@
 		FBE8684D2FCA25EC2703B43D /* Persistence */ = {
 			isa = PBXGroup;
 			children = (
+				24E1B715E8A0E82BF8B46092 /* SpendWise.xcdatamodeld */,
 				1579E8D5C26B87B8417D47E7 /* Persistence.h */,
 			);
 			path = Persistence;
