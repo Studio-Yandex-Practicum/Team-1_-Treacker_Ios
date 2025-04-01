@@ -43,6 +43,7 @@ public final class AuthViewController: UIViewController {
 }
 
 // MARK: - UI
+
 extension AuthViewController {
     private func setupUI() {
         emailField.placeholder = "Email"
@@ -60,8 +61,36 @@ extension AuthViewController {
         registerButton.setTitle("Зарегистрироваться", for: .normal)
 
         let hStack = UIStackView(arrangedSubviews: [googleButton, appleButton])
-        let vStack = UIStackView(arrangedSubviews: [])
+        hStack.axis = .horizontal
+        hStack.spacing = 8
+        let vStack = UIStackView(arrangedSubviews: [greetingLabel,
+                                                    infoLabel,
+                                                    emailField,
+                                                    passwordField,
+                                                    forgetPassButton,
+                                                    loginButton,
+                                                    orLabel,
+                                                    hStack])
+        vStack.axis = .vertical
+        vStack.spacing = 8
+        vStack.translatesAutoresizingMaskIntoConstraints = false
+
+        view.addSubview(vStack)
+
+        NSLayoutConstraint.activate([
+            vStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            vStack.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            vStack.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
     }
+}
+
+// MARK: - Actions
+
+extension AuthViewController {
+    @objc private func didTapLogin() {}
+    @objc private func didTapGoogle() {}
+    @objc private func didTapApple() {}
 }
 
 // MARK: - Bindings
