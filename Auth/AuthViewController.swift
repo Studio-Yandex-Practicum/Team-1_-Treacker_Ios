@@ -12,6 +12,7 @@ public final class AuthViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGreen
+        title = "Добро пожаловать"
         let label = UILabel()
         label.text = "Auth View Controller"
         label.textAlignment = .center
