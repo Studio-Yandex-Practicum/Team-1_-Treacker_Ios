@@ -35,7 +35,7 @@ targets:
       - target: UIComponents
       - target: Persistence
       - target: Router
-      - target: Network
+      - target: Networking
     bundleId: KV.Lyashenko.SpendWise.SpendWise
     deploymentTarget: "18.0"
     settings:
@@ -183,20 +183,18 @@ targets:
           PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Router'
           INFOPLIST_FILE: SpendWise/Resouces/Info.plist
 
-
-
-  Network:
+  Networking:
     type: framework
     platform: iOS
     sources:
-      - path: Network
+      - path: Networking
         excludes:
           - Supporting SpendWise/Resouces/Info.plist
     dependencies:
       - target: Core
-    bundleId: KV.Lyashenko.SpendWise.Network
+    bundleId: KV.Lyashenko.SpendWise.Networking
     deploymentTarget: "18.0"
     settings:
         base:
-          PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Network'
+          PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Networking'
           INFOPLIST_FILE: SpendWise/Resouces/Info.plist
