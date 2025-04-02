@@ -8,13 +8,13 @@
 import UIKit
 import Combine
 import AuthenticationServices
+import UIComponents
 
 public final class AuthViewController: UIViewController {
 
     private let viewModel: AuthViewModel
     private var cancellables = Set<AnyCancellable>()
 
-    private lazy var greetingLabel = UILabel()
     private lazy var infoLabel = UILabel()
     private lazy var emailField = UITextField()
     private lazy var passwordField = UITextField()
@@ -38,19 +38,42 @@ public final class AuthViewController: UIViewController {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .systemMint
+        setupNavBar()
+
+        //setupUI()
     }
 }
 
 // MARK: - UI
 
 extension AuthViewController {
+
+    private func setupNavBar() {
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
+        title = "Добро пожаловать"
+
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .systemBackground
+
+        if let helvetica = UIFont(name: "HelveticaNeue-Bold", size: 29) {
+            appearance.largeTitleTextAttributes = [
+                .font: helvetica,
+                .foregroundColor: UIColor.label
+            ]
+        }
+
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+    }
+
     private func setupUI() {
         emailField.placeholder = "Email"
         passwordField.placeholder = "Password"
         passwordField.isSecureTextEntry = true
 
-        greetingLabel.text = "Добро пожаловать"
         infoLabel.text = "Введите почту и пароль для входа в приложение"
         forgetPassButton.setTitle("Забыло пароль?", for: .normal)
         loginButton.setTitle("Войти", for: .normal)
@@ -63,8 +86,7 @@ extension AuthViewController {
         let hStack = UIStackView(arrangedSubviews: [googleButton, appleButton])
         hStack.axis = .horizontal
         hStack.spacing = 8
-        let vStack = UIStackView(arrangedSubviews: [greetingLabel,
-                                                    infoLabel,
+        let vStack = UIStackView(arrangedSubviews: [infoLabel,
                                                     emailField,
                                                     passwordField,
                                                     forgetPassButton,
@@ -75,7 +97,7 @@ extension AuthViewController {
         vStack.spacing = 8
         vStack.translatesAutoresizingMaskIntoConstraints = false
 
-        view.addSubview(vStack)
+        view.setupView(vStack)
 
         NSLayoutConstraint.activate([
             vStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),

@@ -7,7 +7,7 @@
 
 import UIKit
 
-extension UIView {
+public extension UIView {
     func setupView(_ subview: UIView) {
         subview.translatesAutoresizingMaskIntoConstraints = false
         subview.layer.borderWidth = 1
