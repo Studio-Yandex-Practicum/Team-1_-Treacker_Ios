@@ -16,3 +16,4 @@ extension UIFont {
     static var bold25x17 = UIFont.systemFont(ofSize: UIDevice.current.userInterfaceIdiom == .pad ? 25 : 17, weight: .bold)
     static var bold41x34 = UIFont.systemFont(ofSize: UIDevice.current.userInterfaceIdiom == .pad ? 41 : 34, weight: .bold)
 }
+
