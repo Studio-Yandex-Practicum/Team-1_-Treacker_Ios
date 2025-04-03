@@ -39,35 +39,15 @@ public final class AuthViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemMint
-        setupNavBar()
 
-        //setupUI()
+        title = "Добро пожаловать"
+        setupUI()
     }
 }
 
 // MARK: - UI
 
 extension AuthViewController {
-
-    private func setupNavBar() {
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.largeTitleDisplayMode = .always
-        title = "Добро пожаловать"
-
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .systemBackground
-
-        if let helvetica = UIFont(name: "HelveticaNeue-Bold", size: 29) {
-            appearance.largeTitleTextAttributes = [
-                .font: helvetica,
-                .foregroundColor: UIColor.label
-            ]
-        }
-
-        navigationController?.navigationBar.standardAppearance = appearance
-        navigationController?.navigationBar.scrollEdgeAppearance = appearance
-    }
 
     private func setupUI() {
         emailField.placeholder = "Email"
