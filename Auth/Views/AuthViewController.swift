@@ -7,6 +7,7 @@
 
 import UIKit
 import UIComponents
+import Core
 
 public final class AuthViewController: UIViewController {
 
@@ -17,7 +18,7 @@ public final class AuthViewController: UIViewController {
         let label = UILabel()
         label.text = "Auth View Controller"
         label.textAlignment = .center
-        label.font = .boldSystemFont(ofSize: 24)
+        label.font = .h1
         label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
         NSLayoutConstraint.activate([
