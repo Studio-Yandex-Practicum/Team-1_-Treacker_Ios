@@ -74,6 +74,7 @@ targets:
           - Supporting SpendWise/Resouces/Info.plist
     dependencies:
       - target: Core
+      - target: UIComponents
       - package: FirebaseSDK
         product: FirebaseAuth
     bundleId: KV.Lyashenko.SpendWise.Auth

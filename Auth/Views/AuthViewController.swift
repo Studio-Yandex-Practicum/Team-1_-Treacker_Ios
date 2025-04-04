@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import UIComponents
 
 public final class AuthViewController: UIViewController {
 
