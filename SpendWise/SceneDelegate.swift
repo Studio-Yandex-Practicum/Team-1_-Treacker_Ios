@@ -21,5 +21,4 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         Router.shared.startApp(using: window)
         NavigationBarStyle.applyDefault()
     }
-
 }
