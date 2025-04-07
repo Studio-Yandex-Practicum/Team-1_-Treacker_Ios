@@ -9,7 +9,7 @@ import UIKit
 
 extension UIFont {
 
-    enum FontStyle: String {
+    private enum FontStyle: String {
         case bold = "HelveticaNeue-Bold"
         case medium = "HelveticaNeue-Medium"
         case regular = "HelveticaNeue-Regular"
