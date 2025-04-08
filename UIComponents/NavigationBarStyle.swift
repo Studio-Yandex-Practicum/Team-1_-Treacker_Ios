@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Core
 
 public enum NavigationBarStyle {
     @MainActor
@@ -14,24 +15,18 @@ public enum NavigationBarStyle {
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = .systemBackground
 
-        if let font = UIFont(name: "HelveticaNeue-Bold", size: 29) {
-            appearance.largeTitleTextAttributes = [
-                .font: font,
-                .foregroundColor: UIColor.label
-            ]
-        }
+        appearance.shadowColor = .clear
 
-        if let font = UIFont(name: "HelveticaNeue-Medium", size: 17) {
-            appearance.titleTextAttributes = [
-                .font: font,
-                .foregroundColor: UIColor.label
-            ]
-        }
+        appearance.largeTitleTextAttributes = [
+            .font: UIFont.h1,
+            .foregroundColor: UIColor.primaryText
+        ]
 
         let navBar = UINavigationBar.appearance()
         navBar.standardAppearance = appearance
         navBar.scrollEdgeAppearance = appearance
         navBar.compactAppearance = appearance
         navBar.prefersLargeTitles = true
+        navBar.layoutMargins = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 0)
     }
 }

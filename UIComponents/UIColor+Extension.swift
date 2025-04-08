@@ -16,6 +16,7 @@ extension UIColor {
         case secondaryText = "Secondary-text"
         case whiteText = "White-text"
 
+        case cAccent = "CAccent"
         case cCalendar = "Calendar"
         case cGray = "CGray"
 
@@ -56,6 +57,7 @@ extension UIColor {
 
     // MARK: - Colors
 
+    public static var cAccent: UIColor { color(named: .cAccent) }
     public static var cCalendar: UIColor { color(named: .cCalendar) }
     public static var cGray: UIColor { color(named: .cGray) }
 
@@ -88,7 +90,6 @@ extension UIColor {
     public static var icVioletPrimary: UIColor { color(named: .icVioletPrimary) }
     public static var icYellowBg: UIColor { color(named: .icYellowBg) }
     public static var icYellowPrimary: UIColor { color(named: .icYellowPrimary) }
-
 
     // MARK: - Static Method
 

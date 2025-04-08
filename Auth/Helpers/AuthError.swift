@@ -16,11 +16,11 @@ public enum AuthError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .firebaseNotConfigured:
-            return GlobalConstants.firebaseNotConfigured
+            return GlobalConstants.firebaseNotConfigured.rawValue
         case .googleSignInFailed:
-            return GlobalConstants.googleSignInFailed
+            return GlobalConstants.googleSignInFailed.rawValue
         case .invalidAppleToken:
-            return GlobalConstants.invalidAppleToken
+            return GlobalConstants.invalidAppleToken.rawValue
         }
     }
 }

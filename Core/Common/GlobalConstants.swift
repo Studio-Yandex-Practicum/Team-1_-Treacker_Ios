@@ -7,26 +7,31 @@
 
 import Foundation
 
-public enum GlobalConstants {
-//    // Date
-//    static let today = "Сегодня"
-//    static let yesterday = "Вчера"
+public enum GlobalConstants: String {
 
     // Logger
-    static let logSubsystem = "KV.Lyashenko.AutodocNews"
-    static let logCategory = "news"
 
-//    // CustomActionSheetController
-//    static let copyLink = "Скопировать ссылку"
+    case logSubsystem = "KV.Lyashenko.AutodocNews"
+    case logCategory = "news"
 
-//    // Common
-//    static let cancel = "Отмена"
+    // AuthVC
+
+    case greeting = "Добро пожаловать"
+    case authInfoSubtitle = "Введите почту и пароль для входа в приложение"
+    case email = "Email"
+    case emailHint = "Пожалуйста, введите корректный email-адресс"
+    case pass = "Пароль"
+    case passHint = "Пароль должен содержать не менее 7 символов"
+    case forgetPass = "Забыли пароль?"
+    case login = "Войти"
+    case or = "или"
+    case google = "Google"
+    case apple = "Apple"
+    case notAccaunt = "Нет аккаунта?"
 
     // Error
-    public static let firebaseNotConfigured = "Firebase не настроен"
-    public static let googleSignInFailed = "Не удалось выполнить вход через Google"
-    public static let invalidAppleToken = "Ошибка авторизации через Apple"
 
-//    // NewsDetailViewController
-//    static let headerTitle = "Новости"
+    case firebaseNotConfigured = "Firebase не настроен"
+    case googleSignInFailed = "Не удалось выполнить вход через Google"
+    case invalidAppleToken = "Ошибка авторизации через Apple"
 }
