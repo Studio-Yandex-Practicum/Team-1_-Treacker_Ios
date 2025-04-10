@@ -110,6 +110,8 @@ targets:
           - Supporting SpendWise/Resouces/Info.plist
     dependencies:
       - target: Core
+      - target: Router
+      - target: UIComponents
     bundleId: KV.Lyashenko.SpendWise.Analytics
     deploymentTarget: "18.0"
     settings:
