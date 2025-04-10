@@ -1,5 +1,5 @@
 //
-//  RegisterViewController.swift
+//  RecoverViewController.swift
 //  Auth
 //
 //  Created by Konstantin Lyashenko on 10.04.2025.
@@ -9,27 +9,32 @@ import UIKit
 import Core
 import UIComponents
 
-public final class RegisterViewController: UIViewController {
+public final class RecoverViewController: UIViewController {
 
     private lazy var titleLabel = makeLabel(
-        text: GlobalConstants.register.rawValue,
+        text: GlobalConstants.recPass.rawValue,
         font: .h1,
         color: .primaryText,
         alignment: .left
     )
 
+    private lazy var subtitleLabel = makeLabel(
+        text: GlobalConstants.recInfoSubtitle.rawValue,
+        font: .h5,
+        color: .secondaryText,
+        alignment: .left
+    )
+
     private lazy var emailField = CustomTextField(placeholder: GlobalConstants.email.rawValue)
 
-    private lazy var passwordField =  CustomTextField(placeholder: GlobalConstants.pass.rawValue, isPassword: true)
-
-    private lazy var registerButton = UIButton(
-        title: GlobalConstants.regButton,
+    private lazy var confirmButton = UIButton(
+        title: GlobalConstants.confirm,
         backgroundColor: .cAccent.withAlphaComponent(0.5),
         titleColor: .whiteText,
         cornerRadius: .mid16,
         font: .h4,
         target: self,
-        action: #selector(didTapRegister)
+        action: #selector(didTapConfirm)
     )
 
     public override func viewDidLoad() {
@@ -41,13 +46,13 @@ public final class RegisterViewController: UIViewController {
 
 // MARK: - Setup UI
 
-private extension RegisterViewController {
+private extension RecoverViewController {
     private func setupUI() {
         let vStack = UIStackView(arrangedSubviews: [
             titleLabel,
+            subtitleLabel,
             emailField,
-            passwordField,
-            registerButton
+            confirmButton
         ])
         vStack.axis = .vertical
         vStack.spacing = 16
@@ -80,6 +85,6 @@ private extension RegisterViewController {
 
 // MARK: - Actions
 
-private extension RegisterViewController {
-    @objc private func didTapRegister() {}
+private extension RecoverViewController {
+    @objc private func didTapConfirm() {}
 }

@@ -12,4 +12,5 @@ public protocol RouterProtocol {
     func routeToAuthFlow()
     func routeBasedOnAuth()
     func routeToRegisterFlow()
+    func routeToRecoverFlow()
 }

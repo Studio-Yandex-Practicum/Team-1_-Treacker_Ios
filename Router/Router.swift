@@ -24,7 +24,7 @@ public final class Router: RouterProtocol {
         if AuthService.shared.isAuthorized {
             routeToMainFlow()
         } else {
-            routeToRegisterFlow()
+            routeToRecoverFlow()
         }
     }
 
@@ -42,6 +42,11 @@ public final class Router: RouterProtocol {
 
     public func routeToRegisterFlow() {
         let regVC = RegisterViewController()
+        setRootViewController(regVC)
+    }
+
+    public func routeToRecoverFlow() {
+        let regVC = RecoverViewController()
         setRootViewController(regVC)
     }
 
