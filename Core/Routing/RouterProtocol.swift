@@ -11,4 +11,5 @@ public protocol RouterProtocol {
     func routeToMainFlow()
     func routeToAuthFlow()
     func routeBasedOnAuth()
+    func routeToRegisterFlow()
 }

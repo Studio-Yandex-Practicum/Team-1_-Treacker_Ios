@@ -25,16 +25,16 @@ final class ExpenseStorageService: ExpenseStorageServiceProtocol {
     func fetchExpenses(from startDate: Date, to endDate: Date?, categories: [String]?) -> [Category] {
         let startOfDay = startDate.startOfDay
         let endOdDay: Date = endDate?.endOfDay ?? startDate.endOfDay
-        let categories: [String]? = categories?.count == 0 ? nil : categories
+        //let categories: [String]? = categories?.count == 0 ? nil : categories
 
         var predicates: [NSPredicate] = []
 
         let datePredicate = NSPredicate(format: "date >= %@ AND date <= %@", startOfDay as NSDate, endOdDay as NSDate)
         predicates.append(datePredicate)
-        if let categories, !categories.isEmpty {
-            let categoryPredicate = NSPredicate(format: "categoryName IN %@", categories)
-            predicates.append(categoryPredicate)
-        }
+//        if let categories, !categories.isEmpty {
+//            let categoryPredicate = NSPredicate(format: "categoryName IN %@", categories)
+//            predicates.append(categoryPredicate)
+//        }
 
         let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         let sortDescriptor = NSSortDescriptor(key: "date", ascending: false)

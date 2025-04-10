@@ -24,7 +24,7 @@ public final class Router: RouterProtocol {
         if AuthService.shared.isAuthorized {
             routeToMainFlow()
         } else {
-            routeToAuthFlow()
+            routeToRegisterFlow()
         }
     }
 
@@ -38,6 +38,11 @@ public final class Router: RouterProtocol {
         let authVM = AuthViewModel(router: self)
         let authVC = AuthViewController(viewModel: authVM)
         setRootViewController(UINavigationController(rootViewController: authVC))
+    }
+
+    public func routeToRegisterFlow() {
+        let regVC = RegisterViewController()
+        setRootViewController(regVC)
     }
 
     private func setRootViewController(_ viewController: UIViewController) {

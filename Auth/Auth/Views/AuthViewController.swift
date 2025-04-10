@@ -247,7 +247,7 @@ private extension AuthViewController {
 
 // MARK: - Actions
 
-extension AuthViewController {
+private extension AuthViewController {
     @objc private func didTapForgetPass() {}
     @objc private func didTapLogin() {
         viewModel.didAuthorizeSuccessfully()
