@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="false" userDefinedModelVersionIdentifier="">
-    <elements/>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23605" systemVersion="24D81" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="AmountCD" representedClassName="AmountCD" syncable="YES" codeGenerationType="class">
+        <attribute name="eur" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="rub" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="usd" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="expense" maxCount="1" deletionRule="Nullify" destinationEntity="ExpenseCD" inverseName="amount" inverseEntity="ExpenseCD"/>
+    </entity>
+    <entity name="CategoryCD" representedClassName="CategoryCD" syncable="YES" codeGenerationType="class">
+        <attribute name="colorName" attributeType="String"/>
+        <attribute name="iconName" attributeType="String"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="name" attributeType="String"/>
+        <relationship name="expense" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ExpenseCD" inverseName="category" inverseEntity="ExpenseCD"/>
+    </entity>
+    <entity name="ExpenseCD" representedClassName="ExpenseCD" syncable="YES" codeGenerationType="class">
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="note" optional="YES" attributeType="String"/>
+        <relationship name="amount" maxCount="1" deletionRule="Nullify" destinationEntity="AmountCD" inverseName="expense" inverseEntity="AmountCD"/>
+        <relationship name="category" maxCount="1" deletionRule="Nullify" destinationEntity="CategoryCD" inverseName="expense" inverseEntity="CategoryCD"/>
+    </entity>
 </model>
