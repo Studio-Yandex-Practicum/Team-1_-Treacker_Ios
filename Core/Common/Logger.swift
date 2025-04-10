@@ -9,18 +9,18 @@ import Foundation
 import os.log
 
 public final class Logger {
-    static let shared = Logger()
+    public static let shared = Logger()
 
     private let logger: OSLog
 
     private init() {
         logger = OSLog(
-            subsystem: GlobalConstants.logSubsystem,
-            category: GlobalConstants.logCategory
+            subsystem: GlobalConstants.logSubsystem.rawValue,
+            category: GlobalConstants.logCategory.rawValue
         )
     }
 
-    func log(
+    public func log(
         _ level: OSLogType,
         message: @autoclosure () -> String,
         metadata: [String: String]? = nil

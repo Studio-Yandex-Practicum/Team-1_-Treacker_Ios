@@ -19,7 +19,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         self.window = window
         Router.shared.startApp(using: window)
-        NavigationBarStyle.applyDefault()
     }
-
 }

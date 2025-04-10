@@ -8,11 +8,31 @@
 import UIKit
 
 extension UIFont {
-    static var medium18x10 = UIFont.systemFont(ofSize: UIDevice.current.userInterfaceIdiom == .pad ? 18 : 10, weight: .medium)
 
-    static var regular20x13 = UIFont.systemFont(ofSize: UIDevice.current.userInterfaceIdiom == .pad ? 20 : 13, weight: .regular)
-    static var regular25x17 = UIFont.systemFont(ofSize: UIDevice.current.userInterfaceIdiom == .pad ? 25 : 17, weight: .regular)
+    private enum FontStyle: String {
+        case bold = "HelveticaNeue-Bold"
+        case medium = "HelveticaNeue-Medium"
+        case regular = "HelveticaNeue-Light"
+    }
 
-    static var bold25x17 = UIFont.systemFont(ofSize: UIDevice.current.userInterfaceIdiom == .pad ? 25 : 17, weight: .bold)
-    static var bold41x34 = UIFont.systemFont(ofSize: UIDevice.current.userInterfaceIdiom == .pad ? 41 : 34, weight: .bold)
+    // MARK: - Static properties
+
+    public static var h1 = heading(.bold, size: 24)
+    public static var h2 = heading(.bold, size: 20)
+    public static var h3 = heading(.medium, size: 16)
+    public static var h4 = heading(.medium, size: 14)
+    public static var h5 = heading(.regular, size: 14)
+    public static var hintFont = heading(.regular, size: 12)
+    public static var hintFontInput = heading(.medium, size: 10)
+    public static var tabBarText = heading(.medium, size: 12)
+
+    // MARK: - Heading
+
+    private static func heading(_ style: FontStyle, size: CGFloat) -> UIFont {
+        guard let font = UIFont(name: style.rawValue, size: size) else {
+            Logger.shared.log(.error, message: "Failed to load font", metadata: ["❌": "\(style.rawValue)"])
+            return UIFont.systemFont(ofSize: size)
+        }
+        return font
+    }
 }

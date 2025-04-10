@@ -6,30 +6,38 @@
 //
 
 import UIKit
+import Core
 import Auth
 import Expenses
 
-public final class Router {
+public final class Router: RouterProtocol {
     public static let shared = Router()
-
     public var window: UIWindow?
 
     public func startApp(using window: UIWindow) {
         self.window = window
-        window.rootViewController = LaunchViewController()
+        routeBasedOnAuth()
         window.makeKeyAndVisible()
     }
 
-    func routeToMainFlow() {
-        let mainVC = ExpenseListViewController(viewModel: ExpenseListViewModel())
-        let nav = UINavigationController(rootViewController: mainVC)
-        setRootViewController(nav)
+    public func routeBasedOnAuth() {
+        if AuthService.shared.isAuthorized {
+            routeToMainFlow()
+        } else {
+            routeToAuthFlow()
+        }
     }
 
-    func routeToAuthFlow() {
-        let authVC = AuthViewController()
-        let nav = UINavigationController(rootViewController: authVC)
-        setRootViewController(nav)
+    public func routeToMainFlow() {
+        let viewModel = ExpenseListViewModel()
+        let mainVC = ExpenseListViewController(viewModel: viewModel)
+        setRootViewController(UINavigationController(rootViewController: mainVC))
+    }
+
+    public func routeToAuthFlow() {
+        let authVM = AuthViewModel(router: self)
+        let authVC = AuthViewController(viewModel: authVM)
+        setRootViewController(UINavigationController(rootViewController: authVC))
     }
 
     private func setRootViewController(_ viewController: UIViewController) {
