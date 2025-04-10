@@ -8,7 +8,7 @@
 import Foundation
 import os.log
 
-final class Logger {
+public final class Logger {
     static let shared = Logger()
 
     private let logger: OSLog
