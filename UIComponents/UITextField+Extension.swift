@@ -8,31 +8,10 @@
 import UIKit
 import Core
 
-public extension UITextField {
-    static func makeStyled(placeholder: String) -> UITextField {
-        let field = UITextField()
-        field.placeholder = placeholder
-        field.borderStyle = .none
-        field.backgroundColor = .primaryBg
-        field.layer.cornerRadius = Corners.mid16.rawValue
-        field.font = .h4
-        field.setLeftPadding(16)
-        return field
-    }
-
-    private func setLeftPadding(_ amount: CGFloat) {
-        let paddingView = UIView(frame: CGRect(
-            x: 0,
-            y: 0,
-            width: amount,
-            height: 0)
-        )
-        leftView = paddingView
-        leftViewMode = .always
-    }
-}
-
 public final class CustomTextField: UITextField {
+
+    private let placeholderText: String
+    private let isPassword: Bool
 
     private lazy var floatingLabelTopConstraint = NSLayoutConstraint(
         item: floatingLabel,
@@ -61,26 +40,15 @@ public final class CustomTextField: UITextField {
         return button
     }()
 
-    private var textPadding = UIEdgeInsets(top: 26, left: 20, bottom: 12, right: 48)
-
-    private let placeholderText: String
-    private let isPassword: Bool
-
-    public override func textRect(forBounds bounds: CGRect) -> CGRect {
-        bounds.inset(by: textPadding)
-    }
-
-    public override func editingRect(forBounds bounds: CGRect) -> CGRect {
-        bounds.inset(by: textPadding)
-    }
+    private var textPadding = UIEdgeInsets(top: 26, left: 20, bottom: 12, right: 52)
 
     public init(placeholder: String, isPassword: Bool = false) {
         self.placeholderText = placeholder
         self.isPassword = isPassword
         super.init(frame: .zero)
         setupView()
-        font = .h4
 
+        self.addTarget(self, action: #selector(textFieldEditingChanged), for: .editingChanged)
         self.addTarget(self, action: #selector(textFieldTapped), for: .editingDidBegin)
         self.addTarget(self, action: #selector(textFieldDidEnd), for: .editingDidEnd)
     }
@@ -90,11 +58,20 @@ public final class CustomTextField: UITextField {
         fatalError("init(coder:) has not been implemented")
     }
 
+    public override func textRect(forBounds bounds: CGRect) -> CGRect {
+        bounds.inset(by: textPadding)
+    }
+
+    public override func editingRect(forBounds bounds: CGRect) -> CGRect {
+        bounds.inset(by: textPadding)
+    }
+
     private func setupView() {
         layer.cornerRadius = Corners.mid16.rawValue
         layer.masksToBounds = true
         backgroundColor = .primaryBg
         isSecureTextEntry = isPassword
+        font = .h4
 
         setupView(floatingLabel)
 
@@ -109,8 +86,33 @@ public final class CustomTextField: UITextField {
     }
 
     private func setupEyeIcon() {
-        rightView = eyeButton
-        rightViewMode = .always
+        let eyeContainer = UIView()
+        eyeContainer.setupView(eyeButton)
+
+        NSLayoutConstraint.activate([
+            eyeButton.topAnchor.constraint(equalTo: eyeContainer.topAnchor),
+            eyeButton.leadingAnchor.constraint(equalTo: eyeContainer.leadingAnchor),
+            eyeButton.trailingAnchor.constraint(equalTo: eyeContainer.trailingAnchor, constant: -16),
+            eyeButton.bottomAnchor.constraint(equalTo: eyeContainer.bottomAnchor),
+            eyeButton.widthAnchor.constraint(equalToConstant: 24),
+            eyeButton.heightAnchor.constraint(equalToConstant: 24)
+        ])
+
+        rightView = eyeContainer
+        rightViewMode = .whileEditing
+    }
+
+    private func updateFloatingLabel(animated: Bool) {
+        let isActive = isFirstResponder || !(text?.isEmpty ?? true)
+        floatingLabelTopConstraint.constant = isActive ? 12 : 19
+        floatingLabel.font = isActive ? .h5 : .h4
+        floatingLabel.textColor = isActive ? .primaryText : .secondaryText
+
+        if animated {
+            UIView.animate(withDuration: 0.2) { self.layoutIfNeeded() }
+        } else {
+            layoutIfNeeded()
+        }
     }
 
     @objc private func toggleSecureText() {
@@ -126,21 +128,15 @@ public final class CustomTextField: UITextField {
         }
     }
 
+    @objc private func textFieldEditingChanged() {
+        updateFloatingLabel(animated: true)
+    }
+
     @objc private func textFieldTapped() {
-        UIView.animate(withDuration: 0.3) {
-            self.floatingLabel.font = .h4
-            self.floatingLabelTopConstraint.constant = 12
-            self.layoutIfNeeded()
-        }
+        updateFloatingLabel(animated: true)
     }
 
     @objc private func textFieldDidEnd() {
-        guard text?.isEmpty ?? true else { return }
-
-        UIView.animate(withDuration: 0.3) {
-            self.floatingLabel.font = .h4
-            self.floatingLabelTopConstraint.constant = 19
-            self.layoutIfNeeded()
-        }
+        updateFloatingLabel(animated: true)
     }
 }

@@ -17,28 +17,9 @@ public final class AuthViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
 
     private lazy var emailField = CustomTextField(placeholder: GlobalConstants.email.rawValue)
-
-    private lazy var emailHint: UILabel = {
-        let label = UILabel()
-        label.text = GlobalConstants.emailHint.rawValue
-        label.textColor = .hintText
-        label.font = .h5
-        return label
-    }()
-
-    private lazy var passwordField: UITextField = {
-        let field = CustomTextField(placeholder: GlobalConstants.pass.rawValue, isPassword: true)
-        field.isSecureTextEntry = true
-        return field
-    }()
-
-    private lazy var passHint: UILabel = {
-        let label = UILabel()
-        label.text = GlobalConstants.passHint.rawValue
-        label.textColor = .hintText
-        label.font = .h5
-        return label
-    }()
+    private lazy var emailHint = makeHintLabel(text: GlobalConstants.emailHint.rawValue)
+    private lazy var passwordField =  CustomTextField(placeholder: GlobalConstants.pass.rawValue, isPassword: true)
+    private lazy var passHint = makeHintLabel(text: GlobalConstants.passHint.rawValue)
 
     private lazy var forgetPassButton: UIButton = {
         var config = UIButton.Configuration.plain()
@@ -64,14 +45,12 @@ public final class AuthViewController: UIViewController {
         action: #selector(didTapLogin)
     )
 
-    private lazy var orLabel: UILabel = {
-        let label = UILabel()
-        label.text = GlobalConstants.or.rawValue
-        label.textAlignment = .center
-        label.textColor = .secondaryText
-        label.font = .h5
-        return label
-    }()
+    private lazy var orLabel = makeLabel(
+        text: GlobalConstants.or.rawValue,
+        font: .h5,
+        color: .secondaryText,
+        alignment: .center
+    )
 
     private lazy var googleButton = UIButton(
         title: .google,
@@ -129,25 +108,21 @@ public final class AuthViewController: UIViewController {
 extension AuthViewController {
 
     private func setupUI() {
-
         let subtitleLabel = UILabel()
         subtitleLabel.text = GlobalConstants.authInfoSubtitle.rawValue
         subtitleLabel.font = .h5
         subtitleLabel.textColor = .secondaryText
         subtitleLabel.numberOfLines = 0
 
-        let emailStack = UIStackView(arrangedSubviews: [emailField, emailHint])
-        emailStack.axis = .vertical
-        emailStack.spacing = 4
-
-        let passStack = UIStackView(arrangedSubviews: [passwordField, passHint])
-        passStack.axis = .vertical
-        passStack.spacing = 4
+        let emailHintContainer = containerFor(label: emailHint)
+        let passHintContainer = containerFor(label: passHint)
 
         let vStack = UIStackView(arrangedSubviews: [
             subtitleLabel,
-            emailStack,
-            passStack,
+            emailField,
+            emailHintContainer,
+            passwordField,
+            passHintContainer,
             forgetPassButton,
             loginButton,
             separatorView(),
@@ -155,6 +130,10 @@ extension AuthViewController {
         ])
         vStack.axis = .vertical
         vStack.spacing = 16
+        vStack.setCustomSpacing(4, after: emailField)
+        vStack.setCustomSpacing(12, after: emailHintContainer)
+        vStack.setCustomSpacing(4, after: passwordField)
+        vStack.setCustomSpacing(12, after: passHintContainer)
         vStack.setCustomSpacing(24, after: forgetPassButton)
         vStack.setCustomSpacing(24, after: loginButton)
 
@@ -162,8 +141,18 @@ extension AuthViewController {
         view.setupView(notAccauntButton)
 
         NSLayoutConstraint.activate([
-            emailStack.heightAnchor.constraint(equalToConstant: 78),
-            passStack.heightAnchor.constraint(equalToConstant: 78),
+            emailField.heightAnchor.constraint(equalToConstant: 60),
+            passwordField.heightAnchor.constraint(equalToConstant: 60),
+
+            emailHint.leadingAnchor.constraint(equalTo: emailHintContainer.leadingAnchor, constant: 8),
+            emailHint.trailingAnchor.constraint(equalTo: emailHintContainer.trailingAnchor, constant: -8),
+            emailHint.topAnchor.constraint(equalTo: emailHintContainer.topAnchor),
+            emailHint.bottomAnchor.constraint(equalTo: emailHintContainer.bottomAnchor),
+
+            passHint.leadingAnchor.constraint(equalTo: passHintContainer.leadingAnchor, constant: 8),
+            passHint.trailingAnchor.constraint(equalTo: passHintContainer.trailingAnchor, constant: -8),
+            passHint.topAnchor.constraint(equalTo: passHintContainer.topAnchor),
+            passHint.bottomAnchor.constraint(equalTo: passHintContainer.bottomAnchor),
 
             loginButton.heightAnchor.constraint(equalToConstant: 54),
 
@@ -212,11 +201,34 @@ extension AuthViewController {
         return stack
     }
 
-    private func alignedTrailing(_ view: UIView) -> UIView {
-        let container = UIStackView(arrangedSubviews: [view])
-        container.axis = .horizontal
-        container.alignment = .leading
-        return container
+    private func makeHintLabel(text: String) -> UILabel {
+        let label = UILabel()
+        label.text = text
+        label.textColor = .hintText
+        label.font = .h5
+        return label
+    }
+
+    private func makeLabel(
+        text: String,
+        font: UIFont,
+        color: UIColor,
+        alignment: NSTextAlignment = .natural,
+        numberOfLines: Int = 1
+    ) -> UILabel {
+        let label = UILabel()
+        label.text = text
+        label.font = font
+        label.textColor = color
+        label.textAlignment = alignment
+        label.numberOfLines = numberOfLines
+        return label
+    }
+
+    private func containerFor(label: UILabel) -> UIView {
+        let view = UIView()
+        view.setupView(label)
+        return view
     }
 }
 
@@ -225,8 +237,14 @@ extension AuthViewController {
 extension AuthViewController {
     @objc private func didTapForgetPass() {}
     @objc private func didTapLogin() {}
-    @objc private func didTapGoogle() {}
-    @objc private func didTapApple() {}
+    @objc private func didTapGoogle() {
+        emailHint.isHidden = true
+        passHint.isHidden = true
+    }
+    @objc private func didTapApple() {
+        emailHint.isHidden = false
+        passHint.isHidden = false
+    }
     @objc private func didNotAccaunt() {}
 }
 
