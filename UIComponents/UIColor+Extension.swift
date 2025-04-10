@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Core
 
 extension UIColor {
 
@@ -16,6 +17,7 @@ extension UIColor {
         case secondaryText = "Secondary-text"
         case whiteText = "White-text"
 
+        case cAccent = "CAccent"
         case cCalendar = "Calendar"
         case cGray = "CGray"
 
@@ -44,6 +46,31 @@ extension UIColor {
         case icVioletPrimary = "ic-violet-primary"
         case icYellowBg = "ic-yellow-bg"
         case icYellowPrimary = "ic-yellow-primary"
+
+        case icBlueNewBg = "ic-blue-new-bg"
+        case icBlueNew = "ic-blue-new"
+        case icBrightBlueNewBg = "ic-bright-blue-new-bg"
+        case icBrightBlueNew = "ic-bright-blue-new"
+        case icBrightGreenNewBg = "ic-bright-green-new-bg"
+        case icBrightGreenNew = "ic-bright-green-new"
+        case icDarkBlueNewBg = "ic-dark-blue-new-bg"
+        case icDarkBlueNew = "ic-dark-blue-new"
+        case icDarkGreenNewBg = "ic-dark-green-new-bg"
+        case icDarkGreenNew = "ic-dark-green-new"
+        case icGreenNewBg = "ic-green-new-bg"
+        case icGreenNew = "ic-green-new"
+        case icOrangeNewBg = "ic-orange-new-bg"
+        case icOrangeNew = "ic-orange-new"
+        case icPinkNewBg = "ic-pink-new-bg"
+        case icPinkNew = "ic-pink-new"
+        case icPurpleNewBg = "ic-purple-new-bg"
+        case icPurpleNew = "ic-purple-new"
+        case icRedNewBg = "ic-red-new-bg"
+        case icRedNew = "ic-red-new"
+        case icVioletNewBg = "ic-violet-new-bg"
+        case icVioletNew = "ic-violet-new"
+        case icYellowNewBg = "ic-yellow-new-bg"
+        case icYellowNew = "ic-yellow-new"
     }
 
     // MARK: - Color text
@@ -56,6 +83,7 @@ extension UIColor {
 
     // MARK: - Colors
 
+    public static var cAccent: UIColor { color(named: .cAccent) }
     public static var cCalendar: UIColor { color(named: .cCalendar) }
     public static var cGray: UIColor { color(named: .cGray) }
 
@@ -89,10 +117,40 @@ extension UIColor {
     public static var icYellowBg: UIColor { color(named: .icYellowBg) }
     public static var icYellowPrimary: UIColor { color(named: .icYellowPrimary) }
 
+    // MARK: - Colors-category
+
+    public static var icBlueNewBg: UIColor { color(named: .icBlueNewBg) }
+    public static var icBlueNew: UIColor { color(named: .icBlueNew) }
+    public static var icBrightBlueNewBg: UIColor { color(named: .icBrightBlueNewBg) }
+    public static var icBrightBlueNew: UIColor { color(named: .icBrightBlueNew) }
+    public static var icBrightGreenNewBg: UIColor { color(named: .icBrightGreenNewBg) }
+    public static var icBrightGreenNew: UIColor { color(named: .icBrightGreenNew) }
+    public static var icDarkBlueNewBg: UIColor { color(named: .icDarkBlueNewBg) }
+    public static var icDarkBlueNew: UIColor { color(named: .icDarkBlueNew) }
+    public static var icDarkGreenNewBg: UIColor { color(named: .icDarkGreenNewBg) }
+    public static var icDarkGreenNew: UIColor { color(named: .icDarkGreenNew) }
+    public static var icGreenNewBg: UIColor { color(named: .icGreenNewBg) }
+    public static var icGreenNew: UIColor { color(named: .icGreenNew) }
+    public static var icOrangeNewBg: UIColor { color(named: .icOrangeNewBg) }
+    public static var icOrangeNew: UIColor { color(named: .icOrangeNew) }
+    public static var icPinkNewBg: UIColor { color(named: .icPinkNewBg) }
+    public static var icPinkNew: UIColor { color(named: .icPinkNew) }
+    public static var icPurpleNewBg: UIColor { color(named: .icPurpleNewBg) }
+    public static var icPurpleNew: UIColor { color(named: .icPurpleNew) }
+    public static var icRedNewBg: UIColor { color(named: .icRedNewBg) }
+    public static var icRedNew: UIColor { color(named: .icRedNew) }
+    public static var icVioletNewBg: UIColor { color(named: .icVioletNewBg) }
+    public static var icVioletNew: UIColor { color(named: .icVioletNew) }
+    public static var icYellowNewBg: UIColor { color(named: .icYellowNewBg) }
+    public static var icYellowNew: UIColor { color(named: .icYellowNew) }
 
     // MARK: - Static Method
 
     private static func color(named name: ColorSet, fallback: UIColor = .clear) -> UIColor {
-        UIColor(named: name.rawValue) ?? fallback
+        guard let color = UIColor(named: name.rawValue) else {
+            Logger.shared.log(.error, message: "Failed to load color", metadata: ["❌": "\(name.rawValue)"])
+            return fallback
+        }
+        return color
     }
 }
