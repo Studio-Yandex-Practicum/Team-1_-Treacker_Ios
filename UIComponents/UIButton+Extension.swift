@@ -12,10 +12,10 @@ public extension UIButton {
 
     convenience init(
         title: GlobalConstants,
-        image: AppIcon?,
+        image: AppIcon? = nil,
         backgroundColor: UIColor,
         titleColor: UIColor,
-        cornerRadius: Corners?,
+        cornerRadius: Corners? = nil,
         font: UIFont,
         spacing: CGFloat = 8,
         target: Any?,
@@ -26,7 +26,12 @@ public extension UIButton {
             config.baseBackgroundColor = backgroundColor
             config.baseForegroundColor = titleColor
             config.imagePadding = spacing
-            config.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
+            config.contentInsets = NSDirectionalEdgeInsets(
+                top: 12,
+                leading: 16,
+                bottom: 12,
+                trailing: 16
+            )
 
             self.init(configuration: config)
 

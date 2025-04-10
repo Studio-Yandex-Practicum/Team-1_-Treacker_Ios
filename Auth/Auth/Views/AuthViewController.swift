@@ -30,22 +30,13 @@ public final class AuthViewController: UIViewController {
     private lazy var passwordField =  CustomTextField(placeholder: GlobalConstants.pass.rawValue, isPassword: true)
     private lazy var passHint = makeHintLabel(text: GlobalConstants.passHint.rawValue)
 
-    private lazy var forgetPassButton: UIButton = {
-        var config = UIButton.Configuration.plain()
-        config.contentInsets = .init(top: 0, leading: 0, bottom: 0, trailing: 0)
-        let button = UIButton(configuration: config)
-        button.setTitle(GlobalConstants.forgetPass.rawValue, for: .normal)
-        button.setTitleColor(.accentText, for: .normal)
-        button.titleLabel?.font = .h5
-        button.contentHorizontalAlignment = .left
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(didTapForgetPass), for: .touchUpInside)
-        return button
-    }()
+    private lazy var forgetPassButton = makeLinkButton(
+        title: GlobalConstants.forgetPass,
+        action: #selector(didTapForgetPass)
+    )
 
     private lazy var loginButton = UIButton(
         title: GlobalConstants.login,
-        image: nil,
         backgroundColor: .cAccent.withAlphaComponent(0.5),
         titleColor: .whiteText,
         cornerRadius: .mid16,
@@ -61,36 +52,20 @@ public final class AuthViewController: UIViewController {
         alignment: .center
     )
 
-    private lazy var googleButton = UIButton(
+    private lazy var googleButton = makeAuthButton(
         title: .google,
         image: .google,
-        backgroundColor: .primaryBg,
-        titleColor: .secondaryText,
-        cornerRadius: .mid16,
-        font: .h4,
-        target: self,
         action: #selector(didTapGoogle)
     )
 
-    private lazy var appleButton = UIButton(
+    private lazy var appleButton = makeAuthButton(
         title: .apple,
         image: .ic,
-        backgroundColor: .primaryBg,
-        titleColor: .secondaryText,
-        cornerRadius: .mid16,
-        font: .h4,
-        target: self,
         action: #selector(didTapApple)
     )
 
-    private lazy var notAccauntButton = UIButton(
+    private lazy var notAccauntButton = makeLinkButton(
         title: GlobalConstants.notAccaunt,
-        image: nil,
-        backgroundColor: .secondaryBg,
-        titleColor: .accentText,
-        cornerRadius: .mid16,
-        font: .h5,
-        target: self,
         action: #selector(didNotAccaunt)
     )
 
@@ -116,7 +91,7 @@ public final class AuthViewController: UIViewController {
 
 // MARK: - Setup UI
 
-extension AuthViewController {
+private extension AuthViewController {
 
     private func setupUI() {
         let subtitleLabel = UILabel()
@@ -215,11 +190,7 @@ extension AuthViewController {
     }
 
     private func makeHintLabel(text: String) -> UILabel {
-        let label = UILabel()
-        label.text = text
-        label.textColor = .hintText
-        label.font = .h5
-        return label
+        makeLabel(text: text, font: .h5, color: .hintText)
     }
 
     private func makeLabel(
@@ -236,6 +207,35 @@ extension AuthViewController {
         label.textAlignment = alignment
         label.numberOfLines = numberOfLines
         return label
+    }
+
+    func makeAuthButton(
+        title: GlobalConstants,
+        image: AppIcon? = nil,
+        action: Selector
+    ) -> UIButton {
+        UIButton(
+            title: title,
+            image: image,
+            backgroundColor: .primaryBg,
+            titleColor: .secondaryText,
+            cornerRadius: .mid16,
+            font: .h4,
+            target: self,
+            action: action
+        )
+    }
+
+    func makeLinkButton(title: GlobalConstants, action: Selector) -> UIButton {
+        var config = UIButton.Configuration.plain()
+        config.contentInsets = .zero
+        let button = UIButton(configuration: config)
+        button.setTitle(title.rawValue, for: .normal)
+        button.setTitleColor(.accentText, for: .normal)
+        button.titleLabel?.font = .h5
+        button.contentHorizontalAlignment = .left
+        button.addTarget(self, action: action, for: .touchUpInside)
+        return button
     }
 
     private func containerFor(label: UILabel) -> UIView {
