@@ -8,8 +8,8 @@
 import Foundation
 import os.log
 
-final class Logger {
-    static let shared = Logger()
+public final class Logger {
+    public static let shared = Logger()
 
     private let logger: OSLog
 
@@ -20,7 +20,7 @@ final class Logger {
         )
     }
 
-    func log(
+    public func log(
         _ level: OSLogType,
         message: @autoclosure () -> String,
         metadata: [String: String]? = nil

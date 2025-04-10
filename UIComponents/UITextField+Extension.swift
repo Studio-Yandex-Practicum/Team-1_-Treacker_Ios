@@ -27,7 +27,7 @@ public final class CustomTextField: UITextField {
         let label = UILabel()
         label.text = placeholderText
         label.font = .h4
-        label.tintColor = .secondaryText
+        label.textColor = .secondaryText
         return label
     }()
 
@@ -46,6 +46,7 @@ public final class CustomTextField: UITextField {
         self.placeholderText = placeholder
         self.isPassword = isPassword
         super.init(frame: .zero)
+        self.tintColor = .primaryText
         setupView()
 
         self.addTarget(self, action: #selector(textFieldEditingChanged), for: .editingChanged)
@@ -105,8 +106,8 @@ public final class CustomTextField: UITextField {
     private func updateFloatingLabel(animated: Bool) {
         let isActive = isFirstResponder || !(text?.isEmpty ?? true)
         floatingLabelTopConstraint.constant = isActive ? 12 : 19
-        floatingLabel.font = isActive ? .h5 : .h4
-        floatingLabel.textColor = isActive ? .primaryText : .secondaryText
+        floatingLabel.font = isActive ? .hintFont : .h4
+        floatingLabel.textColor = .secondaryText
 
         if animated {
             UIView.animate(withDuration: 0.2) { self.layoutIfNeeded() }
@@ -120,6 +121,7 @@ public final class CustomTextField: UITextField {
 
         let imageName = isSecureTextEntry ? AppIcon.eyeClosed.rawValue : AppIcon.eye.rawValue
         let image = UIImage(named: imageName)
+        image?.withTintColor(.icGrayPrimary)
         eyeButton.setImage(image, for: .normal)
 
         if let text = self.text {
