@@ -13,8 +13,17 @@ import Core
 
 public final class AuthViewController: UIViewController {
 
+    // MARK: - Private properties
+
     private let viewModel: AuthViewModel
     private var cancellables = Set<AnyCancellable>()
+
+    private lazy var titleLabel = makeLabel(
+        text: GlobalConstants.greeting.rawValue,
+        font: .h1,
+        color: .primaryText,
+        alignment: .left
+    )
 
     private lazy var emailField = CustomTextField(placeholder: GlobalConstants.email.rawValue)
     private lazy var emailHint = makeHintLabel(text: GlobalConstants.emailHint.rawValue)
@@ -85,6 +94,8 @@ public final class AuthViewController: UIViewController {
         action: #selector(didNotAccaunt)
     )
 
+    // MARK: - Lifecycle
+
     public init(viewModel: AuthViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -98,12 +109,12 @@ public final class AuthViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .secondaryBg
-        title = GlobalConstants.greeting.rawValue
         setupUI()
+        enableKeyboardDismissOnTap()
     }
 }
 
-// MARK: - UI
+// MARK: - Setup UI
 
 extension AuthViewController {
 
@@ -118,6 +129,7 @@ extension AuthViewController {
         let passHintContainer = containerFor(label: passHint)
 
         let vStack = UIStackView(arrangedSubviews: [
+            titleLabel,
             subtitleLabel,
             emailField,
             emailHintContainer,
@@ -130,6 +142,7 @@ extension AuthViewController {
         ])
         vStack.axis = .vertical
         vStack.spacing = 16
+        vStack.setCustomSpacing(8, after: titleLabel)
         vStack.setCustomSpacing(4, after: emailField)
         vStack.setCustomSpacing(12, after: emailHintContainer)
         vStack.setCustomSpacing(4, after: passwordField)
@@ -236,7 +249,9 @@ extension AuthViewController {
 
 extension AuthViewController {
     @objc private func didTapForgetPass() {}
-    @objc private func didTapLogin() {}
+    @objc private func didTapLogin() {
+        viewModel.didAuthorizeSuccessfully()
+    }
     @objc private func didTapGoogle() {
         emailHint.isHidden = true
         passHint.isHidden = true

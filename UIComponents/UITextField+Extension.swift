@@ -100,7 +100,7 @@ public final class CustomTextField: UITextField {
         ])
 
         rightView = eyeContainer
-        rightViewMode = .whileEditing
+        rightViewMode = .always
     }
 
     private func updateFloatingLabel(animated: Bool) {
