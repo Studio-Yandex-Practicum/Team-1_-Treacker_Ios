@@ -8,8 +8,9 @@
 import UIKit
 import Auth
 import Expenses
+import Core
 
-public final class Router {
+public final class Router: RouterProtocol {
     public static let shared = Router()
 
     public var window: UIWindow?
@@ -20,13 +21,13 @@ public final class Router {
         window.makeKeyAndVisible()
     }
 
-    func routeToMainFlow() {
+    public func routeToMainFlow() {
         let mainVC = ExpenseListViewController(viewModel: ExpenseListViewModel())
         let nav = UINavigationController(rootViewController: mainVC)
         setRootViewController(nav)
     }
 
-    func routeToAuthFlow() {
+    public func routeToAuthFlow() {
         let authVC = AuthViewController()
         let nav = UINavigationController(rootViewController: authVC)
         setRootViewController(nav)
