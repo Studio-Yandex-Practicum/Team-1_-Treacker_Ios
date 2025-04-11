@@ -7,6 +7,7 @@
 
 import UIKit
 import UIComponents
+import Core
 
 public final class AnalyticsViewController: UIViewController {
 
@@ -23,7 +24,7 @@ public final class AnalyticsViewController: UIViewController {
         button.layer.shadowOffset = CGSize(width: 0, height: 3)
         button.layer.shadowRadius = 7.3 / 2
         button.layer.masksToBounds = true
-        button.backgroundColor = .blue
+        button.backgroundColor = .cAccent
         button.addTarget(self, action: #selector(didNewExpense), for: .touchUpInside)
         return button
     }()
@@ -31,16 +32,17 @@ public final class AnalyticsViewController: UIViewController {
     private lazy var labelTitle: UILabel = {
         let label = UILabel()
         label.text = "Анаталика"
-        label.font = UIFont(name: "HelveticaNeue-Bold", size: 24)
-        label.textColor = .black
+        label.font = UIFont.h1
+        label.textColor = .primaryText
         return label
     }()
 
     private lazy var titleStack: UIStackView = {
 
-        let buttonCategory: UIButton = getButtonInNavigationBar(iconName: "")
+        let buttonCategory: UIButton = getButtonInNavigationBar(iconName: AppIcon.filter.rawValue)
         buttonCategory.addTarget(self, action: #selector(didCategory), for: .touchUpInside)
-        let buttonSettings: UIButton = getButtonInNavigationBar(iconName: "")
+
+        let buttonSettings: UIButton = getButtonInNavigationBar(iconName: AppIcon.setting.rawValue)
         buttonSettings.addTarget(self, action: #selector(didSettings), for: .touchUpInside)
 
         let stack = UIStackView(arrangedSubviews: [labelTitle, buttonCategory, buttonSettings])
@@ -86,8 +88,9 @@ public final class AnalyticsViewController: UIViewController {
         button.widthAnchor.constraint(equalToConstant: 40).isActive = true
         button.layer.cornerRadius = 12
         button.layer.masksToBounds = true
-        button.backgroundColor = .lightGray
+        button.backgroundColor = .primaryBg
         button.setImage(UIImage(named: iconName), for: .normal)
+        button.tintColor = .secondaryText
         return button
     }
 }
@@ -97,7 +100,7 @@ public final class AnalyticsViewController: UIViewController {
 extension AnalyticsViewController {
 
     private func setupLayout() {
-        view.backgroundColor = .white
+        view.backgroundColor = .secondaryBg
         view.setupView(buttonNewExpense)
         view.setupView(titleStack)
 
