@@ -41,8 +41,10 @@ public enum GlobalConstants: String {
 
     // Error
 
+    case error = "Ошибка"
     case firebaseNotConfigured = "Firebase не настроен"
     case emailAuthFailed = "Ошибка авторизации"
+    case registerFailed = "Ошибка регистрации"
     case googleSignInFailed = "Не удалось выполнить вход через Google"
     case invalidAppleToken = "Ошибка авторизации через Apple"
     case userNotFound = "Пользователь не найден"

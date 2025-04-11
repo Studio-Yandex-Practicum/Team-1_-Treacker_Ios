@@ -16,7 +16,7 @@ public final class AuthViewController: UIViewController {
     // MARK: - Private properties
 
     private let viewModel: AuthViewModel
-    private var cancellables = Set<AnyCancellable>()
+    private var cancellable = Set<AnyCancellable>()
 
     private lazy var titleLabel = makeLabel(
         text: GlobalConstants.greeting.rawValue,
@@ -42,7 +42,11 @@ public final class AuthViewController: UIViewController {
         action: #selector(didTapForgetPass)
     )
 
-    private lazy var loginButton = makeLoginButton()
+    private lazy var loginButton = UIButton.makeButton(
+        title: .login,
+        target: self,
+        action: #selector(didTapLogin)
+    )
 
     private lazy var orLabel = makeLabel(
         text: GlobalConstants.or.rawValue,
@@ -122,7 +126,6 @@ private extension AuthViewController {
     private func setupUI() {
         let emailHintContainer = containerFor(label: emailHint)
         let passHintContainer = containerFor(label: passHint)
-        loginButton.isEnabled = false
 
         let vStack = createMainStackView(emailHintContainer: emailHintContainer, passHintContainer: passHintContainer)
         view.setupView(vStack)
@@ -149,32 +152,6 @@ private extension AuthViewController {
             passHint.topAnchor.constraint(equalTo: passHintContainer.topAnchor),
             passHint.bottomAnchor.constraint(equalTo: passHintContainer.bottomAnchor)
         ])
-    }
-
-    private func makeLoginButton() -> UIButton {
-        let button = UIButton(type: .system)
-        button.setTitle(GlobalConstants.login.rawValue, for: .normal)
-        button.titleLabel?.font = .h4
-        button.tintColor = .whiteText
-        button.layer.cornerRadius = UIConstants.CornerRadius.medium16.rawValue
-        button.clipsToBounds = true
-
-        let normalColor = UIColor.cAccent
-        let disabledColor = normalColor.withAlphaComponent(0.5)
-
-        button.setBackgroundImage(
-            UIImage.resizableImage(withColor: normalColor, cornerRadius: UIConstants.CornerRadius.medium16.rawValue),
-            for: .normal
-        )
-        button.setBackgroundImage(
-            UIImage.resizableImage(withColor: disabledColor, cornerRadius: UIConstants.CornerRadius.medium16.rawValue),
-            for: .disabled
-        )
-        button.setTitleColor(.whiteText, for: .normal)
-        button.setTitleColor(.whiteText.withAlphaComponent(0.5), for: .disabled)
-        button.addTarget(self, action: #selector(didTapLogin), for: .touchUpInside)
-
-        return button
     }
 
     private func separatorView() -> UIView {
@@ -290,11 +267,11 @@ extension AuthViewController {
     private func bindViewModel() {
         emailField.textPublisher
             .assign(to: \.email, on: viewModel)
-            .store(in: &cancellables)
+            .store(in: &cancellable)
 
         passwordField.textPublisher
             .assign(to: \.password, on: viewModel)
-            .store(in: &cancellables)
+            .store(in: &cancellable)
 
         viewModel.$state
             .receive(on: DispatchQueue.main)
@@ -326,6 +303,6 @@ extension AuthViewController {
                         ])
                 }
             }
-            .store(in: &cancellables)
+            .store(in: &cancellable)
     }
 }

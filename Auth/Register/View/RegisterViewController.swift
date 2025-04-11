@@ -8,8 +8,12 @@
 import UIKit
 import Core
 import UIComponents
+import Combine
 
 public final class RegisterViewController: UIViewController {
+
+    private let viewModel: RegisterViewModel
+    private var cancellable = Set<AnyCancellable>()
 
     private lazy var titleLabel = makeLabel(
         text: GlobalConstants.register.rawValue,
@@ -25,7 +29,7 @@ public final class RegisterViewController: UIViewController {
         isPassword: true
     )
 
-    private lazy var registerButton = UIButton(
+    private lazy var registerButton1 = UIButton(
         title: GlobalConstants.regButton,
         backgroundColor: .cAccent.withAlphaComponent(0.5),
         titleColor: .whiteText,
@@ -34,6 +38,22 @@ public final class RegisterViewController: UIViewController {
         target: self,
         action: #selector(didTapRegister)
     )
+
+    private lazy var registerButton = UIButton.makeButton(
+        title: .regButton,
+        target: self,
+        action: #selector(didTapRegister)
+    )
+
+    public init(viewModel: RegisterViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,5 +104,44 @@ private extension RegisterViewController {
 // MARK: - Actions
 
 private extension RegisterViewController {
-    @objc private func didTapRegister() {}
+    @objc private func didTapRegister() {
+        viewModel.register()
+    }
+}
+
+// MARK: - Bindings
+
+private extension RegisterViewController {
+    private func bindViewModel() {
+        emailField.textPublisher
+            .assign(to: \.email, on: viewModel)
+            .store(in: &cancellable)
+
+        passwordField.textPublisher
+            .assign(to: \.password, on: viewModel)
+            .store(in: &cancellable)
+
+        viewModel.$state
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state in
+                guard let self else { return }
+                switch state {
+                case .idle:
+                    self.registerButton.isEnabled = true
+                case .loading:
+                    self.registerButton.isEnabled = false
+                case .success:
+                    break
+                case .failure(let error):
+                    AlertService.present(
+                        on: self,
+                        title: .error,
+                        message: .registerFailed,
+                        actions: [
+                            .init(title: "ОК")
+                        ])
+                }
+            }
+            .store(in: &cancellable)
+    }
 }
