@@ -25,6 +25,13 @@ public final class AuthViewController: UIViewController {
         alignment: .left
     )
 
+    private lazy var subtitleLabel = makeLabel(
+        text: GlobalConstants.authInfoSubtitle.rawValue,
+        font: .h5,
+        color: .secondaryText,
+        alignment: .left
+    )
+
     private lazy var emailField = CustomTextField(placeholder: GlobalConstants.email.rawValue)
     private lazy var emailHint = makeHintLabel(text: GlobalConstants.emailHint.rawValue)
     private lazy var passwordField =  CustomTextField(placeholder: GlobalConstants.pass.rawValue, isPassword: true)
@@ -94,12 +101,6 @@ public final class AuthViewController: UIViewController {
 private extension AuthViewController {
 
     private func setupUI() {
-        let subtitleLabel = UILabel()
-        subtitleLabel.text = GlobalConstants.authInfoSubtitle.rawValue
-        subtitleLabel.font = .h5
-        subtitleLabel.textColor = .secondaryText
-        subtitleLabel.numberOfLines = 0
-
         let emailHintContainer = containerFor(label: emailHint)
         let passHintContainer = containerFor(label: passHint)
 
@@ -265,7 +266,7 @@ private extension AuthViewController {
 
 // MARK: - Actions
 
-extension AuthViewController {
+private extension AuthViewController {
     @objc private func didTapForgetPass() {}
     @objc private func didTapLogin() {
         viewModel.didAuthorizeSuccessfully()
