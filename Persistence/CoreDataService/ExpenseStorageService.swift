@@ -25,7 +25,8 @@ final class ExpenseStorageService: ExpenseStorageServiceProtocol {
     func fetchExpenses(from startDate: Date, to endDate: Date?, categories: [String]?) -> [Category] {
         let startOfDay = startDate.startOfDay
         let endOdDay: Date = endDate?.endOfDay ?? startDate.endOfDay
-        //let categories: [String]? = categories?.count == 0 ? nil : categories
+
+//        let categories: [String]? = categories?.count == 0 ? nil : categories
 
         var predicates: [NSPredicate] = []
 
