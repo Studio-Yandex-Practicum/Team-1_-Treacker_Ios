@@ -24,7 +24,7 @@ public final class Router: RouterProtocol {
         if AuthService.shared.isAuthorized {
             routeToMainFlow()
         } else {
-            routeToRecoverFlow()
+            routeToAuthFlow()
         }
     }
 

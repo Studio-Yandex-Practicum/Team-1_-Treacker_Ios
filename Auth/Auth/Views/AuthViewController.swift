@@ -42,15 +42,7 @@ public final class AuthViewController: UIViewController {
         action: #selector(didTapForgetPass)
     )
 
-    private lazy var loginButton = UIButton(
-        title: GlobalConstants.login,
-        backgroundColor: .cAccent.withAlphaComponent(0.5),
-        titleColor: .whiteText,
-        cornerRadius: .medium16,
-        font: .h4,
-        target: self,
-        action: #selector(didTapLogin)
-    )
+    private lazy var loginButton = makeLoginButton()
 
     private lazy var orLabel = makeLabel(
         text: GlobalConstants.or.rawValue,
@@ -100,11 +92,8 @@ public final class AuthViewController: UIViewController {
 
 private extension AuthViewController {
 
-    private func setupUI() {
-        let emailHintContainer = containerFor(label: emailHint)
-        let passHintContainer = containerFor(label: passHint)
-
-        let vStack = UIStackView(arrangedSubviews: [
+    private func createMainStackView(emailHintContainer: UIView, passHintContainer: UIView) -> UIStackView {
+        let stack = UIStackView(arrangedSubviews: [
             titleLabel,
             subtitleLabel,
             emailField,
@@ -116,63 +105,76 @@ private extension AuthViewController {
             separatorView(),
             authButtonsStack()
         ])
-        vStack.axis = .vertical
-        vStack.spacing = UIConstants.Spacing.medium16.rawValue
-        vStack.setCustomSpacing(UIConstants.Spacing.small8.rawValue, after: titleLabel)
-        vStack.setCustomSpacing(UIConstants.Spacing.small4.rawValue, after: emailField)
-        vStack.setCustomSpacing(UIConstants.Spacing.medium12.rawValue, after: emailHintContainer)
-        vStack.setCustomSpacing(UIConstants.Spacing.small4.rawValue, after: passwordField)
-        vStack.setCustomSpacing(UIConstants.Spacing.medium12.rawValue, after: passHintContainer)
-        vStack.setCustomSpacing(UIConstants.Spacing.large24.rawValue, after: forgetPassButton)
-        vStack.setCustomSpacing(UIConstants.Spacing.large24.rawValue, after: loginButton)
+        stack.axis = .vertical
+        stack.spacing = UIConstants.Spacing.medium16.rawValue
 
+        stack.setCustomSpacing(UIConstants.Spacing.small8.rawValue, after: titleLabel)
+        stack.setCustomSpacing(UIConstants.Spacing.small4.rawValue, after: emailField)
+        stack.setCustomSpacing(UIConstants.Spacing.medium12.rawValue, after: emailHintContainer)
+        stack.setCustomSpacing(UIConstants.Spacing.small4.rawValue, after: passwordField)
+        stack.setCustomSpacing(UIConstants.Spacing.medium12.rawValue, after: passHintContainer)
+        stack.setCustomSpacing(UIConstants.Spacing.large24.rawValue, after: forgetPassButton)
+        stack.setCustomSpacing(UIConstants.Spacing.large24.rawValue, after: loginButton)
+
+        return stack
+    }
+
+    private func setupUI() {
+        let emailHintContainer = containerFor(label: emailHint)
+        let passHintContainer = containerFor(label: passHint)
+        loginButton.isEnabled = false
+
+        let vStack = createMainStackView(emailHintContainer: emailHintContainer, passHintContainer: passHintContainer)
         view.setupView(vStack)
         view.setupView(notAccauntButton)
 
         NSLayoutConstraint.activate([
             emailField.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height60.rawValue),
             passwordField.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height60.rawValue),
-
-            emailHint.leadingAnchor.constraint(
-                equalTo: emailHintContainer.leadingAnchor,
-                constant: UIConstants.Constants.small8.rawValue
-            ),
-            emailHint.trailingAnchor.constraint(
-                equalTo: emailHintContainer.trailingAnchor,
-                constant: -UIConstants.Constants.small8.rawValue
-            ),
-            emailHint.topAnchor.constraint(equalTo: emailHintContainer.topAnchor),
-            emailHint.bottomAnchor.constraint(equalTo: emailHintContainer.bottomAnchor),
-
-            passHint.leadingAnchor.constraint(
-                equalTo: passHintContainer.leadingAnchor,
-                constant: UIConstants.Constants.small8.rawValue
-            ),
-            passHint.trailingAnchor.constraint(
-                equalTo: passHintContainer.trailingAnchor,
-                constant: -UIConstants.Constants.small8.rawValue
-            ),
-            passHint.topAnchor.constraint(equalTo: passHintContainer.topAnchor),
-            passHint.bottomAnchor.constraint(equalTo: passHintContainer.bottomAnchor),
-
             loginButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height54.rawValue),
-
-            vStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            vStack.leadingAnchor.constraint(
-                equalTo: view.leadingAnchor,
-                constant: UIConstants.Constants.large20.rawValue
-            ),
-            vStack.trailingAnchor.constraint(
-                equalTo: view.trailingAnchor,
-                constant: -UIConstants.Constants.large20.rawValue
-            ),
-
             googleButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height40.rawValue),
             appleButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height40.rawValue),
-
             notAccauntButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            notAccauntButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            notAccauntButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            vStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            vStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
+            vStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
+
+            emailHint.leadingAnchor.constraint(equalTo: emailHintContainer.leadingAnchor, constant: UIConstants.Constants.small8.rawValue),
+            emailHint.trailingAnchor.constraint(equalTo: emailHintContainer.trailingAnchor, constant: -UIConstants.Constants.small8.rawValue),
+            emailHint.topAnchor.constraint(equalTo: emailHintContainer.topAnchor),
+            emailHint.bottomAnchor.constraint(equalTo: emailHintContainer.bottomAnchor),
+            passHint.leadingAnchor.constraint(equalTo: passHintContainer.leadingAnchor, constant: UIConstants.Constants.small8.rawValue),
+            passHint.trailingAnchor.constraint(equalTo: passHintContainer.trailingAnchor, constant: -UIConstants.Constants.small8.rawValue),
+            passHint.topAnchor.constraint(equalTo: passHintContainer.topAnchor),
+            passHint.bottomAnchor.constraint(equalTo: passHintContainer.bottomAnchor)
         ])
+    }
+
+    private func makeLoginButton() -> UIButton {
+        let button = UIButton(type: .system)
+        button.setTitle(GlobalConstants.login.rawValue, for: .normal)
+        button.titleLabel?.font = .h4
+        button.tintColor = .whiteText
+        button.layer.cornerRadius = UIConstants.CornerRadius.medium16.rawValue
+        button.clipsToBounds = true
+
+        let normalColor = UIColor.cAccent
+        let disabledColor = normalColor.withAlphaComponent(0.5)
+
+        button.setBackgroundImage(
+            UIImage.resizableImage(withColor: normalColor, cornerRadius: UIConstants.CornerRadius.medium16.rawValue),
+            for: .normal
+        )
+        button.setBackgroundImage(
+            UIImage.resizableImage(withColor: disabledColor, cornerRadius: UIConstants.CornerRadius.medium16.rawValue),
+            for: .disabled
+        )
+        button.setTitleColor(.whiteText, for: .normal)
+        button.setTitleColor(.whiteText.withAlphaComponent(0.5), for: .disabled)
+        button.addTarget(self, action: #selector(didTapLogin), for: .touchUpInside)
+
+        return button
     }
 
     private func separatorView() -> UIView {
@@ -285,5 +287,45 @@ private extension AuthViewController {
 // MARK: - Bindings
 
 extension AuthViewController {
-    
+    private func bindViewModel() {
+        emailField.textPublisher
+            .assign(to: \.email, on: viewModel)
+            .store(in: &cancellables)
+
+        passwordField.textPublisher
+            .assign(to: \.password, on: viewModel)
+            .store(in: &cancellables)
+
+        viewModel.$state
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state in
+                guard let self else { return }
+                switch state {
+                case .idle:
+                    self.loginButton.isEnabled = true
+                    self.loginButton.alpha = 1.0
+                case .loading:
+                    self.loginButton.isEnabled = false
+                    self.loginButton.alpha = 0.5
+                case .success:
+                    break
+                case .failure(let error):
+                    self.loginButton.isEnabled = true
+                    self.loginButton.alpha = 1.0
+                    Logger.shared.log(
+                        .error,
+                        message: "Error authorization",
+                        metadata: ["❗️\(self)": "\(error.localizedDescription)"]
+                    )
+                    AlertService.present(
+                        on: self,
+                        title: .emailAuthFailed,
+                        message: .repeatAgain,
+                        actions: [
+                            .init(title: "ОК")
+                        ])
+                }
+            }
+            .store(in: &cancellables)
+    }
 }

@@ -20,13 +20,16 @@ public final class RegisterViewController: UIViewController {
 
     private lazy var emailField = CustomTextField(placeholder: GlobalConstants.email.rawValue)
 
-    private lazy var passwordField =  CustomTextField(placeholder: GlobalConstants.pass.rawValue, isPassword: true)
+    private lazy var passwordField =  CustomTextField(
+        placeholder: GlobalConstants.pass.rawValue,
+        isPassword: true
+    )
 
     private lazy var registerButton = UIButton(
         title: GlobalConstants.regButton,
         backgroundColor: .cAccent.withAlphaComponent(0.5),
         titleColor: .whiteText,
-        cornerRadius: .mid16,
+        cornerRadius: UIConstants.CornerRadius.medium16,
         font: .h4,
         target: self,
         action: #selector(didTapRegister)
