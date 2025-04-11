@@ -11,8 +11,8 @@ import Core
 
 public final class AuthViewModel {
     // MARK: - Input
-    @Published var email: String = ""
-    @Published var password: String = ""
+    @Published var email = ""
+    @Published var password = ""
 
     // MARK: - Output
     @Published private(set) var state: AuthState = .idle
