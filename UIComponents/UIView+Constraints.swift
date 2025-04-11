@@ -7,7 +7,7 @@
 
 import UIKit
 
-extension UIView {
+public extension UIView {
 
     func constraintEdges(to view: UIView) {
         translatesAutoresizingMaskIntoConstraints = false
