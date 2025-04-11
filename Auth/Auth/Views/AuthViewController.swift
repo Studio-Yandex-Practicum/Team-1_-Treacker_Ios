@@ -289,11 +289,6 @@ extension AuthViewController {
                 case .failure(let error):
                     self.loginButton.isEnabled = true
                     self.loginButton.alpha = 1.0
-                    Logger.shared.log(
-                        .error,
-                        message: "Error authorization",
-                        metadata: ["❗️\(self)": "\(error.localizedDescription)"]
-                    )
                     AlertService.present(
                         on: self,
                         title: .emailAuthFailed,

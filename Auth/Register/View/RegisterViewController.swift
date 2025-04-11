@@ -29,16 +29,6 @@ public final class RegisterViewController: UIViewController {
         isPassword: true
     )
 
-    private lazy var registerButton1 = UIButton(
-        title: GlobalConstants.regButton,
-        backgroundColor: .cAccent.withAlphaComponent(0.5),
-        titleColor: .whiteText,
-        cornerRadius: UIConstants.CornerRadius.medium16,
-        font: .h4,
-        target: self,
-        action: #selector(didTapRegister)
-    )
-
     private lazy var registerButton = UIButton.makeButton(
         title: .regButton,
         target: self,

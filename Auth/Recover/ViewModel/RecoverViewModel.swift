@@ -15,8 +15,10 @@ public final class RecoverViewModel {
 
     private let authServices: EmailAuthService
     private var cancellable = Set<AnyCancellable>()
+    private let router: RouterProtocol
 
-    public init(authServices: EmailAuthService = .init()) {
+    public init(router: RouterProtocol, authServices: EmailAuthService = .init()) {
+        self.router = router
         self.authServices = authServices
     }
 

@@ -41,13 +41,15 @@ public final class Router: RouterProtocol {
     }
 
     public func routeToRegisterFlow() {
-        let regVC = RegisterViewController()
+        let regVM = RegisterViewModel(router: self)
+        let regVC = RegisterViewController(viewModel: regVM)
         setRootViewController(regVC)
     }
 
     public func routeToRecoverFlow() {
-        let regVC = RecoverViewController()
-        setRootViewController(regVC)
+        let recVM = RecoverViewModel(router: self)
+        let recVC = RecoverViewController(viewModel: recVM)
+        setRootViewController(recVC)
     }
 
     private func setRootViewController(_ viewController: UIViewController) {

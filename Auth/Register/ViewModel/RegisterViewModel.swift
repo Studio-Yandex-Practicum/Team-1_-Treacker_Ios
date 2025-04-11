@@ -16,8 +16,10 @@ public final class RegisterViewModel {
 
     private let authService: EmailAuthService
     private var cancellables = Set<AnyCancellable>()
+    private let router: RouterProtocol
 
-    public init(authService: EmailAuthService = .init()) {
+    public init(router: RouterProtocol, authService: EmailAuthService = .init()) {
+        self.router = router
         self.authService = authService
     }
 
