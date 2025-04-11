@@ -51,6 +51,10 @@ public final class AnalyticsViewController: UIViewController {
         return stack
     }()
 
+    private lazy var timePeriod = UITimePeriodSegmentControl { period in
+        self.didTapSegment(period: period)
+    }
+
 
     // MARK: - View Life Cycle
 
@@ -82,6 +86,10 @@ public final class AnalyticsViewController: UIViewController {
         print("Кнопка настройки нажата")
     }
 
+    private func didTapSegment(period: TimePeriod) {
+        print(period.rawValue)
+    }
+
     private func getButtonInNavigationBar(iconName: String) -> UIButton {
         let button = UIButton()
         button.heightAnchor.constraint(equalToConstant: 40).isActive = true
@@ -93,6 +101,7 @@ public final class AnalyticsViewController: UIViewController {
         button.tintColor = .secondaryText
         return button
     }
+
 }
 
 // MARK: Extension - Setu Layout
@@ -103,6 +112,7 @@ extension AnalyticsViewController {
         view.backgroundColor = .secondaryBg
         view.setupView(buttonNewExpense)
         view.setupView(titleStack)
+        view.setupView(timePeriod)
 
         NSLayoutConstraint.activate([
             buttonNewExpense.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
@@ -111,6 +121,11 @@ extension AnalyticsViewController {
             titleStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             titleStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             titleStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+
+            timePeriod.topAnchor.constraint(equalTo: titleStack.bottomAnchor, constant: 12),
+            timePeriod.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            timePeriod.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            titleStack.heightAnchor.constraint(equalToConstant: 40),
         ])
     }
 }
