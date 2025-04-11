@@ -29,6 +29,16 @@ public enum GlobalConstants: String {
     case apple = "Apple"
     case notAccaunt = "Нет аккаунта?"
 
+    // RegVC
+
+    case register = "Регистрация"
+    case regButton = "Зарегистрироваться"
+
+    // RecPass
+    case recPass = "Восстановить пароль"
+    case recInfoSubtitle = "Введите почту, на которую отправим вам код"
+    case confirm = "Подтвердить"
+
     // Error
 
     case firebaseNotConfigured = "Firebase не настроен"
