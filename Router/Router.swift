@@ -9,10 +9,12 @@ import UIKit
 import Core
 import Auth
 import Expenses
+import Combine
 
 public final class Router: RouterProtocol {
     public static let shared = Router()
     public var window: UIWindow?
+    private var cancellables = Set<AnyCancellable>()
 
     public func startApp(using window: UIWindow) {
         self.window = window
@@ -35,21 +37,37 @@ public final class Router: RouterProtocol {
     }
 
     public func routeToAuthFlow() {
-        let authVM = AuthViewModel(router: self)
-        let authVC = AuthViewController(viewModel: authVM)
+        let viewModel = AuthViewModel(router: self)
+        let authVC = AuthViewController(viewModel: viewModel)
+
+        viewModel.openRegister
+            .sink { [weak self, weak authVC] in
+                guard let self, let fromVC = authVC else { return }
+                self.routeToRegisterFlow(from: fromVC)
+            }
+            .store(in: &cancellables)
+
         setRootViewController(UINavigationController(rootViewController: authVC))
     }
 
-    public func routeToRegisterFlow() {
-        let regVM = RegisterViewModel(router: self)
-        let regVC = RegisterViewController(viewModel: regVM)
-        setRootViewController(regVC)
+    public func routeToRegisterFlow(from: UIViewController) {
+        let viewModel = RegisterViewModel(router: self)
+        let regVC = RegisterViewController(viewModel: viewModel)
+
+        viewModel.onRegisterSuccess
+            .sink { [weak self] in
+                guard let self else { return }
+                self.routeToMainFlow()
+            }
+            .store(in: &cancellables)
+
+        from.navigationController?.pushViewController(regVC, animated: true)
     }
 
-    public func routeToRecoverFlow() {
-        let recVM = RecoverViewModel(router: self)
-        let recVC = RecoverViewController(viewModel: recVM)
-        setRootViewController(recVC)
+    public func routeToRecoverFlow(from: UIViewController) {
+        let viewModel = RecoverViewModel(router: self)
+        let recVC = RecoverViewController(viewModel: viewModel)
+        from.navigationController?.pushViewController(recVC, animated: true)
     }
 
     private func setRootViewController(_ viewController: UIViewController) {

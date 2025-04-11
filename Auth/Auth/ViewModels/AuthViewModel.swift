@@ -15,12 +15,14 @@ public final class AuthViewModel {
     @Published var password = ""
 
     // MARK: - Output
-    @Published private(set) var state: AuthState = .idle
+    @Published private(set) var state: AuthState = .idle(isFormValid: false)
     @Published private(set) var error: AuthError?
 
     private let router: RouterProtocol
     private let emailAuthService: EmailAuthService
     private var cancellables = Set<AnyCancellable>()
+
+    public let openRegister = PassthroughSubject<Void, Never>()
 
     public init(router: RouterProtocol, emailAuthService: EmailAuthService = .init()) {
         self.router = router
@@ -57,5 +59,9 @@ public final class AuthViewModel {
     public func didAuthorizeSuccessfully() {
         AuthService.shared.authorize()
         router.routeToMainFlow()
+    }
+
+    public func didTapRegister() {
+        openRegister.send()
     }
 }

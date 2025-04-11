@@ -11,7 +11,7 @@ import Core
 
 public final class RecoverViewModel {
     @Published var email = ""
-    @Published private(set) var state: AuthState = .idle
+    @Published private(set) var state: AuthState = .idle(isFormValid: false)
 
     private let authServices: EmailAuthService
     private var cancellable = Set<AnyCancellable>()

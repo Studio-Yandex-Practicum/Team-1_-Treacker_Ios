@@ -8,7 +8,7 @@
 import Foundation
 
 public enum AuthState {
-    case idle
+    case idle(isFormValid: Bool)
     case loading
     case success
     case failure(AuthError)

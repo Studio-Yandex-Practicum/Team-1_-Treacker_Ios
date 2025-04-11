@@ -49,6 +49,7 @@ public final class RegisterViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .secondaryBg
         setupUI()
+        bindViewModel()
     }
 }
 
@@ -68,6 +69,7 @@ private extension RegisterViewController {
         view.setupView(vStack)
 
         NSLayoutConstraint.activate([
+            registerButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height54.rawValue),
             vStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             vStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             vStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
@@ -116,17 +118,19 @@ private extension RegisterViewController {
             .sink { [weak self] state in
                 guard let self else { return }
                 switch state {
-                case .idle:
-                    self.registerButton.isEnabled = true
+                case .idle(let isValid):
+                    registerButton.isEnabled = isValid
+                    registerButton.alpha = isValid ? 1.0 : 0.5
                 case .loading:
-                    self.registerButton.isEnabled = false
+                    registerButton.isEnabled = false
+                    registerButton.alpha = 0.5
                 case .success:
                     break
                 case .failure(let error):
                     AlertService.present(
                         on: self,
                         title: .error,
-                        message: .registerFailed,
+                        message: error.localizedDescription,
                         actions: [
                             .init(title: "ОК")
                         ])

@@ -51,6 +51,7 @@ public final class RecoverViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .secondaryBg
         setupUI()
+        bindViewModel()
     }
 }
 
@@ -70,6 +71,7 @@ private extension RecoverViewController {
         view.setupView(vStack)
 
         NSLayoutConstraint.activate([
+            confirmButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height54.rawValue),
             vStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             vStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             vStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
@@ -124,7 +126,7 @@ private extension RecoverViewController {
                     AlertService.present(
                         on: self,
                         title: .error,
-                        message: .registerFailed,
+                        message: error.localizedDescription,
                         actions: [
                             .init(title: "ОК")
                         ])

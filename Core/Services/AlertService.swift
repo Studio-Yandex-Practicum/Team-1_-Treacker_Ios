@@ -27,13 +27,13 @@ public enum AlertService {
     public static func present(
         on viewController: UIViewController,
         title: GlobalConstants?,
-        message: GlobalConstants?,
+        message: String?,
         preferredStyle: UIAlertController.Style = .alert,
         actions: [AlertAction]
     ) {
         let alert = UIAlertController(
             title: title?.rawValue,
-            message: message?.rawValue,
+            message: message,
             preferredStyle: preferredStyle
         )
 

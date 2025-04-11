@@ -89,6 +89,7 @@ public final class AuthViewController: UIViewController {
         view.backgroundColor = .secondaryBg
         setupUI()
         enableKeyboardDismissOnTap()
+        bindViewModel()
     }
 }
 
@@ -250,15 +251,12 @@ private extension AuthViewController {
     @objc private func didTapLogin() {
         viewModel.didAuthorizeSuccessfully()
     }
-    @objc private func didTapGoogle() {
-        emailHint.isHidden = true
-        passHint.isHidden = true
+    @objc private func didTapGoogle() {}
+    @objc private func didTapApple() {}
+
+    @objc private func didNotAccaunt() {
+        viewModel.didTapRegister()
     }
-    @objc private func didTapApple() {
-        emailHint.isHidden = false
-        passHint.isHidden = false
-    }
-    @objc private func didNotAccaunt() {}
 }
 
 // MARK: - Bindings
@@ -292,7 +290,7 @@ extension AuthViewController {
                     AlertService.present(
                         on: self,
                         title: .emailAuthFailed,
-                        message: .repeatAgain,
+                        message: error.localizedDescription,
                         actions: [
                             .init(title: "ОК")
                         ])
