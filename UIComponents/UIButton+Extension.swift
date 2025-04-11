@@ -15,9 +15,9 @@ public extension UIButton {
         image: AppIcon? = nil,
         backgroundColor: UIColor,
         titleColor: UIColor,
-        cornerRadius: Corners? = nil,
+        cornerRadius: UIConstants.CornerRadius? = nil,
         font: UIFont,
-        spacing: CGFloat = 8,
+        spacing: CGFloat = UIConstants.Spacing.small8.rawValue,
         target: Any?,
         action: Selector) {
             var config = UIButton.Configuration.filled()
@@ -27,10 +27,10 @@ public extension UIButton {
             config.baseForegroundColor = titleColor
             config.imagePadding = spacing
             config.contentInsets = NSDirectionalEdgeInsets(
-                top: 12,
-                leading: 16,
-                bottom: 12,
-                trailing: 16
+                top: UIConstants.Constants.medium12.rawValue,
+                leading: UIConstants.Constants.medium16.rawValue,
+                bottom: UIConstants.Constants.medium12.rawValue,
+                trailing: UIConstants.Constants.medium16.rawValue
             )
 
             self.init(configuration: config)

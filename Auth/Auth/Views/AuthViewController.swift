@@ -39,7 +39,7 @@ public final class AuthViewController: UIViewController {
         title: GlobalConstants.login,
         backgroundColor: .cAccent.withAlphaComponent(0.5),
         titleColor: .whiteText,
-        cornerRadius: .mid16,
+        cornerRadius: .medium16,
         font: .h4,
         target: self,
         action: #selector(didTapLogin)
@@ -116,40 +116,58 @@ private extension AuthViewController {
             authButtonsStack()
         ])
         vStack.axis = .vertical
-        vStack.spacing = 16
-        vStack.setCustomSpacing(8, after: titleLabel)
-        vStack.setCustomSpacing(4, after: emailField)
-        vStack.setCustomSpacing(12, after: emailHintContainer)
-        vStack.setCustomSpacing(4, after: passwordField)
-        vStack.setCustomSpacing(12, after: passHintContainer)
-        vStack.setCustomSpacing(24, after: forgetPassButton)
-        vStack.setCustomSpacing(24, after: loginButton)
+        vStack.spacing = UIConstants.Spacing.medium16.rawValue
+        vStack.setCustomSpacing(UIConstants.Spacing.small8.rawValue, after: titleLabel)
+        vStack.setCustomSpacing(UIConstants.Spacing.small4.rawValue, after: emailField)
+        vStack.setCustomSpacing(UIConstants.Spacing.medium12.rawValue, after: emailHintContainer)
+        vStack.setCustomSpacing(UIConstants.Spacing.small4.rawValue, after: passwordField)
+        vStack.setCustomSpacing(UIConstants.Spacing.medium12.rawValue, after: passHintContainer)
+        vStack.setCustomSpacing(UIConstants.Spacing.large24.rawValue, after: forgetPassButton)
+        vStack.setCustomSpacing(UIConstants.Spacing.large24.rawValue, after: loginButton)
 
         view.setupView(vStack)
         view.setupView(notAccauntButton)
 
         NSLayoutConstraint.activate([
-            emailField.heightAnchor.constraint(equalToConstant: 60),
-            passwordField.heightAnchor.constraint(equalToConstant: 60),
+            emailField.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height60.rawValue),
+            passwordField.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height60.rawValue),
 
-            emailHint.leadingAnchor.constraint(equalTo: emailHintContainer.leadingAnchor, constant: 8),
-            emailHint.trailingAnchor.constraint(equalTo: emailHintContainer.trailingAnchor, constant: -8),
+            emailHint.leadingAnchor.constraint(
+                equalTo: emailHintContainer.leadingAnchor,
+                constant: UIConstants.Constants.small8.rawValue
+            ),
+            emailHint.trailingAnchor.constraint(
+                equalTo: emailHintContainer.trailingAnchor,
+                constant: -UIConstants.Constants.small8.rawValue
+            ),
             emailHint.topAnchor.constraint(equalTo: emailHintContainer.topAnchor),
             emailHint.bottomAnchor.constraint(equalTo: emailHintContainer.bottomAnchor),
 
-            passHint.leadingAnchor.constraint(equalTo: passHintContainer.leadingAnchor, constant: 8),
-            passHint.trailingAnchor.constraint(equalTo: passHintContainer.trailingAnchor, constant: -8),
+            passHint.leadingAnchor.constraint(
+                equalTo: passHintContainer.leadingAnchor,
+                constant: UIConstants.Constants.small8.rawValue
+            ),
+            passHint.trailingAnchor.constraint(
+                equalTo: passHintContainer.trailingAnchor,
+                constant: -UIConstants.Constants.small8.rawValue
+            ),
             passHint.topAnchor.constraint(equalTo: passHintContainer.topAnchor),
             passHint.bottomAnchor.constraint(equalTo: passHintContainer.bottomAnchor),
 
-            loginButton.heightAnchor.constraint(equalToConstant: 54),
+            loginButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height54.rawValue),
 
             vStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            vStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            vStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            vStack.leadingAnchor.constraint(
+                equalTo: view.leadingAnchor,
+                constant: UIConstants.Constants.large20.rawValue
+            ),
+            vStack.trailingAnchor.constraint(
+                equalTo: view.trailingAnchor,
+                constant: -UIConstants.Constants.large20.rawValue
+            ),
 
-            googleButton.heightAnchor.constraint(equalToConstant: 40),
-            appleButton.heightAnchor.constraint(equalToConstant: 40),
+            googleButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height40.rawValue),
+            appleButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height40.rawValue),
 
             notAccauntButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             notAccauntButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
@@ -165,7 +183,7 @@ private extension AuthViewController {
 
         [line1, line2].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
-            $0.heightAnchor.constraint(equalToConstant: 1).isActive = true
+            $0.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height1.rawValue).isActive = true
         }
 
         orLabel.setContentHuggingPriority(.required, for: .horizontal)
@@ -173,7 +191,7 @@ private extension AuthViewController {
 
         let stack = UIStackView(arrangedSubviews: [line1, orLabel, line2])
         stack.axis = .horizontal
-        stack.spacing = 8
+        stack.spacing = UIConstants.Spacing.small8.rawValue
         stack.alignment = .center
 
         line1.widthAnchor.constraint(equalTo: line2.widthAnchor).isActive = true
@@ -184,7 +202,7 @@ private extension AuthViewController {
     private func authButtonsStack() -> UIStackView {
         let stack = UIStackView(arrangedSubviews: [googleButton, appleButton])
         stack.axis = .horizontal
-        stack.spacing = 8
+        stack.spacing = UIConstants.Spacing.small8.rawValue
         stack.distribution = .fillEqually
         return stack
     }
@@ -219,7 +237,7 @@ private extension AuthViewController {
             image: image,
             backgroundColor: .primaryBg,
             titleColor: .secondaryText,
-            cornerRadius: .mid16,
+            cornerRadius: .medium16,
             font: .h4,
             target: self,
             action: action
