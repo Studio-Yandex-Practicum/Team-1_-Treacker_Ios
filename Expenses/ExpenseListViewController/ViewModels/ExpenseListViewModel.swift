@@ -7,11 +7,19 @@
 
 import Foundation
 import Combine
+import Core
 
 public final class ExpenseListViewModel {
     @Published public private(set) var expenses: [ExpenseItem] = []
 
     private var cancellables = Set<AnyCancellable>()
+    private let router: RouterProtocol
 
-    public init() {}
+    public init(router: RouterProtocol) {
+        self.router = router
+    }
+
+    func showLoginScreen() {
+        router.routeToAuthFlow()
+    }
 }

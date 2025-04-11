@@ -12,15 +12,17 @@ import Core
 public final class RegisterViewModel {
     @Published var email = ""
     @Published var password = ""
-    @Published private(set) var state: AuthState = .idle(isFormValid: false)
+    @Published private(set) var state: AuthState = .idle(
+        isFormValid: false,
+        isEmailValid: false,
+        isPasswordValid: false
+    )
 
     private let authService: EmailAuthService
-    private let router: RouterProtocol
     private var cancellables = Set<AnyCancellable>()
     public let onRegisterSuccess = PassthroughSubject<Void, Never>()
 
-    public init(router: RouterProtocol, authService: EmailAuthService = .init()) {
-        self.router = router
+    public init(authService: EmailAuthService = .init()) {
         self.authService = authService
         bindValidation()
     }
@@ -33,7 +35,11 @@ public final class RegisterViewModel {
             .removeDuplicates()
             .sink { [weak self] isValid in
                 guard let self else { return }
-                self.state = .idle(isFormValid: isValid)
+                self.state = .idle(
+                    isFormValid: isValid,
+                    isEmailValid: false,
+                    isPasswordValid: false
+                )
             }
             .store(in: &cancellables)
     }
@@ -60,6 +66,7 @@ public final class RegisterViewModel {
                 guard let self else { return }
                 self.state = .success
                 self.onRegisterSuccess.send()
+                AuthEvents.didRegister.send()
             }
             .store(in: &cancellables)
     }

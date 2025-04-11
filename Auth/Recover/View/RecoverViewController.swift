@@ -111,6 +111,21 @@ private extension RecoverViewController {
             .assign(to: \.email, on: viewModel)
             .store(in: &cancellable)
 
+        viewModel.onRecoverySuccess
+            .sink { [weak self] in
+                guard let self else { return }
+                AlertService.present(
+                    on: self,
+                    title: .sendMessage,
+                    message: GlobalConstants.checkMail.rawValue,
+                    actions: [
+                        .init(title: GlobalConstants.okButton.rawValue, handler: {
+                            self.navigationController?.popViewController(animated: true)
+                        })
+                    ])
+            }
+            .store(in: &cancellable)
+
         viewModel.$state
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in

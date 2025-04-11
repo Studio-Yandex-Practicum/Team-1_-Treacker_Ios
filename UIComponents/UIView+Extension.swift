@@ -15,3 +15,15 @@ public extension UIView {
         addSubview(subview)
     }
 }
+
+public extension UIView {
+    func shake(duration: Double = 0.4, repeatCount: Float = 2) {
+        let animation = CABasicAnimation(keyPath: "position")
+        animation.duration = duration
+        animation.repeatCount = repeatCount
+        animation.autoreverses = true
+        animation.fromValue = NSValue(cgPoint: CGPoint(x: center.x - 5, y: center.y))
+        animation.toValue = NSValue(cgPoint: CGPoint(x: center.x + 5, y: center.y))
+        layer.add(animation, forKey: "position")
+    }
+}

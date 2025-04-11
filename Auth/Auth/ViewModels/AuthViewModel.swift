@@ -15,19 +15,48 @@ public final class AuthViewModel {
     @Published var password = ""
 
     // MARK: - Output
-    @Published private(set) var state: AuthState = .idle(isFormValid: false)
-    @Published private(set) var error: AuthError?
+    @Published private(set) var state: AuthState = .idle(
+        isFormValid: false,
+        isEmailValid: false,
+        isPasswordValid: false
+    )
+
+    public let openRegister = PassthroughSubject<Void, Never>()
+    public let openRecover = PassthroughSubject<Void, Never>()
 
     private let router: RouterProtocol
     private let emailAuthService: EmailAuthService
     private var cancellables = Set<AnyCancellable>()
 
-    public let openRegister = PassthroughSubject<Void, Never>()
-
-    public init(router: RouterProtocol, emailAuthService: EmailAuthService = .init()) {
+    public init(
+        router: RouterProtocol,
+        emailAuthService: EmailAuthService = .init()
+    ) {
         self.router = router
         self.emailAuthService = emailAuthService
+        bindValidation()
     }
+
+    // MARK: - Bindings
+
+    private func bindValidation() {
+        Publishers.CombineLatest($email, $password)
+            .map { email, password -> AuthState in
+                let isEmailValid = email.isValidEmail
+                let isPasswordValid = password.count >= 7
+                let isFormValid = isEmailValid && isPasswordValid
+
+                return .idle(
+                    isFormValid: isFormValid,
+                    isEmailValid: isEmailValid,
+                    isPasswordValid: isPasswordValid
+                )
+            }
+            .removeDuplicates()
+            .assign(to: &$state)
+    }
+
+    // MARK: - Public methods
 
     public func login() {
         state = .loading
@@ -56,12 +85,11 @@ public final class AuthViewModel {
             .store(in: &cancellables)
     }
 
-    public func didAuthorizeSuccessfully() {
-        AuthService.shared.authorize()
-        router.routeToMainFlow()
-    }
-
     public func didTapRegister() {
         openRegister.send()
+    }
+
+    public func didTapRecover() {
+        openRecover.send()
     }
 }

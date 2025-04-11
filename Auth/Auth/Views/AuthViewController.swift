@@ -32,9 +32,21 @@ public final class AuthViewController: UIViewController {
         alignment: .left
     )
 
-    private lazy var emailField = CustomTextField(placeholder: GlobalConstants.email.rawValue)
+    private lazy var emailField: CustomTextField = {
+        let field = CustomTextField(placeholder: GlobalConstants.email.rawValue)
+        field.textContentType = .username
+        field.accessibilityIdentifier = "auth_email_field"
+        return field
+    }()
+
+    private lazy var passwordField: CustomTextField = {
+        let field = CustomTextField(placeholder: GlobalConstants.pass.rawValue, isPassword: true)
+        field.textContentType = .password
+        field.accessibilityIdentifier = "auth_password_field"
+        return field
+    }()
+
     private lazy var emailHint = makeHintLabel(text: GlobalConstants.emailHint.rawValue)
-    private lazy var passwordField =  CustomTextField(placeholder: GlobalConstants.pass.rawValue, isPassword: true)
     private lazy var passHint = makeHintLabel(text: GlobalConstants.passHint.rawValue)
 
     private lazy var forgetPassButton = makeLinkButton(
@@ -87,6 +99,8 @@ public final class AuthViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .secondaryBg
+        emailHint.alpha = 0
+        passHint.alpha = 0
         setupUI()
         enableKeyboardDismissOnTap()
         bindViewModel()
@@ -189,7 +203,13 @@ private extension AuthViewController {
     }
 
     private func makeHintLabel(text: String) -> UILabel {
-        makeLabel(text: text, font: .h5, color: .hintText)
+        let label = makeLabel(
+            text: text,
+            font: .h5,
+            color: .hintText
+        )
+        label.alpha = 0
+        return label
     }
 
     private func makeLabel(
@@ -247,10 +267,14 @@ private extension AuthViewController {
 // MARK: - Actions
 
 private extension AuthViewController {
-    @objc private func didTapForgetPass() {}
-    @objc private func didTapLogin() {
-        viewModel.didAuthorizeSuccessfully()
+    @objc private func didTapForgetPass() {
+        viewModel.didTapRecover()
     }
+
+    @objc private func didTapLogin() {
+        viewModel.login()
+    }
+    
     @objc private func didTapGoogle() {}
     @objc private func didTapApple() {}
 
@@ -271,22 +295,80 @@ extension AuthViewController {
             .assign(to: \.password, on: viewModel)
             .store(in: &cancellable)
 
+        AuthEvents.didRecover
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                guard let self else { return }
+                AlertService.present(
+                    on: self,
+                    title: .done,
+                    message: GlobalConstants.mailSend.rawValue,
+                    actions: [.init(title: GlobalConstants.okButton.rawValue)]
+                )
+            }
+            .store(in: &cancellable)
+
+        AuthEvents.didRegister
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                guard let self else { return }
+                AlertService.present(
+                    on: self,
+                    title: .welcomeAlert,
+                    message: GlobalConstants.succesReg.rawValue,
+                    actions: [.init(title: GlobalConstants.login.rawValue)]
+                )
+            }
+            .store(in: &cancellable)
+
         viewModel.$state
+            .compactMap { state -> Bool? in
+                guard case let .idle(_, isEmailValid, _) = state else { return nil }
+                return isEmailValid
+            }
+            .removeDuplicates()
+            .dropFirst()
+            .filter { !$0 }
+            .sink { [weak self] _ in
+                self?.emailField.shake()
+            }
+            .store(in: &cancellable)
+
+        viewModel.$state
+            .compactMap { state -> Bool? in
+                guard case let .idle(_, _, isPasswordValid) = state else { return nil }
+                return isPasswordValid
+            }
+            .removeDuplicates()
+            .dropFirst()
+            .filter { !$0 }
+            .sink { [weak self] _ in
+                self?.passwordField.shake()
+            }
+            .store(in: &cancellable)
+
+        viewModel.$state
+            .dropFirst()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
                 guard let self else { return }
+
                 switch state {
-                case .idle:
-                    self.loginButton.isEnabled = true
-                    self.loginButton.alpha = 1.0
+                case let .idle(isFormValid, isEmailValid, isPasswordValid):
+                    loginButton.isEnabled = isFormValid
+
+                    UIView.animate(withDuration: 0.2) {
+                        self.emailHint.alpha = isEmailValid ? 0 : 1
+                        self.passHint.alpha = isPasswordValid ? 0 : 1
+                    }
                 case .loading:
-                    self.loginButton.isEnabled = false
-                    self.loginButton.alpha = 0.5
+                    loginButton.isEnabled = false
+                    loginButton.alpha = 0.5
                 case .success:
                     break
                 case .failure(let error):
-                    self.loginButton.isEnabled = true
-                    self.loginButton.alpha = 1.0
+                    loginButton.isEnabled = true
+                    loginButton.alpha = 1.0
                     AlertService.present(
                         on: self,
                         title: .emailAuthFailed,

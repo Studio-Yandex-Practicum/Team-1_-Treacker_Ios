@@ -56,6 +56,18 @@ public final class CustomTextField: UITextField {
         self.placeholderText = placeholder
         self.isPassword = isPassword
         super.init(frame: .zero)
+
+        if isPassword {
+            self.textContentType = .password
+            self.isSecureTextEntry = true
+            self.keyboardType = .default
+        } else {
+            self.textContentType = .emailAddress
+            self.keyboardType = .emailAddress
+            self.autocapitalizationType = .none
+            self.autocorrectionType = .no
+        }
+
         self.tintColor = .primaryText
         setupView()
 

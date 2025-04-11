@@ -118,7 +118,7 @@ private extension RegisterViewController {
             .sink { [weak self] state in
                 guard let self else { return }
                 switch state {
-                case .idle(let isValid):
+                case .idle(let isValid, _, _):
                     registerButton.isEnabled = isValid
                     registerButton.alpha = isValid ? 1.0 : 0.5
                 case .loading:

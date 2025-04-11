@@ -31,7 +31,7 @@ public final class Router: RouterProtocol {
     }
 
     public func routeToMainFlow() {
-        let viewModel = ExpenseListViewModel()
+        let viewModel = ExpenseListViewModel(router: self)
         let mainVC = ExpenseListViewController(viewModel: viewModel)
         setRootViewController(UINavigationController(rootViewController: mainVC))
     }
@@ -47,11 +47,18 @@ public final class Router: RouterProtocol {
             }
             .store(in: &cancellables)
 
+        viewModel.openRecover
+            .sink { [weak self, weak authVC] in
+                guard let self, let fromVC = authVC else { return }
+                self.routeToRecoverFlow(from: fromVC)
+            }
+            .store(in: &cancellables)
+
         setRootViewController(UINavigationController(rootViewController: authVC))
     }
 
     public func routeToRegisterFlow(from: UIViewController) {
-        let viewModel = RegisterViewModel(router: self)
+        let viewModel = RegisterViewModel()
         let regVC = RegisterViewController(viewModel: viewModel)
 
         viewModel.onRegisterSuccess
@@ -65,8 +72,16 @@ public final class Router: RouterProtocol {
     }
 
     public func routeToRecoverFlow(from: UIViewController) {
-        let viewModel = RecoverViewModel(router: self)
+        let viewModel = RecoverViewModel()
         let recVC = RecoverViewController(viewModel: viewModel)
+
+        viewModel.onRecoverySuccess
+            .sink { [weak self] in
+                guard let self else { return }
+                self.routeToAuthFlow()
+            }
+            .store(in: &cancellables)
+
         from.navigationController?.pushViewController(recVC, animated: true)
     }
 
