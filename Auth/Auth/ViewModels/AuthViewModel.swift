@@ -42,8 +42,11 @@ public final class AuthViewModel {
         self.emailAuthService = emailAuthService
         setupBindings()
     }
+}
 
-    // MARK: - Bindings
+// MARK: - Bindings
+
+private extension AuthViewModel {
 
     private func setupBindings() {
         bindValidation()
@@ -78,15 +81,18 @@ public final class AuthViewModel {
             }
             .store(in: &cancellables)
     }
+}
 
-    // MARK: - User Interaction
+// MARK: - Internal methods
 
-    public func markEmailEdited() {
+extension AuthViewModel {
+
+    func markEmailEdited() {
         emailEdited = true
         triggerValidationUpdate()
     }
 
-    public func markPasswordEdited() {
+    func markPasswordEdited() {
         passwordEdited = true
         triggerValidationUpdate()
     }
@@ -103,9 +109,7 @@ public final class AuthViewModel {
         )
     }
 
-    // MARK: - Public methods
-
-    public func login() {
+    func login() {
         state = .loading
 
         emailAuthService.signIn(email: email, password: password)
@@ -127,11 +131,11 @@ public final class AuthViewModel {
             .store(in: &cancellables)
     }
 
-    public func didTapRegister() {
+    func didTapRegister() {
         openRegister.send()
     }
 
-    public func didTapRecover() {
+    func didTapRecover() {
         openRecover.send()
     }
 }

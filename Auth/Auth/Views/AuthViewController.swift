@@ -261,8 +261,7 @@ private extension AuthViewController {
 
     private func containerFor(label: UILabel) -> UIView {
         let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(label)
+        view.setupView(label)
 
         label.translatesAutoresizingMaskIntoConstraints = false
 
@@ -322,10 +321,15 @@ private extension AuthViewController {
                 label: emailHint,
                 hintContainer: emailHintContainer,
                 isVisible: emailVisible,
-                spacingAfter: emailVisible ? 4 : 12,
+                spacingAfter: emailVisible ?
+                UIConstants.Spacing.small4.rawValue :
+                    UIConstants.Spacing.medium12.rawValue,
                 after: emailField
             )
-            formStackView.setCustomSpacing(12, after: emailHintContainer)
+            formStackView.setCustomSpacing(
+                UIConstants.Constants.medium12.rawValue,
+                after: emailHintContainer
+            )
         }
 
         if let passHintContainer = passHint.superview {
@@ -333,10 +337,15 @@ private extension AuthViewController {
                 label: passHint,
                 hintContainer: passHintContainer,
                 isVisible: passwordVisible,
-                spacingAfter: passwordVisible ? 4 : 12,
+                spacingAfter: passwordVisible ?
+                UIConstants.Spacing.small4.rawValue :
+                    UIConstants.Spacing.medium12.rawValue,
                 after: passwordField
             )
-            formStackView.setCustomSpacing(12, after: passHintContainer)
+            formStackView.setCustomSpacing(
+                UIConstants.Constants.medium12.rawValue,
+                after: passHintContainer
+            )
         }
     }
 
@@ -369,15 +378,13 @@ private extension AuthViewController {
 
 extension AuthViewController {
 
-    // MARK: - Main bind method
-
     private func bindViewModel() {
         bindTextFields()
         bindAuthEvents()
-        bindState()
+        bindValidationErrors()
+        bindHintVisibility()
+        bindFormState()
     }
-
-    // MARK: - Bind fields
 
     private func bindTextFields() {
         emailField.textPublisher
@@ -397,9 +404,12 @@ extension AuthViewController {
             .store(in: &cancellable)
     }
 
-    // MARK: - Auth events
-
     private func bindAuthEvents() {
+        bindRecoverEvent()
+        bindRegisterEvent()
+    }
+
+    private func bindRecoverEvent() {
         AuthEvents.didRecover
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in
@@ -412,7 +422,9 @@ extension AuthViewController {
                 )
             }
             .store(in: &cancellable)
+    }
 
+    private func bindRegisterEvent() {
         AuthEvents.didRegister
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in
@@ -427,9 +439,7 @@ extension AuthViewController {
             .store(in: &cancellable)
     }
 
-    // MARK: - ViewModel State
-
-    private func bindState() {
+    private func bindValidationErrors() {
         viewModel.$state
             .compactMap { state -> Bool? in
                 guard case let .idle(_, isEmailValid, _) = state else { return nil }
@@ -459,7 +469,9 @@ extension AuthViewController {
                 self.passwordField.shake()
             }
             .store(in: &cancellable)
+    }
 
+    private func bindHintVisibility() {
         viewModel.$emailErrorVisible
             .removeDuplicates()
             .sink { [weak self] isVisible in
@@ -481,7 +493,9 @@ extension AuthViewController {
                 )
             }
             .store(in: &cancellable)
+    }
 
+    private func bindFormState() {
         viewModel.$state
             .dropFirst()
             .receive(on: DispatchQueue.main)
@@ -491,6 +505,7 @@ extension AuthViewController {
                 switch state {
                 case let .idle(isFormValid, _, _):
                     loginButton.isEnabled = isFormValid
+                    loginButton.alpha = 1.0
 
                 case .loading:
                     loginButton.isEnabled = false
