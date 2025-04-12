@@ -17,6 +17,7 @@ public final class AuthViewController: UIViewController {
 
     private let viewModel: AuthViewModel
     private var cancellable = Set<AnyCancellable>()
+    private lazy var formStackView = UIStackView()
 
     private lazy var titleLabel = makeLabel(
         text: GlobalConstants.greeting.rawValue,
@@ -128,9 +129,9 @@ private extension AuthViewController {
         stack.spacing = UIConstants.Spacing.medium16.rawValue
 
         stack.setCustomSpacing(UIConstants.Spacing.small8.rawValue, after: titleLabel)
-        stack.setCustomSpacing(UIConstants.Spacing.small4.rawValue, after: emailField)
+        stack.setCustomSpacing(UIConstants.Spacing.medium12.rawValue, after: emailField)
         stack.setCustomSpacing(UIConstants.Spacing.medium12.rawValue, after: emailHintContainer)
-        stack.setCustomSpacing(UIConstants.Spacing.small4.rawValue, after: passwordField)
+        stack.setCustomSpacing(UIConstants.Spacing.medium12.rawValue, after: passwordField)
         stack.setCustomSpacing(UIConstants.Spacing.medium12.rawValue, after: passHintContainer)
         stack.setCustomSpacing(UIConstants.Spacing.large24.rawValue, after: forgetPassButton)
         stack.setCustomSpacing(UIConstants.Spacing.large24.rawValue, after: loginButton)
@@ -142,11 +143,11 @@ private extension AuthViewController {
         let emailHintContainer = containerFor(label: emailHint)
         let passHintContainer = containerFor(label: passHint)
 
-        let vStack = createMainStackView(
+        formStackView = createMainStackView(
             emailHintContainer: emailHintContainer,
             passHintContainer: passHintContainer
         )
-        view.setupView(vStack)
+        view.setupView(formStackView)
         view.setupView(notAccauntButton)
 
         NSLayoutConstraint.activate([
@@ -157,9 +158,9 @@ private extension AuthViewController {
             appleButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height40.rawValue),
             notAccauntButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             notAccauntButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            vStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            vStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
-            vStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
+            formStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            formStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
+            formStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
 
             emailHint.leadingAnchor.constraint(equalTo: emailHintContainer.leadingAnchor, constant: UIConstants.Constants.small8.rawValue),
             emailHint.trailingAnchor.constraint(equalTo: emailHintContainer.trailingAnchor, constant: -UIConstants.Constants.small8.rawValue),
@@ -212,6 +213,8 @@ private extension AuthViewController {
             color: .hintText
         )
         label.alpha = 0
+        label.setContentHuggingPriority(.required, for: .vertical)
+        label.setContentCompressionResistancePriority(.required, for: .vertical)
         return label
     }
 
@@ -262,8 +265,77 @@ private extension AuthViewController {
 
     private func containerFor(label: UILabel) -> UIView {
         let view = UIView()
-        view.setupView(label)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(label)
+
+        label.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.small8.rawValue),
+            label.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.small8.rawValue),
+            label.topAnchor.constraint(equalTo: view.topAnchor),
+            label.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+
         return view
+    }
+
+    private func animateHintVisibility(
+        label: UILabel,
+        isVisible: Bool,
+        spacingAfter: CGFloat,
+        after view: UIView
+    ) {
+        let animations = {
+            label.alpha = isVisible ? 1 : 0
+            self.formStackView.setCustomSpacing(spacingAfter, after: view)
+            self.view.layoutIfNeeded()
+        }
+
+        if isVisible {
+            UIView.animate(
+                withDuration: 0.45,
+                delay: 0,
+                usingSpringWithDamping: 0.85,
+                initialSpringVelocity: 0.5,
+                options: [.curveEaseInOut],
+                animations: animations
+            )
+        } else {
+            UIView.animate(
+                withDuration: 0.3,
+                delay: 0.2,
+                options: [.curveEaseInOut],
+                animations: animations
+            )
+        }
+    }
+
+    private func updateHintVisibility(emailVisible: Bool, passwordVisible: Bool) {
+        if let emailHintContainer = emailHint.superview {
+            animateHintVisibility(
+                label: emailHint,
+                isVisible: emailVisible,
+                spacingAfter: emailVisible ? 4 : 12,
+                after: emailField
+            )
+            formStackView.setCustomSpacing(12, after: emailHintContainer)
+        }
+
+        if let passHintContainer = passHint.superview {
+            animateHintVisibility(
+                label: passHint,
+                isVisible: passwordVisible,
+                spacingAfter: passwordVisible ? 4 : 12,
+                after: passwordField
+            )
+            formStackView.setCustomSpacing(12, after: passHintContainer)
+        }
+    }
+
+    private func generateErrorFeedback() {
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(.error)
     }
 }
 
@@ -289,7 +361,18 @@ private extension AuthViewController {
 // MARK: - Bindings
 
 extension AuthViewController {
+
+    // MARK: - Main bind method
+
     private func bindViewModel() {
+        bindTextFields()
+        bindAuthEvents()
+        bindState()
+    }
+
+    // MARK: - Bind fields
+
+    private func bindTextFields() {
         emailField.textPublisher
             .assign(to: \.email, on: viewModel)
             .store(in: &cancellable)
@@ -298,6 +381,18 @@ extension AuthViewController {
             .assign(to: \.password, on: viewModel)
             .store(in: &cancellable)
 
+        emailField.didEndEditingPublisher
+            .sink { [weak self] in self?.viewModel.markEmailEdited() }
+            .store(in: &cancellable)
+
+        passwordField.didEndEditingPublisher
+            .sink { [weak self] in self?.viewModel.markPasswordEdited() }
+            .store(in: &cancellable)
+    }
+
+    // MARK: - Auth events
+
+    private func bindAuthEvents() {
         AuthEvents.didRecover
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in
@@ -323,7 +418,11 @@ extension AuthViewController {
                 )
             }
             .store(in: &cancellable)
+    }
 
+    // MARK: - ViewModel State
+
+    private func bindState() {
         viewModel.$state
             .compactMap { state -> Bool? in
                 guard case let .idle(_, isEmailValid, _) = state else { return nil }
@@ -333,7 +432,10 @@ extension AuthViewController {
             .dropFirst()
             .filter { !$0 }
             .sink { [weak self] _ in
-                self?.emailField.shake()
+                guard let self else { return }
+                self.generateErrorFeedback()
+                self.emailField.shake()
+                view.endEditing(true)
             }
             .store(in: &cancellable)
 
@@ -346,7 +448,32 @@ extension AuthViewController {
             .dropFirst()
             .filter { !$0 }
             .sink { [weak self] _ in
-                self?.passwordField.shake()
+                guard let self else { return }
+                self.generateErrorFeedback()
+                self.passwordField.shake()
+                view.endEditing(true)
+            }
+            .store(in: &cancellable)
+
+        viewModel.$emailErrorVisible
+            .removeDuplicates()
+            .sink { [weak self] isVisible in
+                guard let self else { return }
+                self.updateHintVisibility(
+                    emailVisible: isVisible,
+                    passwordVisible: self.viewModel.passwordErrorVisible
+                )
+            }
+            .store(in: &cancellable)
+
+        viewModel.$passwordErrorVisible
+            .removeDuplicates()
+            .sink { [weak self] isVisible in
+                guard let self else { return }
+                self.updateHintVisibility(
+                    emailVisible: self.viewModel.emailErrorVisible,
+                    passwordVisible: isVisible
+                )
             }
             .store(in: &cancellable)
 
@@ -357,18 +484,16 @@ extension AuthViewController {
                 guard let self else { return }
 
                 switch state {
-                case let .idle(isFormValid, isEmailValid, isPasswordValid):
+                case let .idle(isFormValid, _, _):
                     loginButton.isEnabled = isFormValid
 
-                    UIView.animate(withDuration: 0.2) {
-                        self.emailHint.alpha = self.viewModel.didEditEmail && !isEmailValid ? 1 : 0
-                        self.passHint.alpha = self.viewModel.didEditPassword && !isPasswordValid ? 1 : 0
-                    }
                 case .loading:
                     loginButton.isEnabled = false
                     loginButton.alpha = 0.5
+
                 case .success:
                     break
+
                 case .failure(let error):
                     loginButton.isEnabled = true
                     loginButton.alpha = 1.0
@@ -376,9 +501,8 @@ extension AuthViewController {
                         on: self,
                         title: .emailAuthFailed,
                         message: error.localizedDescription,
-                        actions: [
-                            .init(title: "ОК")
-                        ])
+                        actions: [.init(title: "ОК")]
+                    )
                 }
             }
             .store(in: &cancellable)

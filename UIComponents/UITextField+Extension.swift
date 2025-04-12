@@ -185,4 +185,11 @@ public extension UITextField {
             .map { ($0.object as? UITextField)?.text ?? "" }
             .eraseToAnyPublisher()
     }
+
+    var didEndEditingPublisher: AnyPublisher<Void, Never> {
+        NotificationCenter.default
+            .publisher(for: UITextField.textDidEndEditingNotification, object: self)
+            .map { _ in () }
+            .eraseToAnyPublisher()
+    }
 }

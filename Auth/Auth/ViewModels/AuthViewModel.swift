@@ -21,8 +21,11 @@ public final class AuthViewModel {
         isPasswordValid: false
     )
 
-    public private(set) var didEditEmail = false
-    public private(set) var didEditPassword = false
+    @Published private(set) var emailErrorVisible = false
+    @Published private(set) var passwordErrorVisible = false
+
+    private var emailEdited = false
+    private var passwordEdited = false
 
     public let openRegister = PassthroughSubject<Void, Never>()
     public let openRecover = PassthroughSubject<Void, Never>()
@@ -37,20 +40,15 @@ public final class AuthViewModel {
     ) {
         self.router = router
         self.emailAuthService = emailAuthService
-        bindValidation()
-
-        $email
-            .dropFirst()
-            .sink { [weak self] _ in self?.didEditEmail = true }
-            .store(in: &cancellables)
-
-        $password
-            .dropFirst()
-            .sink { [weak self] _ in self?.didEditPassword = true }
-            .store(in: &cancellables)
+        setupBindings()
     }
 
     // MARK: - Bindings
+
+    private func setupBindings() {
+        bindValidation()
+        bindErrorVisibility()
+    }
 
     private func bindValidation() {
         Publishers.CombineLatest($email, $password)
@@ -69,6 +67,42 @@ public final class AuthViewModel {
             .assign(to: &$state)
     }
 
+    private func bindErrorVisibility() {
+        $state
+            .sink { [weak self] state in
+                guard let self else { return }
+                guard case let .idle(_, isEmailValid, isPasswordValid) = state else { return }
+
+                self.emailErrorVisible = self.emailEdited && !isEmailValid && !self.email.isEmpty
+                self.passwordErrorVisible = self.passwordEdited && !isPasswordValid && !self.password.isEmpty
+            }
+            .store(in: &cancellables)
+    }
+
+    // MARK: - User Interaction
+
+    public func markEmailEdited() {
+        emailEdited = true
+        triggerValidationUpdate()
+    }
+
+    public func markPasswordEdited() {
+        passwordEdited = true
+        triggerValidationUpdate()
+    }
+
+    private func triggerValidationUpdate() {
+        let isEmailValid = email.isValidEmail
+        let isPasswordValid = password.count >= 7
+        let isFormValid = isEmailValid && isPasswordValid
+
+        state = .idle(
+            isFormValid: isFormValid,
+            isEmailValid: isEmailValid,
+            isPasswordValid: isPasswordValid
+        )
+    }
+
     // MARK: - Public methods
 
     public func login() {
@@ -81,11 +115,6 @@ public final class AuthViewModel {
                 switch completion {
                 case .failure(let error):
                     self.state = .failure(error)
-                    Logger.shared.log(
-                        .error,
-                        message: "Authorization failed",
-                        metadata: ["❗️\(self)": "\(error.localizedDescription)"]
-                    )
                 case .finished:
                     break
                 }
