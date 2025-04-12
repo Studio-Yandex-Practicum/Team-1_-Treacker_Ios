@@ -129,10 +129,6 @@ private extension AuthViewController {
         stack.spacing = UIConstants.Spacing.medium16.rawValue
 
         stack.setCustomSpacing(UIConstants.Spacing.small8.rawValue, after: titleLabel)
-        stack.setCustomSpacing(UIConstants.Spacing.medium12.rawValue, after: emailField)
-        stack.setCustomSpacing(UIConstants.Spacing.medium12.rawValue, after: emailHintContainer)
-        stack.setCustomSpacing(UIConstants.Spacing.medium12.rawValue, after: passwordField)
-        stack.setCustomSpacing(UIConstants.Spacing.medium12.rawValue, after: passHintContainer)
         stack.setCustomSpacing(UIConstants.Spacing.large24.rawValue, after: forgetPassButton)
         stack.setCustomSpacing(UIConstants.Spacing.large24.rawValue, after: loginButton)
 
@@ -282,31 +278,40 @@ private extension AuthViewController {
 
     private func animateHintVisibility(
         label: UILabel,
+        hintContainer: UIView,
         isVisible: Bool,
         spacingAfter: CGFloat,
         after view: UIView
     ) {
-        let animations = {
-            label.alpha = isVisible ? 1 : 0
-            self.formStackView.setCustomSpacing(spacingAfter, after: view)
-            self.view.layoutIfNeeded()
-        }
-
         if isVisible {
+            hintContainer.isHidden = false
+            label.alpha = 0
+
             UIView.animate(
                 withDuration: 0.45,
                 delay: 0,
                 usingSpringWithDamping: 0.85,
                 initialSpringVelocity: 0.5,
                 options: [.curveEaseInOut],
-                animations: animations
+                animations: {
+                    label.alpha = 1
+                    self.formStackView.setCustomSpacing(spacingAfter, after: view)
+                    self.view.layoutIfNeeded()
+                }
             )
         } else {
             UIView.animate(
                 withDuration: 0.3,
                 delay: 0.2,
                 options: [.curveEaseInOut],
-                animations: animations
+                animations: {
+                    label.alpha = 0
+                    self.formStackView.setCustomSpacing(spacingAfter, after: view)
+                    self.view.layoutIfNeeded()
+                },
+                completion: { _ in
+                    hintContainer.isHidden = true
+                }
             )
         }
     }
@@ -315,6 +320,7 @@ private extension AuthViewController {
         if let emailHintContainer = emailHint.superview {
             animateHintVisibility(
                 label: emailHint,
+                hintContainer: emailHintContainer,
                 isVisible: emailVisible,
                 spacingAfter: emailVisible ? 4 : 12,
                 after: emailField
@@ -325,6 +331,7 @@ private extension AuthViewController {
         if let passHintContainer = passHint.superview {
             animateHintVisibility(
                 label: passHint,
+                hintContainer: passHintContainer,
                 isVisible: passwordVisible,
                 spacingAfter: passwordVisible ? 4 : 12,
                 after: passwordField
@@ -435,7 +442,6 @@ extension AuthViewController {
                 guard let self else { return }
                 self.generateErrorFeedback()
                 self.emailField.shake()
-                view.endEditing(true)
             }
             .store(in: &cancellable)
 
@@ -451,7 +457,6 @@ extension AuthViewController {
                 guard let self else { return }
                 self.generateErrorFeedback()
                 self.passwordField.shake()
-                view.endEditing(true)
             }
             .store(in: &cancellable)
 
