@@ -21,6 +21,9 @@ public final class AuthViewModel {
         isPasswordValid: false
     )
 
+    public private(set) var didEditEmail = false
+    public private(set) var didEditPassword = false
+
     public let openRegister = PassthroughSubject<Void, Never>()
     public let openRecover = PassthroughSubject<Void, Never>()
 
@@ -35,6 +38,16 @@ public final class AuthViewModel {
         self.router = router
         self.emailAuthService = emailAuthService
         bindValidation()
+
+        $email
+            .dropFirst()
+            .sink { [weak self] _ in self?.didEditEmail = true }
+            .store(in: &cancellables)
+
+        $password
+            .dropFirst()
+            .sink { [weak self] _ in self?.didEditPassword = true }
+            .store(in: &cancellables)
     }
 
     // MARK: - Bindings

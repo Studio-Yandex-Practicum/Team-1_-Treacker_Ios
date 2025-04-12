@@ -142,7 +142,10 @@ private extension AuthViewController {
         let emailHintContainer = containerFor(label: emailHint)
         let passHintContainer = containerFor(label: passHint)
 
-        let vStack = createMainStackView(emailHintContainer: emailHintContainer, passHintContainer: passHintContainer)
+        let vStack = createMainStackView(
+            emailHintContainer: emailHintContainer,
+            passHintContainer: passHintContainer
+        )
         view.setupView(vStack)
         view.setupView(notAccauntButton)
 
@@ -358,8 +361,8 @@ extension AuthViewController {
                     loginButton.isEnabled = isFormValid
 
                     UIView.animate(withDuration: 0.2) {
-                        self.emailHint.alpha = isEmailValid ? 0 : 1
-                        self.passHint.alpha = isPasswordValid ? 0 : 1
+                        self.emailHint.alpha = self.viewModel.didEditEmail && !isEmailValid ? 1 : 0
+                        self.passHint.alpha = self.viewModel.didEditPassword && !isPasswordValid ? 1 : 0
                     }
                 case .loading:
                     loginButton.isEnabled = false
