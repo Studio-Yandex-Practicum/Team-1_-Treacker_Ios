@@ -9,6 +9,7 @@ import UIKit
 import Core
 import Auth
 import Expenses
+import Analytics
 
 public final class Router: RouterProtocol {
     public static let shared = Router()

@@ -16,6 +16,13 @@ public final class AnalyticsViewController: UIViewController {
     private var stringTimePeriod: String = "Февраль"
     private var arr: [Int] = [10, 11, 12, 13, 14, 15, 16]
 
+    //mok
+    private var segments: [SegmentPieChart] = [
+        SegmentPieChart(color: .red, value: 40),
+        SegmentPieChart(color: .blue, value: 30),
+        SegmentPieChart(color: .green, value: 20),
+        SegmentPieChart(color: .orange, value: 10),
+    ]
 
     // MARK: - UI Components
     // MARK: - ButtonNewExpense
@@ -92,7 +99,6 @@ public final class AnalyticsViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.isPagingEnabled = true
-
         return collectionView
     }()
 
@@ -132,7 +138,15 @@ public final class AnalyticsViewController: UIViewController {
 
     // MARK: - CollextionExpenses
 
-
+    private lazy var tableExpenses: UITableView = {
+        let table = UITableView()
+        table.separatorStyle = .none
+        table.backgroundColor = .secondaryBg
+        table.register(CellCategoryExpense.self)
+        table.delegate = self
+        table.dataSource = self
+        return table
+    }()
 
     // MARK: - View Life Cycle
 
@@ -209,6 +223,7 @@ extension AnalyticsViewController: UICollectionViewDataSource {
 
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell: CellAnalitycs = collectionView.dequeueReusableCell(indexPath: indexPath)
+        cell.configureCell(segments: segments)
         return cell
     }
 
@@ -222,7 +237,12 @@ extension AnalyticsViewController: UICollectionViewDelegate {
     }
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let page = Int(scrollView.contentOffset.x / scrollView.frame.size.width)
+        guard scrollView === analitycsCollection else { return }
+        let width = scrollView.frame.width
+        let offset = scrollView.contentOffset.x
+
+        guard width > 0 else { return }
+        let page = Int(offset / width)
         pageControl.currentPage = page
 
         if page == arr.count - 2 {
@@ -254,6 +274,23 @@ extension AnalyticsViewController: UICollectionViewDelegate {
     }
 }
 
+extension AnalyticsViewController: UITableViewDataSource {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        7
+    }
+    
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell: CellCategoryExpense = tableView.dequeueReusableCell()
+        return cell
+    }
+    
+
+}
+
+extension AnalyticsViewController: UITableViewDelegate {
+
+}
+
 // MARK: Extension - Setu Layout
 
 extension AnalyticsViewController {
@@ -267,6 +304,7 @@ extension AnalyticsViewController {
         view.setupView(analitycsCollection)
         view.setupView(pageControl)
         view.setupView(categoryStack)
+        view.setupView(tableExpenses)
 
         NSLayoutConstraint.activate([
             buttonNewExpense.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
@@ -298,6 +336,11 @@ extension AnalyticsViewController {
             categoryStack.topAnchor.constraint(equalTo: analitycsCollection.bottomAnchor, constant: 55),
             categoryStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             categoryStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+
+            tableExpenses.topAnchor.constraint(equalTo: categoryStack.bottomAnchor, constant: 8),
+            tableExpenses.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableExpenses.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableExpenses.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
     }
 }

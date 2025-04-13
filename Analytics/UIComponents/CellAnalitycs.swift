@@ -42,6 +42,7 @@ final class CellAnalitycs: UICollectionViewCell, ReuseIdentifying {
 
     func configureCell(segments: [SegmentPieChart]) {
         self.segments = segments
+        pieChart.updateSegments(segments)
     }
 }
 
