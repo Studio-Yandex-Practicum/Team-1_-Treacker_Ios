@@ -12,7 +12,7 @@ extension UIFont {
     private enum FontStyle: String {
         case bold = "HelveticaNeue-Bold"
         case medium = "HelveticaNeue-Medium"
-        case regular = "HelveticaNeue-Regular"
+        case regular = "HelveticaNeue-Light"
     }
 
     // MARK: - Static properties
