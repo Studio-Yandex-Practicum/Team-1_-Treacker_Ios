@@ -31,7 +31,7 @@ public final class RecoverViewController: UIViewController {
         title: GlobalConstants.confirm,
         backgroundColor: .cAccent.withAlphaComponent(0.5),
         titleColor: .whiteText,
-        cornerRadius: .mid16,
+        cornerRadius: UIConstants.CornerRadius.medium16,
         font: .h4,
         target: self,
         action: #selector(didTapConfirm)

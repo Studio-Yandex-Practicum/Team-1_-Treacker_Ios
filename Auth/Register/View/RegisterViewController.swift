@@ -26,7 +26,7 @@ public final class RegisterViewController: UIViewController {
         title: GlobalConstants.regButton,
         backgroundColor: .cAccent.withAlphaComponent(0.5),
         titleColor: .whiteText,
-        cornerRadius: .mid16,
+        cornerRadius: UIConstants.CornerRadius.medium16,
         font: .h4,
         target: self,
         action: #selector(didTapRegister)

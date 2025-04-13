@@ -7,6 +7,7 @@
 
 import UIKit
 import Core
+import UIComponents
 
 final class CellAnalitycs: UICollectionViewCell, ReuseIdentifying {
 
