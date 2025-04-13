@@ -7,12 +7,12 @@
 
 import UIKit
 
-final class PieChartView: UIView {
-    private var segments: [(color: UIColor, value: CGFloat)]
+final class UIPieChart: UIView {
+    private var segments: [SegmentPieChart]
 
     private var holeSizeRatio: CGFloat = 0.80
 
-    init(segments: [(color: UIColor, value: CGFloat)]) {
+    init(segments: [SegmentPieChart]) {
         self.segments = segments
         super.init(frame: .zero)
     }
@@ -46,7 +46,7 @@ final class PieChartView: UIView {
         }
     }
 
-    func updateSegments(_ newSegments: [(color: UIColor, value: CGFloat)]) {
+    func updateSegments(_ newSegments: [SegmentPieChart]) {
         self.segments = newSegments
         layer.sublayers?.forEach { $0.removeFromSuperlayer() }
         setNeedsDisplay()
