@@ -18,12 +18,14 @@ public final class AnalyticsViewController: UIViewController {
 
 
     // MARK: - UI Components
+    // MARK: - ButtonNewExpense
 
     private lazy var buttonNewExpense: UIButton = {
-
         let button = UIButton()
         button.heightAnchor.constraint(equalToConstant: 60).isActive = true
         button.widthAnchor.constraint(equalToConstant: 60).isActive = true
+        button.setImage(UIImage(named: AppIcon.plus1.rawValue), for: .normal)
+        button.tintColor = .whiteText
         button.layer.cornerRadius = 60 / 2
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOpacity = 0.3
@@ -34,6 +36,8 @@ public final class AnalyticsViewController: UIViewController {
         button.addTarget(self, action: #selector(didNewExpense), for: .touchUpInside)
         return button
     }()
+
+    // MARK: - TitleStack
 
     private lazy var labelTitle: UILabel = {
         let label = UILabel()
@@ -57,9 +61,13 @@ public final class AnalyticsViewController: UIViewController {
         return stack
     }()
 
+    // MARK: - SegmentControl
+
     private lazy var timePeriod = UITimePeriodSegmentControl { period in
         self.didTapSegment(period: period)
     }
+
+    // MARK: - Analitycs
 
     private lazy var labelTimePeriod: UILabel = {
         let label = UILabel()
@@ -99,6 +107,33 @@ public final class AnalyticsViewController: UIViewController {
         return pageControl
     }()
 
+    // MARK: - TitleExpenses
+
+    private lazy var labelCategory: UILabel = {
+        let label = UILabel()
+        label.text = "Категории расходов"
+        label.font = UIFont.h4
+        label.textColor = .secondaryText
+        return label
+    }()
+
+    private lazy var buttonSorted: UIButton = {
+        let button: UIButton = getButtonInNavigationBar(iconName: AppIcon.sort.rawValue)
+        button.addTarget(self, action: #selector(didSort), for: .touchUpInside)
+        button.tintColor = .primaryText
+        return button
+    }()
+
+    private lazy var categoryStack: UIStackView = {
+        var stack = UIStackView(arrangedSubviews: [labelCategory, buttonSorted])
+        stack.axis = .horizontal
+        return stack
+    }()
+
+    // MARK: - CollextionExpenses
+
+
+
     // MARK: - View Life Cycle
 
     public override func viewDidLoad() {
@@ -137,7 +172,11 @@ public final class AnalyticsViewController: UIViewController {
         print("Кнопка настройки нажата")
     }
 
-    @objc func pageControlChanged() {
+    @objc private func didSort() {
+        print("Кнопка сортировки нажата")
+    }
+
+    @objc private func pageControlChanged() {
         let indexPath = IndexPath(item: pageControl.currentPage, section: 0)
         analitycsCollection.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
     }
@@ -160,6 +199,8 @@ public final class AnalyticsViewController: UIViewController {
 
 }
 
+// MARK: - Extension: UICollectionViewDataSource
+
 extension AnalyticsViewController: UICollectionViewDataSource {
 
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -171,8 +212,9 @@ extension AnalyticsViewController: UICollectionViewDataSource {
         return cell
     }
 
-
 }
+
+// MARK: - Extension: UICollectionViewDelegate
 
 extension AnalyticsViewController: UICollectionViewDelegate {
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -180,21 +222,6 @@ extension AnalyticsViewController: UICollectionViewDelegate {
     }
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        guard !isProgrammaticScroll else { return }
-//        let centerX = scrollView.contentOffset.x + scrollView.bounds.size.width / 2
-//
-//        let visibleCells = analitycsCollection.visibleCells
-//        var closestDistance = CGFloat.greatestFiniteMagnitude
-//
-//        for cell in visibleCells {
-//            let cellCenterX = cell.frame.origin.x + cell.frame.size.width / 2
-//            let distance = abs(centerX - cellCenterX)
-//
-//            if distance < closestDistance {
-//                closestDistance = distance
-//            }
-//        }
-
         let page = Int(scrollView.contentOffset.x / scrollView.frame.size.width)
         pageControl.currentPage = page
 
@@ -239,6 +266,7 @@ extension AnalyticsViewController {
         view.setupView(labelTimePeriod)
         view.setupView(analitycsCollection)
         view.setupView(pageControl)
+        view.setupView(categoryStack)
 
         NSLayoutConstraint.activate([
             buttonNewExpense.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
@@ -267,6 +295,9 @@ extension AnalyticsViewController {
             pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             pageControl.widthAnchor.constraint(equalToConstant: 100),
 
+            categoryStack.topAnchor.constraint(equalTo: analitycsCollection.bottomAnchor, constant: 55),
+            categoryStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            categoryStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
         ])
     }
 }
