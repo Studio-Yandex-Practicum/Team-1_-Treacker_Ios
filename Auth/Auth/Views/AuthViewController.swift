@@ -250,7 +250,7 @@ private extension AuthViewController {
         )
     }
 
-    func makeLinkButton(title: GlobalConstants, action: Selector) -> UIButton {
+    private func makeLinkButton(title: GlobalConstants, action: Selector) -> UIButton {
         var config = UIButton.Configuration.plain()
         config.contentInsets = .zero
         let button = UIButton(configuration: config)
@@ -369,7 +369,11 @@ private extension AuthViewController {
         viewModel.login()
     }
     
-    @objc private func didTapGoogle() {}
+    @objc private func didTapGoogle() {
+        let handler = GoogleSignInHandler(presentingVC: self)
+        viewModel.didTapGoogleLogin(handler: handler)
+    }
+
     @objc private func didTapApple() {}
 
     @objc private func didNotAccaunt() {

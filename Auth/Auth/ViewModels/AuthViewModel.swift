@@ -29,6 +29,7 @@ public final class AuthViewModel {
 
     // MARK: Public Properties
 
+    public let requestGoogleSignIn = PassthroughSubject<(GoogleSignInHandlerProtocol), Never>()
     public let openRegister = PassthroughSubject<Void, Never>()
     public let openRecover = PassthroughSubject<Void, Never>()
 
@@ -38,8 +39,11 @@ public final class AuthViewModel {
     private var passwordEdited = false
 
     private let router: RouterProtocol
-    private let emailAuthService: EmailAuthService
     private var cancellables = Set<AnyCancellable>()
+
+    // MARK: - Services
+
+    private let emailAuthService: EmailAuthService
 
     // MARK: - Init
 
@@ -126,6 +130,22 @@ extension AuthViewModel {
                 self.router.routeToMainFlow()
             }
             .store(in: &cancellables)
+    }
+
+    func didTapGoogleLogin(handler: GoogleSignInHandlerProtocol) {
+        state = .loading
+        handler.handleGoogleSignIn { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    AuthService.shared.authorize()
+                    self?.state = .success
+                    self?.router.routeToMainFlow()
+                case .failure(let error):
+                    self?.state = .failure(error)
+                }
+            }
+        }
     }
 
     func didTapRegister() {

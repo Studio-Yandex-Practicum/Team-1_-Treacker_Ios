@@ -17,6 +17,9 @@ packages:
   FirebaseSDK:
     url: https://github.com/firebase/firebase-ios-sdk
     from: 11.10.0
+  GoogleSignIn:
+    url: https://github.com/google/GoogleSignIn-iOS
+    from: 8.0.0
 
 targets:
   SpendWise:
@@ -77,6 +80,10 @@ targets:
       - target: UIComponents
       - package: FirebaseSDK
         product: FirebaseAuth
+      - package: GoogleSignIn
+        product: GoogleSignIn
+      - package: GoogleSignIn
+        product: GoogleSignInSwift
     bundleId: KV.Lyashenko.SpendWise.Auth
     deploymentTarget: "18.0"
     settings:
