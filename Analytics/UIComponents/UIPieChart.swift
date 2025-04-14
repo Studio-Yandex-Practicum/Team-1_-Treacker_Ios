@@ -6,11 +6,16 @@
 //
 
 import UIKit
+import Core
 
 final class UIPieChart: UIView {
-    private var segments: [SegmentPieChart]
 
-    private var holeSizeRatio: CGFloat = 0.80
+    // MARK: - Private Properties
+
+    private var segments: [SegmentPieChart]
+    private var holeSizeRatio: CGFloat = UIConstants.Multiplier.value08.rawValue
+
+    // MARK: - Initializers
 
     init(segments: [SegmentPieChart]) {
         self.segments = segments
@@ -20,6 +25,8 @@ final class UIPieChart: UIView {
     required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    // MARK: - View Life Cycle
 
     override func draw(_ rect: CGRect) {
         guard !segments.isEmpty else { return }
@@ -45,6 +52,8 @@ final class UIPieChart: UIView {
             startAngle = endAngle
         }
     }
+
+    // MARK: - Public Methods
 
     func updateSegments(_ newSegments: [SegmentPieChart]) {
         self.segments = newSegments

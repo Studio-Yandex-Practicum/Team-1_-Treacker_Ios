@@ -10,6 +10,8 @@ import Core
 
 final class UITimePeriodSegmentControl: UIView {
 
+    // MARK: - Private Properties
+
     private var selectedTimePeriod: TimePeriod {
         willSet {
             handleOldValue(selectedOld: selectedTimePeriod)
@@ -30,7 +32,9 @@ final class UITimePeriodSegmentControl: UIView {
         return CGSize(width: width, height: height)
     }()
 
-    lazy private var currentIndexView: UIView = {
+    // MARK: - UI Components
+
+    private lazy var currentIndexView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 8
         view.layer.masksToBounds = true
@@ -38,7 +42,7 @@ final class UITimePeriodSegmentControl: UIView {
         return view
     }()
 
-    lazy private var stackTimePeriod: UIStackView = {
+    private lazy var stackTimePeriod: UIStackView = {
         var buttonSegment: [UIButton] = getButtonSegment(from: segments)
         let stack = UIStackView(arrangedSubviews: buttonSegment)
         stack.backgroundColor = nil
@@ -50,6 +54,8 @@ final class UITimePeriodSegmentControl: UIView {
     }()
 
     private var activeView: UIView?
+
+    // MARK: - Initializers
 
     init(didTapSegment: @escaping ((TimePeriod) -> ())) {
         self.didTapSegment = didTapSegment
@@ -66,6 +72,8 @@ final class UITimePeriodSegmentControl: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // MARK: - View Life Cycle
+
     override func layoutSubviews() {
         super.layoutSubviews()
 
@@ -80,6 +88,8 @@ final class UITimePeriodSegmentControl: UIView {
                height: self.sizeSegment.height)
     }
 
+    // MARK: - Actions
+
     @objc private func segmentTapped(_ sender: UIButton) {
         guard sender.tag < segments.count else {
             Logger.shared.log(.info, message: "❌ Кнопка не найдена")
@@ -87,6 +97,8 @@ final class UITimePeriodSegmentControl: UIView {
         }
         selectedTimePeriod = segments[sender.tag]
     }
+
+    // MARK: - Private Methods
 
     private func handleOldValue(selectedOld: TimePeriod) {
         stackTimePeriod.subviews.enumerated().forEach { (index, view) in
@@ -127,7 +139,7 @@ final class UITimePeriodSegmentControl: UIView {
         var buttons: [UIButton] = []
         for segment in segments {
             let button = UIButton()
-            button.setTitle(segment.rawValue, for: .normal)
+            button.setTitle(segment.title, for: .normal)
             let color: UIColor = segment == selectedTimePeriod ? .accentText : .secondaryText
             button.setTitleColor(color, for: .normal)
             button.titleLabel?.font = UIFont.h4
@@ -141,7 +153,7 @@ final class UITimePeriodSegmentControl: UIView {
 
     private func settingsView() {
         backgroundColor = .primaryBg
-        layer.cornerRadius = 12
+        layer.cornerRadius = UIConstants.CornerRadius.small12.rawValue
         layer.masksToBounds = true
     }
 }

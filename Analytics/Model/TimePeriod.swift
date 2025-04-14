@@ -6,13 +6,14 @@
 //
 
 import Foundation
+import Core
 
-enum TimePeriod: String {
-    case day = "День"
-    case week = "Неделя"
-    case month = "Месяц"
-    case year = "Год"
-    case custom = "Период"
+enum TimePeriod {
+    case day
+    case week
+    case month
+    case year
+    case custom
 
     var index: Int {
         switch self {
@@ -21,6 +22,21 @@ enum TimePeriod: String {
         case .month: return 2
         case .year: return 3
         case .custom: return 4
+        }
+    }
+
+    var title: String {
+        switch self {
+        case .day:
+            GlobalConstants.analyticsTimePeriodDay.rawValue
+        case .week:
+            GlobalConstants.analyticsTimePeriodWeek.rawValue
+        case .month:
+            GlobalConstants.analyticsTimePeriodMonth.rawValue
+        case .year:
+            GlobalConstants.analyticsTimePeriodYear.rawValue
+        case .custom:
+            GlobalConstants.analyticsTimePeriodCustom.rawValue
         }
     }
 }

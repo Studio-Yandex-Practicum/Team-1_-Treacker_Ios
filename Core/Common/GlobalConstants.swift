@@ -44,4 +44,14 @@ public enum GlobalConstants: String {
     case firebaseNotConfigured = "Firebase не настроен"
     case googleSignInFailed = "Не удалось выполнить вход через Google"
     case invalidAppleToken = "Ошибка авторизации через Apple"
+
+    // Analytics
+
+    case analyticsTitle = "Аналитика"
+    case analyticsTitleExpense = "Категории расходов"
+    case analyticsTimePeriodDay = "День"
+    case analyticsTimePeriodWeek = "Неделя"
+    case analyticsTimePeriodMonth = "Месяц"
+    case analyticsTimePeriodYear = "Год"
+    case analyticsTimePeriodCustom = "Период"
 }

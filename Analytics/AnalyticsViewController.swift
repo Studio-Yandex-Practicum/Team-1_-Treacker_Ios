@@ -16,7 +16,6 @@ public final class AnalyticsViewController: UIViewController {
     private var stringTimePeriod: String = "Февраль"
     private var arr: [Int] = [10, 11, 12, 13, 14, 15, 16]
 
-    //mok
     private var segments: [SegmentPieChart] = [
         SegmentPieChart(color: .red, value: 40),
         SegmentPieChart(color: .blue, value: 30),
@@ -29,11 +28,11 @@ public final class AnalyticsViewController: UIViewController {
 
     private lazy var buttonNewExpense: UIButton = {
         let button = UIButton()
-        button.heightAnchor.constraint(equalToConstant: 60).isActive = true
-        button.widthAnchor.constraint(equalToConstant: 60).isActive = true
+        button.heightAnchor.constraint(equalToConstant: UIConstants.Constants.large60.rawValue).isActive = true
+        button.widthAnchor.constraint(equalToConstant: UIConstants.Constants.large60.rawValue).isActive = true
         button.setImage(UIImage(named: AppIcon.plus1.rawValue), for: .normal)
         button.tintColor = .whiteText
-        button.layer.cornerRadius = 60 / 2
+        button.layer.cornerRadius = UIConstants.Constants.large60.rawValue / 2
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOpacity = 0.3
         button.layer.shadowOffset = CGSize(width: 0, height: 3)
@@ -48,7 +47,7 @@ public final class AnalyticsViewController: UIViewController {
 
     private lazy var labelTitle: UILabel = {
         let label = UILabel()
-        label.text = "Анаталика"
+        label.text = GlobalConstants.analyticsTitle.rawValue
         label.font = UIFont.h1
         label.textColor = .primaryText
         return label
@@ -74,7 +73,7 @@ public final class AnalyticsViewController: UIViewController {
         self.didTapSegment(period: period)
     }
 
-    // MARK: - Analitycs
+    // MARK: - Analytics
 
     private lazy var labelTimePeriod: UILabel = {
         let label = UILabel()
@@ -84,13 +83,13 @@ public final class AnalyticsViewController: UIViewController {
         return label
     }()
 
-    private lazy var analitycsCollection: UICollectionView = {
+    private lazy var analyticsCollection: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = 0
         let screenWidth = UIScreen.main.bounds.width
         let itemWidth = screenWidth - 0
-        layout.itemSize = CGSize(width: itemWidth, height: 160)
+        layout.itemSize = CGSize(width: itemWidth, height: UIConstants.Heights.height160.rawValue)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.register(CellAnalitycs.self)
         collectionView.decelerationRate = UIScrollView.DecelerationRate.fast
@@ -108,7 +107,7 @@ public final class AnalyticsViewController: UIViewController {
         pageControl.currentPage = 2
         pageControl.pageIndicatorTintColor = .lightGray
         pageControl.currentPageIndicatorTintColor = .cAccent
-        pageControl.heightAnchor.constraint(equalToConstant: 24).isActive = true
+        pageControl.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height24.rawValue).isActive = true
         pageControl.addTarget(self, action: #selector(pageControlChanged), for: .valueChanged)
         return pageControl
     }()
@@ -117,7 +116,7 @@ public final class AnalyticsViewController: UIViewController {
 
     private lazy var labelCategory: UILabel = {
         let label = UILabel()
-        label.text = "Категории расходов"
+        label.text = GlobalConstants.analyticsTitleExpense.rawValue
         label.font = UIFont.h4
         label.textColor = .secondaryText
         return label
@@ -136,7 +135,7 @@ public final class AnalyticsViewController: UIViewController {
         return stack
     }()
 
-    // MARK: - CollextionExpenses
+    // MARK: - TableExpenses
 
     private lazy var tableExpenses: UITableView = {
         let table = UITableView()
@@ -153,8 +152,6 @@ public final class AnalyticsViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-
-
         navigationController?.isNavigationBarHidden = true
         setupLayout()
     }
@@ -162,7 +159,7 @@ public final class AnalyticsViewController: UIViewController {
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         let indexPath = IndexPath(item: 2, section: 0)
-        analitycsCollection.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
+        analyticsCollection.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
     }
 
 //    public init() {
@@ -173,6 +170,8 @@ public final class AnalyticsViewController: UIViewController {
 //    required init?(coder: NSCoder) {
 //        fatalError("init(coder:) has not been implemented")
 //    }
+
+    // MARK: - Actions
 
     @objc private func didNewExpense() {
         print("Кнопка создания нового расхода нажата")
@@ -192,18 +191,20 @@ public final class AnalyticsViewController: UIViewController {
 
     @objc private func pageControlChanged() {
         let indexPath = IndexPath(item: pageControl.currentPage, section: 0)
-        analitycsCollection.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        analyticsCollection.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
     }
 
+    // MARK: - Private Methods
+
     private func didTapSegment(period: TimePeriod) {
-        print(period.rawValue)
+        print(period.title)
     }
 
     private func getButtonInNavigationBar(iconName: String) -> UIButton {
         let button = UIButton()
-        button.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        button.widthAnchor.constraint(equalToConstant: 40).isActive = true
-        button.layer.cornerRadius = 12
+        button.heightAnchor.constraint(equalToConstant: UIConstants.Constants.large40.rawValue).isActive = true
+        button.widthAnchor.constraint(equalToConstant: UIConstants.Constants.large40.rawValue).isActive = true
+        button.layer.cornerRadius = UIConstants.CornerRadius.small12.rawValue
         button.layer.masksToBounds = true
         button.backgroundColor = .primaryBg
         button.setImage(UIImage(named: iconName), for: .normal)
@@ -237,7 +238,7 @@ extension AnalyticsViewController: UICollectionViewDelegate {
     }
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard scrollView === analitycsCollection else { return }
+        guard scrollView === analyticsCollection else { return }
         let width = scrollView.frame.width
         let offset = scrollView.contentOffset.x
 
@@ -257,8 +258,8 @@ extension AnalyticsViewController: UICollectionViewDelegate {
         arr.append(newItem)
 
         let newIndexPath = IndexPath(item: arr.count - 1, section: 0)
-        analitycsCollection.performBatchUpdates({
-            analitycsCollection.insertItems(at: [newIndexPath])
+        analyticsCollection.performBatchUpdates({
+            analyticsCollection.insertItems(at: [newIndexPath])
         })
         pageControl.numberOfPages = arr.count
     }
@@ -266,8 +267,8 @@ extension AnalyticsViewController: UICollectionViewDelegate {
     private func addNewFirstItem() {
         arr.insert(0, at: 0)
         let newIndexPath = IndexPath(item: 0, section: 0)
-        analitycsCollection.performBatchUpdates({
-            analitycsCollection.insertItems(at: [newIndexPath])
+        analyticsCollection.performBatchUpdates({
+            analyticsCollection.insertItems(at: [newIndexPath])
         })
         pageControl.numberOfPages = arr.count
         pageControl.currentPage = 2
@@ -283,7 +284,6 @@ extension AnalyticsViewController: UITableViewDataSource {
         let cell: CellCategoryExpense = tableView.dequeueReusableCell()
         return cell
     }
-    
 
 }
 
@@ -301,43 +301,43 @@ extension AnalyticsViewController {
         view.setupView(titleStack)
         view.setupView(timePeriod)
         view.setupView(labelTimePeriod)
-        view.setupView(analitycsCollection)
+        view.setupView(analyticsCollection)
         view.setupView(pageControl)
         view.setupView(categoryStack)
         view.setupView(tableExpenses)
 
         NSLayoutConstraint.activate([
-            buttonNewExpense.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            buttonNewExpense.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 2),
+            buttonNewExpense.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
+            buttonNewExpense.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: UIConstants.Constants.small2.rawValue),
 
-            titleStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            titleStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            titleStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            titleStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: UIConstants.Constants.large20.rawValue),
+            titleStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
+            titleStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
 
-            timePeriod.topAnchor.constraint(equalTo: titleStack.bottomAnchor, constant: 12),
-            timePeriod.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            timePeriod.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            titleStack.heightAnchor.constraint(equalToConstant: 40),
+            timePeriod.topAnchor.constraint(equalTo: titleStack.bottomAnchor, constant: UIConstants.Constants.medium12.rawValue),
+            timePeriod.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
+            timePeriod.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
+            titleStack.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height40.rawValue),
 
-            labelTimePeriod.topAnchor.constraint(equalTo: timePeriod.bottomAnchor, constant: 20),
-            labelTimePeriod.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            labelTimePeriod.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            labelTimePeriod.heightAnchor.constraint(equalToConstant: 20),
+            labelTimePeriod.topAnchor.constraint(equalTo: timePeriod.bottomAnchor, constant: UIConstants.Constants.large20.rawValue),
+            labelTimePeriod.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
+            labelTimePeriod.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
+            labelTimePeriod.heightAnchor.constraint(equalToConstant: UIConstants.Constants.large20.rawValue),
 
-            analitycsCollection.topAnchor.constraint(equalTo: labelTimePeriod.bottomAnchor, constant: 20),
-            analitycsCollection.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
-            analitycsCollection.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
-            analitycsCollection.heightAnchor.constraint(equalToConstant: 160),
+            analyticsCollection.topAnchor.constraint(equalTo: labelTimePeriod.bottomAnchor, constant: UIConstants.Constants.large20.rawValue),
+            analyticsCollection.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            analyticsCollection.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            analyticsCollection.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height160.rawValue),
 
-            pageControl.topAnchor.constraint(equalTo: analitycsCollection.bottomAnchor, constant: 20),
+            pageControl.topAnchor.constraint(equalTo: analyticsCollection.bottomAnchor, constant: UIConstants.Constants.large20.rawValue),
             pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            pageControl.widthAnchor.constraint(equalToConstant: 100),
+            pageControl.widthAnchor.constraint(equalToConstant: UIConstants.Widths.width100.rawValue),
 
-            categoryStack.topAnchor.constraint(equalTo: analitycsCollection.bottomAnchor, constant: 55),
-            categoryStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            categoryStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            categoryStack.topAnchor.constraint(equalTo: analyticsCollection.bottomAnchor, constant: UIConstants.Constants.large55.rawValue),
+            categoryStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
+            categoryStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
 
-            tableExpenses.topAnchor.constraint(equalTo: categoryStack.bottomAnchor, constant: 8),
+            tableExpenses.topAnchor.constraint(equalTo: categoryStack.bottomAnchor, constant:UIConstants.Constants.small8.rawValue),
             tableExpenses.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableExpenses.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableExpenses.bottomAnchor.constraint(equalTo: view.bottomAnchor),

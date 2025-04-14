@@ -27,9 +27,9 @@ final class CellCategoryExpense: UITableViewCell, ReuseIdentifying {
         view.contentMode = .center
         view.tintColor = colorIcon
         view.backgroundColor = colorBg
-        view.heightAnchor.constraint(equalToConstant: 52).isActive = true
-        view.widthAnchor.constraint(equalToConstant: 52).isActive = true
-        view.layer.cornerRadius = 16
+        view.heightAnchor.constraint(equalToConstant: UIConstants.Constants.large52.rawValue).isActive = true
+        view.widthAnchor.constraint(equalToConstant: UIConstants.Constants.large52.rawValue).isActive = true
+        view.layer.cornerRadius = UIConstants.CornerRadius.medium16.rawValue
         view.layer.masksToBounds = true
         return view
     }()
@@ -53,7 +53,7 @@ final class CellCategoryExpense: UITableViewCell, ReuseIdentifying {
     private lazy var stackName: UIStackView = {
         var stack = UIStackView(arrangedSubviews: [labelName, labelCount])
         stack.axis = .vertical
-        stack.spacing = 8
+        stack.spacing = UIConstants.Spacing.small8.rawValue
         stack.alignment = .leading
         return stack
     }()
@@ -77,7 +77,7 @@ final class CellCategoryExpense: UITableViewCell, ReuseIdentifying {
     private lazy var stackAmount: UIStackView = {
         var stack = UIStackView(arrangedSubviews: [labelAmount, labelPercent])
         stack.axis = .vertical
-        stack.spacing = 8
+        stack.spacing = UIConstants.Spacing.small8.rawValue
         stack.alignment = .trailing
         stack.distribution = .equalCentering
         return stack
@@ -87,7 +87,7 @@ final class CellCategoryExpense: UITableViewCell, ReuseIdentifying {
         let stack = UIStackView(arrangedSubviews: [iconView, stackName, stackAmount])
         stack.axis = .horizontal
         stack.alignment = .center
-        stack.spacing = 8
+        stack.spacing = UIConstants.Spacing.small8.rawValue
         return stack
     }()
 
@@ -119,10 +119,10 @@ extension CellCategoryExpense {
         self.setupView(stackContent)
 
         NSLayoutConstraint.activate([
-            stackContent.topAnchor.constraint(equalTo: self.topAnchor, constant: 8),
-            stackContent.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
-            stackContent.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
-            stackContent.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -8),
+            stackContent.topAnchor.constraint(equalTo: self.topAnchor, constant: UIConstants.Constants.small8.rawValue),
+            stackContent.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
+            stackContent.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
+            stackContent.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -UIConstants.Constants.small8.rawValue),
         ])
     }
 }
