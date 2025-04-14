@@ -17,11 +17,18 @@ public protocol GoogleSignInHandlerProtocol {
 }
 
 public final class GoogleSignInHandler: GoogleSignInHandlerProtocol {
+
+    // MARK: - Private Property
+
     private weak var presentingVC: UIViewController?
+
+    // MARK: - Init
 
     public init(presentingVC: UIViewController) {
         self.presentingVC = presentingVC
     }
+
+    // MARK: - Public Method
 
     public func handleGoogleSignIn(completion: @escaping (Result<Void, AuthError>) -> Void) {
         guard let presentingVC else {
