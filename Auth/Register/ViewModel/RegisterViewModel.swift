@@ -26,7 +26,11 @@ public final class RegisterViewModel {
         self.authService = authService
         bindValidation()
     }
+}
 
+// MARK: - Bindings
+
+private extension RegisterViewModel {
     private func bindValidation() {
         Publishers.CombineLatest($email, $password)
             .map { email, password in
@@ -43,7 +47,11 @@ public final class RegisterViewModel {
             }
             .store(in: &cancellables)
     }
+}
 
+// MARK: - Public Method
+
+extension RegisterViewModel {
     public func register() {
         state = .loading
 

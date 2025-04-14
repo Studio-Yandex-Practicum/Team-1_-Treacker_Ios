@@ -12,6 +12,8 @@ import Combine
 
 public final class RegisterViewController: UIViewController {
 
+    // MARK: - Private Properties
+
     private let viewModel: RegisterViewModel
     private var cancellable = Set<AnyCancellable>()
 
@@ -67,15 +69,15 @@ private extension RegisterViewController {
             registerButton
         ])
         vStack.axis = .vertical
-        vStack.spacing = 16
+        vStack.spacing = UIConstants.Spacing.medium16.rawValue
 
         view.setupView(vStack)
 
         NSLayoutConstraint.activate([
             registerButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height54.rawValue),
             vStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            vStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            vStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            vStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
+            vStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue)
         ])
     }
 

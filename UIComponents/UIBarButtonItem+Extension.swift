@@ -27,13 +27,13 @@ extension UIBarButtonItem {
         button.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
-            container.widthAnchor.constraint(equalToConstant: 40 + leadingInset),
-            container.heightAnchor.constraint(equalToConstant: 40),
+            container.widthAnchor.constraint(equalToConstant: UIConstants.Constants.large40.rawValue + leadingInset),
+            container.heightAnchor.constraint(equalToConstant: UIConstants.Constants.large40.rawValue),
 
             button.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: leadingInset),
             button.centerYAnchor.constraint(equalTo: container.centerYAnchor),
-            button.widthAnchor.constraint(equalToConstant: 24),
-            button.heightAnchor.constraint(equalToConstant: 24)
+            button.widthAnchor.constraint(equalToConstant: UIConstants.Constants.large24.rawValue),
+            button.heightAnchor.constraint(equalToConstant: UIConstants.Constants.large24.rawValue)
         ])
 
         return UIBarButtonItem(customView: container)

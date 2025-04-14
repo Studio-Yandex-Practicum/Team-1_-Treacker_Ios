@@ -10,11 +10,14 @@ import Combine
 import Core
 
 public final class AuthViewModel {
+
     // MARK: - Input
+
     @Published var email = ""
     @Published var password = ""
 
     // MARK: - Output
+    
     @Published private(set) var state: AuthState = .idle(
         isFormValid: false,
         isEmailValid: false,
@@ -24,15 +27,21 @@ public final class AuthViewModel {
     @Published private(set) var emailErrorVisible = false
     @Published private(set) var passwordErrorVisible = false
 
-    private var emailEdited = false
-    private var passwordEdited = false
+    // MARK: Public Properties
 
     public let openRegister = PassthroughSubject<Void, Never>()
     public let openRecover = PassthroughSubject<Void, Never>()
 
+    // MARK: - Private Properties
+
+    private var emailEdited = false
+    private var passwordEdited = false
+
     private let router: RouterProtocol
     private let emailAuthService: EmailAuthService
     private var cancellables = Set<AnyCancellable>()
+
+    // MARK: - Init
 
     public init(
         router: RouterProtocol,
@@ -83,9 +92,9 @@ private extension AuthViewModel {
     }
 }
 
-// MARK: - Internal methods
-
 extension AuthViewModel {
+
+    // MARK: - Internal methods
 
     func markEmailEdited() {
         emailEdited = true
@@ -95,18 +104,6 @@ extension AuthViewModel {
     func markPasswordEdited() {
         passwordEdited = true
         triggerValidationUpdate()
-    }
-
-    private func triggerValidationUpdate() {
-        let isEmailValid = email.isValidEmail
-        let isPasswordValid = password.count >= 7
-        let isFormValid = isEmailValid && isPasswordValid
-
-        state = .idle(
-            isFormValid: isFormValid,
-            isEmailValid: isEmailValid,
-            isPasswordValid: isPasswordValid
-        )
     }
 
     func login() {
@@ -137,5 +134,19 @@ extension AuthViewModel {
 
     func didTapRecover() {
         openRecover.send()
+    }
+
+    // MARK: - Private Methods
+
+    private func triggerValidationUpdate() {
+        let isEmailValid = email.isValidEmail
+        let isPasswordValid = password.count >= 7
+        let isFormValid = isEmailValid && isPasswordValid
+
+        state = .idle(
+            isFormValid: isFormValid,
+            isEmailValid: isEmailValid,
+            isPasswordValid: isPasswordValid
+        )
     }
 }

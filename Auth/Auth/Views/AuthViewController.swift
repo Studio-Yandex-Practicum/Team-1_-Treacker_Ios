@@ -379,7 +379,7 @@ private extension AuthViewController {
 
 // MARK: - Bindings
 
-extension AuthViewController {
+private extension AuthViewController {
 
     private func bindViewModel() {
         bindTextFields()

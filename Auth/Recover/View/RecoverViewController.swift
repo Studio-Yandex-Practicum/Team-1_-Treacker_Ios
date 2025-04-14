@@ -12,6 +12,8 @@ import Combine
 
 public final class RecoverViewController: UIViewController {
 
+    // MARK: - Private Properties
+
     private let viewModel: RecoverViewModel
     private var cancellable = Set<AnyCancellable>()
 
@@ -69,7 +71,7 @@ private extension RecoverViewController {
             confirmButton
         ])
         vStack.axis = .vertical
-        vStack.spacing = 16
+        vStack.spacing = UIConstants.Spacing.medium16.rawValue
         vStack.setCustomSpacing(
             UIConstants.Spacing.small8.rawValue,
             after: titleLabel
@@ -80,8 +82,8 @@ private extension RecoverViewController {
         NSLayoutConstraint.activate([
             confirmButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height54.rawValue),
             vStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            vStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            vStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            vStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
+            vStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue)
         ])
     }
 
