@@ -13,6 +13,7 @@ final class CellAnalitycs: UICollectionViewCell, ReuseIdentifying {
 
     // MARK: - Private Properties
 
+    private var amount: String = "61 587 ₽"
     private var segments: [SegmentPieChart] = [
         SegmentPieChart(color: .red, value: 40),
         SegmentPieChart(color: .blue, value: 30),
@@ -23,6 +24,14 @@ final class CellAnalitycs: UICollectionViewCell, ReuseIdentifying {
     // MARK: - UI Components
 
     private lazy var pieChart: UIPieChart = UIPieChart(segments: segments)
+
+    private lazy var labelPercent: UILabel = {
+        let label = UILabel()
+        label.text = amount
+        label.font = UIFont.h2
+        label.textColor = .primaryText
+        return label
+    }()
 
     // MARK: - Initializers
 
@@ -51,7 +60,9 @@ final class CellAnalitycs: UICollectionViewCell, ReuseIdentifying {
 extension CellAnalitycs {
     private func setupLayout() {
         self.setupView(pieChart)
+        self.setupView(labelPercent)
 
         pieChart.constraintEdges(to: self)
+        labelPercent.constraintCenters(to: self)
     }
 }
