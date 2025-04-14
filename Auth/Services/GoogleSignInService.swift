@@ -36,8 +36,12 @@ public final class GoogleSignInHandler: GoogleSignInHandlerProtocol {
             return
         }
 
-        GIDSignIn.sharedInstance.signIn(withPresenting: presentingVC) { result, error in
+        GIDSignIn.sharedInstance.signIn(withPresenting: presentingVC) { (_, error) in
             if let error {
+                Logger.shared.log(
+                    .error, message: GlobalConstants.googleSignInFailed.rawValue,
+                    metadata: ["❌\(self): UnknownAuthError": "\(error)"]
+                )
                 completion(.failure(.googleSignInFailed))
             } else {
                 completion(.success(()))
