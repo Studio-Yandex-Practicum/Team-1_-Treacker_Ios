@@ -26,6 +26,8 @@ final class ExpenseStorageService: ExpenseStorageServiceProtocol {
         let startOfDay = startDate.startOfDay
         let endOdDay: Date = endDate?.endOfDay ?? startDate.endOfDay
 
+//        let categories: [String]? = categories?.count == 0 ? nil : categories
+
         var predicates: [NSPredicate] = []
 
         let datePredicate = NSPredicate(format: "date >= %@ AND date <= %@", startOfDay as NSDate, endOdDay as NSDate)
