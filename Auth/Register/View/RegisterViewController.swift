@@ -35,6 +35,8 @@ public final class RegisterViewController: UIViewController {
         action: #selector(didTapRegister)
     )
 
+    // MARK: Lifecycle
+
     public init(viewModel: RegisterViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -49,6 +51,7 @@ public final class RegisterViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .secondaryBg
         setupUI()
+        setupNavbarItem()
         bindViewModel()
     }
 }
@@ -91,6 +94,15 @@ private extension RegisterViewController {
         label.numberOfLines = numberOfLines
         return label
     }
+
+    private func setupNavbarItem() {
+        navigationItem.hidesBackButton = true
+        navigationItem.leftBarButtonItem = .customBackButton(
+            target: self,
+            action: #selector(didTapBack),
+            tintColor: .primaryText
+        )
+    }
 }
 
 // MARK: - Actions
@@ -98,6 +110,10 @@ private extension RegisterViewController {
 private extension RegisterViewController {
     @objc private func didTapRegister() {
         viewModel.register()
+    }
+
+    @objc private func didTapBack() {
+        navigationController?.popViewController(animated: true)
     }
 }
 

@@ -37,6 +37,8 @@ public final class RecoverViewController: UIViewController {
         action: #selector(didTapConfirm)
     )
 
+    // MARK: Lifecycle
+
     public init(viewModel: RecoverViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -51,6 +53,7 @@ public final class RecoverViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .secondaryBg
         setupUI()
+        setupNavbarItem()
         bindViewModel()
     }
 }
@@ -67,6 +70,10 @@ private extension RecoverViewController {
         ])
         vStack.axis = .vertical
         vStack.spacing = 16
+        vStack.setCustomSpacing(
+            UIConstants.Spacing.small8.rawValue,
+            after: titleLabel
+        )
 
         view.setupView(vStack)
 
@@ -93,6 +100,14 @@ private extension RecoverViewController {
         label.numberOfLines = numberOfLines
         return label
     }
+
+    private func setupNavbarItem() {
+        navigationItem.hidesBackButton = true
+        navigationItem.leftBarButtonItem = .customBackButton(
+            target: self,
+            action: #selector(didTapBack)
+        )
+    }
 }
 
 // MARK: - Actions
@@ -100,6 +115,10 @@ private extension RecoverViewController {
 private extension RecoverViewController {
     @objc private func didTapConfirm() {
         viewModel.recover()
+    }
+
+    @objc private func didTapBack() {
+        navigationController?.popViewController(animated: true)
     }
 }
 

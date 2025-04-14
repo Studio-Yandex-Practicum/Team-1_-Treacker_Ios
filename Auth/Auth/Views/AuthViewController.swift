@@ -112,7 +112,10 @@ public final class AuthViewController: UIViewController {
 
 private extension AuthViewController {
 
-    private func createMainStackView(emailHintContainer: UIView, passHintContainer: UIView) -> UIStackView {
+    private func createMainStackView(
+        emailHintContainer: UIView,
+        passHintContainer: UIView
+    ) -> UIStackView {
         let stack = UIStackView(arrangedSubviews: [
             titleLabel,
             subtitleLabel,
