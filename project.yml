@@ -94,6 +94,7 @@ targets:
     dependencies:
       - target: Core
       - target: Persistence
+      - target: Auth
     bundleId: KV.Lyashenko.SpendWise.Expenses
     deploymentTarget: "18.0"
     settings:

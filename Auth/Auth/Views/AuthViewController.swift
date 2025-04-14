@@ -16,7 +16,8 @@ public final class AuthViewController: UIViewController {
     // MARK: - Private properties
 
     private let viewModel: AuthViewModel
-    private var cancellables = Set<AnyCancellable>()
+    private var cancellable = Set<AnyCancellable>()
+    private lazy var formStackView = UIStackView()
 
     private lazy var titleLabel = makeLabel(
         text: GlobalConstants.greeting.rawValue,
@@ -32,9 +33,21 @@ public final class AuthViewController: UIViewController {
         alignment: .left
     )
 
-    private lazy var emailField = CustomTextField(placeholder: GlobalConstants.email.rawValue)
+    private lazy var emailField: CustomTextField = {
+        let field = CustomTextField(placeholder: GlobalConstants.email.rawValue)
+        field.textContentType = .username
+        field.accessibilityIdentifier = "auth_email_field"
+        return field
+    }()
+
+    private lazy var passwordField: CustomTextField = {
+        let field = CustomTextField(placeholder: GlobalConstants.pass.rawValue, isPassword: true)
+        field.textContentType = .password
+        field.accessibilityIdentifier = "auth_password_field"
+        return field
+    }()
+
     private lazy var emailHint = makeHintLabel(text: GlobalConstants.emailHint.rawValue)
-    private lazy var passwordField =  CustomTextField(placeholder: GlobalConstants.pass.rawValue, isPassword: true)
     private lazy var passHint = makeHintLabel(text: GlobalConstants.passHint.rawValue)
 
     private lazy var forgetPassButton = makeLinkButton(
@@ -42,12 +55,8 @@ public final class AuthViewController: UIViewController {
         action: #selector(didTapForgetPass)
     )
 
-    private lazy var loginButton = UIButton(
-        title: GlobalConstants.login,
-        backgroundColor: .cAccent.withAlphaComponent(0.5),
-        titleColor: .whiteText,
-        cornerRadius: .medium16,
-        font: .h4,
+    private lazy var loginButton = UIButton.makeButton(
+        title: .login,
         target: self,
         action: #selector(didTapLogin)
     )
@@ -91,8 +100,11 @@ public final class AuthViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .secondaryBg
+        emailHint.alpha = 0
+        passHint.alpha = 0
         setupUI()
         enableKeyboardDismissOnTap()
+        bindViewModel()
     }
 }
 
@@ -100,11 +112,11 @@ public final class AuthViewController: UIViewController {
 
 private extension AuthViewController {
 
-    private func setupUI() {
-        let emailHintContainer = containerFor(label: emailHint)
-        let passHintContainer = containerFor(label: passHint)
-
-        let vStack = UIStackView(arrangedSubviews: [
+    private func createMainStackView(
+        emailHintContainer: UIView,
+        passHintContainer: UIView
+    ) -> UIStackView {
+        let stack = UIStackView(arrangedSubviews: [
             titleLabel,
             subtitleLabel,
             emailField,
@@ -116,62 +128,47 @@ private extension AuthViewController {
             separatorView(),
             authButtonsStack()
         ])
-        vStack.axis = .vertical
-        vStack.spacing = UIConstants.Spacing.medium16.rawValue
-        vStack.setCustomSpacing(UIConstants.Spacing.small8.rawValue, after: titleLabel)
-        vStack.setCustomSpacing(UIConstants.Spacing.small4.rawValue, after: emailField)
-        vStack.setCustomSpacing(UIConstants.Spacing.medium12.rawValue, after: emailHintContainer)
-        vStack.setCustomSpacing(UIConstants.Spacing.small4.rawValue, after: passwordField)
-        vStack.setCustomSpacing(UIConstants.Spacing.medium12.rawValue, after: passHintContainer)
-        vStack.setCustomSpacing(UIConstants.Spacing.large24.rawValue, after: forgetPassButton)
-        vStack.setCustomSpacing(UIConstants.Spacing.large24.rawValue, after: loginButton)
+        stack.axis = .vertical
+        stack.spacing = UIConstants.Spacing.medium16.rawValue
 
-        view.setupView(vStack)
+        stack.setCustomSpacing(UIConstants.Spacing.small8.rawValue, after: titleLabel)
+        stack.setCustomSpacing(UIConstants.Spacing.large24.rawValue, after: forgetPassButton)
+        stack.setCustomSpacing(UIConstants.Spacing.large24.rawValue, after: loginButton)
+
+        return stack
+    }
+
+    private func setupUI() {
+        let emailHintContainer = containerFor(label: emailHint)
+        let passHintContainer = containerFor(label: passHint)
+
+        formStackView = createMainStackView(
+            emailHintContainer: emailHintContainer,
+            passHintContainer: passHintContainer
+        )
+        view.setupView(formStackView)
         view.setupView(notAccauntButton)
 
         NSLayoutConstraint.activate([
             emailField.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height60.rawValue),
             passwordField.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height60.rawValue),
-
-            emailHint.leadingAnchor.constraint(
-                equalTo: emailHintContainer.leadingAnchor,
-                constant: UIConstants.Constants.small8.rawValue
-            ),
-            emailHint.trailingAnchor.constraint(
-                equalTo: emailHintContainer.trailingAnchor,
-                constant: -UIConstants.Constants.small8.rawValue
-            ),
-            emailHint.topAnchor.constraint(equalTo: emailHintContainer.topAnchor),
-            emailHint.bottomAnchor.constraint(equalTo: emailHintContainer.bottomAnchor),
-
-            passHint.leadingAnchor.constraint(
-                equalTo: passHintContainer.leadingAnchor,
-                constant: UIConstants.Constants.small8.rawValue
-            ),
-            passHint.trailingAnchor.constraint(
-                equalTo: passHintContainer.trailingAnchor,
-                constant: -UIConstants.Constants.small8.rawValue
-            ),
-            passHint.topAnchor.constraint(equalTo: passHintContainer.topAnchor),
-            passHint.bottomAnchor.constraint(equalTo: passHintContainer.bottomAnchor),
-
             loginButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height54.rawValue),
-
-            vStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            vStack.leadingAnchor.constraint(
-                equalTo: view.leadingAnchor,
-                constant: UIConstants.Constants.large20.rawValue
-            ),
-            vStack.trailingAnchor.constraint(
-                equalTo: view.trailingAnchor,
-                constant: -UIConstants.Constants.large20.rawValue
-            ),
-
             googleButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height40.rawValue),
             appleButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height40.rawValue),
-
             notAccauntButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            notAccauntButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            notAccauntButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            formStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            formStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
+            formStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
+
+            emailHint.leadingAnchor.constraint(equalTo: emailHintContainer.leadingAnchor, constant: UIConstants.Constants.small8.rawValue),
+            emailHint.trailingAnchor.constraint(equalTo: emailHintContainer.trailingAnchor, constant: -UIConstants.Constants.small8.rawValue),
+            emailHint.topAnchor.constraint(equalTo: emailHintContainer.topAnchor),
+            emailHint.bottomAnchor.constraint(equalTo: emailHintContainer.bottomAnchor),
+            passHint.leadingAnchor.constraint(equalTo: passHintContainer.leadingAnchor, constant: UIConstants.Constants.small8.rawValue),
+            passHint.trailingAnchor.constraint(equalTo: passHintContainer.trailingAnchor, constant: -UIConstants.Constants.small8.rawValue),
+            passHint.topAnchor.constraint(equalTo: passHintContainer.topAnchor),
+            passHint.bottomAnchor.constraint(equalTo: passHintContainer.bottomAnchor)
         ])
     }
 
@@ -209,7 +206,15 @@ private extension AuthViewController {
     }
 
     private func makeHintLabel(text: String) -> UILabel {
-        makeLabel(text: text, font: .h5, color: .hintText)
+        let label = makeLabel(
+            text: text,
+            font: .h5,
+            color: .hintText
+        )
+        label.alpha = 0
+        label.setContentHuggingPriority(.required, for: .vertical)
+        label.setContentCompressionResistancePriority(.required, for: .vertical)
+        return label
     }
 
     private func makeLabel(
@@ -260,30 +265,269 @@ private extension AuthViewController {
     private func containerFor(label: UILabel) -> UIView {
         let view = UIView()
         view.setupView(label)
+
+        label.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.small8.rawValue),
+            label.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.small8.rawValue),
+            label.topAnchor.constraint(equalTo: view.topAnchor),
+            label.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+
         return view
+    }
+
+    private func animateHintVisibility(
+        label: UILabel,
+        hintContainer: UIView,
+        isVisible: Bool,
+        spacingAfter: CGFloat,
+        after view: UIView
+    ) {
+        if isVisible {
+            hintContainer.isHidden = false
+            label.alpha = 0
+
+            UIView.animate(
+                withDuration: 0.45,
+                delay: 0,
+                usingSpringWithDamping: 0.85,
+                initialSpringVelocity: 0.5,
+                options: [.curveEaseInOut],
+                animations: {
+                    label.alpha = 1
+                    self.formStackView.setCustomSpacing(spacingAfter, after: view)
+                    self.view.layoutIfNeeded()
+                }
+            )
+        } else {
+            UIView.animate(
+                withDuration: 0.3,
+                delay: 0.2,
+                options: [.curveEaseInOut],
+                animations: {
+                    label.alpha = 0
+                    self.formStackView.setCustomSpacing(spacingAfter, after: view)
+                    self.view.layoutIfNeeded()
+                },
+                completion: { _ in
+                    hintContainer.isHidden = true
+                }
+            )
+        }
+    }
+
+    private func updateHintVisibility(emailVisible: Bool, passwordVisible: Bool) {
+        if let emailHintContainer = emailHint.superview {
+            animateHintVisibility(
+                label: emailHint,
+                hintContainer: emailHintContainer,
+                isVisible: emailVisible,
+                spacingAfter: emailVisible ?
+                UIConstants.Spacing.small4.rawValue :
+                    UIConstants.Spacing.medium12.rawValue,
+                after: emailField
+            )
+            formStackView.setCustomSpacing(
+                UIConstants.Constants.medium12.rawValue,
+                after: emailHintContainer
+            )
+        }
+
+        if let passHintContainer = passHint.superview {
+            animateHintVisibility(
+                label: passHint,
+                hintContainer: passHintContainer,
+                isVisible: passwordVisible,
+                spacingAfter: passwordVisible ?
+                UIConstants.Spacing.small4.rawValue :
+                    UIConstants.Spacing.medium12.rawValue,
+                after: passwordField
+            )
+            formStackView.setCustomSpacing(
+                UIConstants.Constants.medium12.rawValue,
+                after: passHintContainer
+            )
+        }
+    }
+
+    private func generateErrorFeedback() {
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(.error)
     }
 }
 
 // MARK: - Actions
 
 private extension AuthViewController {
-    @objc private func didTapForgetPass() {}
+    @objc private func didTapForgetPass() {
+        viewModel.didTapRecover()
+    }
+
     @objc private func didTapLogin() {
-        viewModel.didAuthorizeSuccessfully()
+        viewModel.login()
     }
-    @objc private func didTapGoogle() {
-        emailHint.isHidden = true
-        passHint.isHidden = true
+    
+    @objc private func didTapGoogle() {}
+    @objc private func didTapApple() {}
+
+    @objc private func didNotAccaunt() {
+        viewModel.didTapRegister()
     }
-    @objc private func didTapApple() {
-        emailHint.isHidden = false
-        passHint.isHidden = false
-    }
-    @objc private func didNotAccaunt() {}
 }
 
 // MARK: - Bindings
 
 extension AuthViewController {
-    
+
+    private func bindViewModel() {
+        bindTextFields()
+        bindAuthEvents()
+        bindValidationErrors()
+        bindHintVisibility()
+        bindFormState()
+    }
+
+    private func bindTextFields() {
+        emailField.textPublisher
+            .assign(to: \.email, on: viewModel)
+            .store(in: &cancellable)
+
+        passwordField.textPublisher
+            .assign(to: \.password, on: viewModel)
+            .store(in: &cancellable)
+
+        emailField.didEndEditingPublisher
+            .sink { [weak self] in self?.viewModel.markEmailEdited() }
+            .store(in: &cancellable)
+
+        passwordField.didEndEditingPublisher
+            .sink { [weak self] in self?.viewModel.markPasswordEdited() }
+            .store(in: &cancellable)
+    }
+
+    private func bindAuthEvents() {
+        bindRecoverEvent()
+        bindRegisterEvent()
+    }
+
+    private func bindRecoverEvent() {
+        AuthEvents.didRecover
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                guard let self else { return }
+                AlertService.present(
+                    on: self,
+                    title: .done,
+                    message: GlobalConstants.mailSend.rawValue,
+                    actions: [.init(title: GlobalConstants.okButton.rawValue)]
+                )
+            }
+            .store(in: &cancellable)
+    }
+
+    private func bindRegisterEvent() {
+        AuthEvents.didRegister
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                guard let self else { return }
+                AlertService.present(
+                    on: self,
+                    title: .welcomeAlert,
+                    message: GlobalConstants.succesReg.rawValue,
+                    actions: [.init(title: GlobalConstants.login.rawValue)]
+                )
+            }
+            .store(in: &cancellable)
+    }
+
+    private func bindValidationErrors() {
+        viewModel.$state
+            .compactMap { state -> Bool? in
+                guard case let .idle(_, isEmailValid, _) = state else { return nil }
+                return isEmailValid
+            }
+            .removeDuplicates()
+            .dropFirst()
+            .filter { !$0 }
+            .sink { [weak self] _ in
+                guard let self else { return }
+                self.generateErrorFeedback()
+                self.emailField.shake()
+            }
+            .store(in: &cancellable)
+
+        viewModel.$state
+            .compactMap { state -> Bool? in
+                guard case let .idle(_, _, isPasswordValid) = state else { return nil }
+                return isPasswordValid
+            }
+            .removeDuplicates()
+            .dropFirst()
+            .filter { !$0 }
+            .sink { [weak self] _ in
+                guard let self else { return }
+                self.generateErrorFeedback()
+                self.passwordField.shake()
+            }
+            .store(in: &cancellable)
+    }
+
+    private func bindHintVisibility() {
+        viewModel.$emailErrorVisible
+            .removeDuplicates()
+            .sink { [weak self] isVisible in
+                guard let self else { return }
+                self.updateHintVisibility(
+                    emailVisible: isVisible,
+                    passwordVisible: self.viewModel.passwordErrorVisible
+                )
+            }
+            .store(in: &cancellable)
+
+        viewModel.$passwordErrorVisible
+            .removeDuplicates()
+            .sink { [weak self] isVisible in
+                guard let self else { return }
+                self.updateHintVisibility(
+                    emailVisible: self.viewModel.emailErrorVisible,
+                    passwordVisible: isVisible
+                )
+            }
+            .store(in: &cancellable)
+    }
+
+    private func bindFormState() {
+        viewModel.$state
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state in
+                guard let self else { return }
+
+                switch state {
+                case let .idle(isFormValid, _, _):
+                    loginButton.isEnabled = isFormValid
+                    loginButton.alpha = 1.0
+
+                case .loading:
+                    loginButton.isEnabled = false
+                    loginButton.alpha = 0.5
+
+                case .success:
+                    break
+
+                case .failure(let error):
+                    loginButton.isEnabled = true
+                    loginButton.alpha = 1.0
+                    AlertService.present(
+                        on: self,
+                        title: .emailAuthFailed,
+                        message: error.localizedDescription,
+                        actions: [.init(title: "ОК")]
+                    )
+                }
+            }
+            .store(in: &cancellable)
+    }
 }

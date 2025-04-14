@@ -5,12 +5,12 @@
 //  Created by Konstantin Lyashenko on 10.04.2025.
 //
 
-import Foundation
+import UIKit
 
 public protocol RouterProtocol {
     func routeToMainFlow()
     func routeToAuthFlow()
     func routeBasedOnAuth()
-    func routeToRegisterFlow()
-    func routeToRecoverFlow()
+    func routeToRegisterFlow(from vc: UIViewController)
+    func routeToRecoverFlow(from vc: UIViewController)
 }
