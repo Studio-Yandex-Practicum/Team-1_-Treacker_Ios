@@ -10,22 +10,38 @@ import Combine
 import Core
 
 public final class RecoverViewModel {
+
+    // MARK: - Input
+
     @Published var email = ""
+
+    // MARK: - Output
+
     @Published private(set) var state: AuthState = .idle(
         isFormValid: false,
         isEmailValid: false,
         isPasswordValid: false
     )
 
+    // MARK: - Public Property
+
+    public let onRecoverySuccess = PassthroughSubject<Void, Never>()
+
+    // MARK: - Private Properties
+
     private let authServices: EmailAuthService
     private var cancellable = Set<AnyCancellable>()
     
-    public let onRecoverySuccess = PassthroughSubject<Void, Never>()
+    // MARK: - Init
 
     public init(authServices: EmailAuthService = .init()) {
         self.authServices = authServices
     }
+}
 
+// MARK: - Bindings
+
+private extension RecoverViewModel {
     private func bindValidation() {
         $email
             .map { $0.isValidEmail }
@@ -40,7 +56,11 @@ public final class RecoverViewModel {
             }
             .store(in: &cancellable)
     }
+}
 
+// MARK: - Public Method
+
+extension RecoverViewModel {
     public func recover() {
         state = .loading
 

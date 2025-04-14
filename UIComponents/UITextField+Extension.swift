@@ -150,6 +150,8 @@ public final class CustomTextField: UITextField {
         }
     }
 
+    // MARK: - Actions
+
     @objc private func toggleSecureText() {
         isSecureTextEntry.toggle()
 
