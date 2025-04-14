@@ -8,7 +8,7 @@
 import CoreData
 import Core
 
-public final class CoreDataAssembly {
+public final class CoreDataAssembly: CoreDataAssemblyProtocol {
 
     private let coreDataManager: CoreDataManagerProtocol
 

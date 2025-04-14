@@ -111,6 +111,7 @@ targets:
     dependencies:
       - target: Core
       - target: UIComponents
+      - target: Persistence
     bundleId: KV.Lyashenko.SpendWise.Analytics
     deploymentTarget: "18.0"
     settings:

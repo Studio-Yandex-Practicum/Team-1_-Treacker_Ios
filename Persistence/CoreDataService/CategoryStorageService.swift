@@ -8,12 +8,6 @@
 import CoreData
 import Core
 
-public protocol CategoryStorageServiceProtocol {
-    func fetchCategories() -> [Category]
-    func addCategory(_ category: Category)
-    func deleteCategory(_ categoryId: UUID)
-}
-
 final class CategoryStorageService: CategoryStorageServiceProtocol {
     
     private let coreDataManager: CoreDataManagerProtocol
@@ -22,7 +16,7 @@ final class CategoryStorageService: CategoryStorageServiceProtocol {
         self.coreDataManager = coreDataManager
     }
 
-    func fetchCategories() -> [Category] {
+    func fetchCategories() -> [ExpenseCategory] {
 
         let sortDescriptor = NSSortDescriptor(key: "name", ascending: false)
 
@@ -33,7 +27,7 @@ final class CategoryStorageService: CategoryStorageServiceProtocol {
         return convertCategories(from: results)
     }
 
-    func addCategory(_ category: Category) {
+    func addCategory(_ category: ExpenseCategory) {
         let predicate = NSPredicate(format: "name == %@", category.name)
         let categories: [CategoryCD] = coreDataManager.fetch(predicate: predicate, sortDescriptors: nil)
 
@@ -66,8 +60,8 @@ final class CategoryStorageService: CategoryStorageServiceProtocol {
         Logger.shared.log(.info, message: "✅ 🗑️ 💾 Категория с id \(categoryId) успешно удалён")
     }
 
-    private func convertCategories(from: [CategoryCD]) -> [Category] {
-        var categories: [Category] = []
+    private func convertCategories(from: [CategoryCD]) -> [ExpenseCategory] {
+        var categories: [ExpenseCategory] = []
 
         for categoryCD in from {
             guard let categoryId = categoryCD.id,
@@ -78,7 +72,7 @@ final class CategoryStorageService: CategoryStorageServiceProtocol {
                 continue
             }
 
-            let category = Category(
+            let category = ExpenseCategory(
                 id: categoryId,
                 name: name,
                 colorName: colorName,

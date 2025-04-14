@@ -8,11 +8,7 @@
 import CoreData
 import Core
 
-public protocol ExpenseStorageServiceProtocol {
-    func fetchExpenses(from startDate: Date, to endDate: Date?, categories: [String]?) -> [Category]
-    func addExpense(_ expense: Expense, toCategory categoryId: UUID)
-    func deleteExpense(_ expenseId: UUID)
-}
+
 
 final class ExpenseStorageService: ExpenseStorageServiceProtocol {
 
@@ -22,7 +18,7 @@ final class ExpenseStorageService: ExpenseStorageServiceProtocol {
         self.coreDataManager = coreDataManager
     }
 
-    func fetchExpenses(from startDate: Date, to endDate: Date?, categories: [String]?) -> [Category] {
+    func fetchExpenses(from startDate: Date, to endDate: Date?, categories: [String]?) -> [ExpenseCategory] {
         let startOfDay = startDate.startOfDay
         let endOdDay: Date = endDate?.endOfDay ?? startDate.endOfDay
 
@@ -86,10 +82,10 @@ final class ExpenseStorageService: ExpenseStorageServiceProtocol {
         Logger.shared.log(.info, message: "✅ 🗑️ 💾 Расход с id \(expenseId) успешно удалён")
     }
 
-    private func convertToCategories(from cdExpenses: [ExpenseCD]) -> [Category] {
+    private func convertToCategories(from cdExpenses: [ExpenseCD]) -> [ExpenseCategory] {
         let grouped = Dictionary(grouping: cdExpenses, by: { $0.category })
 
-        var result: [Category] = []
+        var result: [ExpenseCategory] = []
 
         for (categoryCDOptional, expensesCD) in grouped {
             guard let categoryCD = categoryCDOptional,
@@ -120,7 +116,7 @@ final class ExpenseStorageService: ExpenseStorageServiceProtocol {
                 )
             }
 
-            let category = Category(
+            let category = ExpenseCategory(
                 id: categoryId,
                 name: name,
                 colorName: colorName,
