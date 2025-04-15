@@ -46,10 +46,13 @@ public enum UIConstants {
         case height40 = 40.0
         case height54 = 54.0
         case height60 = 60.0
+        case height100 = 100.0
     }
 
     public enum Widths: CGFloat {
         case zero = 0.0
         case width24 = 24.0
+        case width40 = 40.0
+        case width100 = 100.0
     }
 }

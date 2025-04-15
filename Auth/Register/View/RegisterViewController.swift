@@ -17,7 +17,7 @@ public final class RegisterViewController: UIViewController {
     private let viewModel: RegisterViewModel
     private var cancellable = Set<AnyCancellable>()
 
-    private lazy var titleLabel = makeLabel(
+    private lazy var titleLabel: UILabel = .init(
         text: GlobalConstants.register.rawValue,
         font: .h1,
         color: .primaryText,
@@ -79,22 +79,6 @@ private extension RegisterViewController {
             vStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
             vStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue)
         ])
-    }
-
-    private func makeLabel(
-        text: String,
-        font: UIFont,
-        color: UIColor,
-        alignment: NSTextAlignment = .natural,
-        numberOfLines: Int = 1
-    ) -> UILabel {
-        let label = UILabel()
-        label.text = text
-        label.font = font
-        label.textColor = color
-        label.textAlignment = alignment
-        label.numberOfLines = numberOfLines
-        return label
     }
 
     private func setupNavbarItem() {

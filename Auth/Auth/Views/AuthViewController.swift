@@ -19,14 +19,14 @@ public final class AuthViewController: UIViewController {
     private var cancellable = Set<AnyCancellable>()
     private lazy var formStackView = UIStackView()
 
-    private lazy var titleLabel = makeLabel(
+    private lazy var titleLabel: UILabel = .init(
         text: GlobalConstants.greeting.rawValue,
         font: .h1,
         color: .primaryText,
         alignment: .left
     )
 
-    private lazy var subtitleLabel = makeLabel(
+    private lazy var subtitleLabel: UILabel = .init(
         text: GlobalConstants.authInfoSubtitle.rawValue,
         font: .h5,
         color: .secondaryText,
@@ -61,7 +61,7 @@ public final class AuthViewController: UIViewController {
         action: #selector(didTapLogin)
     )
 
-    private lazy var orLabel = makeLabel(
+    private lazy var orLabel: UILabel = .init(
         text: GlobalConstants.or.rawValue,
         font: .h5,
         color: .secondaryText,
@@ -206,30 +206,15 @@ private extension AuthViewController {
     }
 
     private func makeHintLabel(text: String) -> UILabel {
-        let label = makeLabel(
+        let label: UILabel = .init(
             text: text,
             font: .h5,
             color: .hintText
         )
+
         label.alpha = 0
         label.setContentHuggingPriority(.required, for: .vertical)
         label.setContentCompressionResistancePriority(.required, for: .vertical)
-        return label
-    }
-
-    private func makeLabel(
-        text: String,
-        font: UIFont,
-        color: UIColor,
-        alignment: NSTextAlignment = .natural,
-        numberOfLines: Int = 1
-    ) -> UILabel {
-        let label = UILabel()
-        label.text = text
-        label.font = font
-        label.textColor = color
-        label.textAlignment = alignment
-        label.numberOfLines = numberOfLines
         return label
     }
 
