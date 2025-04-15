@@ -9,6 +9,10 @@ import Foundation
 
 public enum GlobalConstants: String {
 
+    // Common
+    case cancel = "Отмена"
+    case done = "Готово"
+
     // Logger
 
     case logSubsystem = "KV.Lyashenko.AutodocNews"
@@ -24,7 +28,7 @@ public enum GlobalConstants: String {
     case passHint = "Пароль должен содержать не менее 7 символов"
     case forgetPass = "Забыли пароль?"
     case login = "Войти"
-    case or = "или"
+    case orLabel = "или"
     case google = "Google"
     case apple = "Apple"
     case notAccaunt = "Нет аккаунта?"
@@ -38,6 +42,13 @@ public enum GlobalConstants: String {
     case recPass = "Восстановить пароль"
     case recInfoSubtitle = "Введите почту, на которую отправим вам код"
     case confirm = "Подтвердить"
+
+    // Added Expenses
+
+    case addExpense = "Добавление расхода"
+    case sum = "Сумма"
+    case note = "Примечание (необязательно)"
+    case add = "Добавить"
 
     // Error
 
@@ -53,9 +64,9 @@ public enum GlobalConstants: String {
 
     // Alert
 
+    case oups = "Упс..."
     case welcomeAlert = "Добро пожаловать!"
     case succesReg = "Регистрация прошла успешно"
-    case done = "Готово"
     case mailSend = "Письмо для восстановления отправлено"
     case alertMessage = "Удалить запись?"
     case alertCancelButton = "Отменить"
@@ -64,4 +75,5 @@ public enum GlobalConstants: String {
     case okButton = "OK"
     case sendMessage = "Письмо отправлено"
     case checkMail = "Проверьте почту для сброса пароля"
+    case alertPlaceholder = "Будем честны, будут деньги - будет фича!"
 }

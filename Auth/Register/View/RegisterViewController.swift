@@ -74,7 +74,6 @@ private extension RegisterViewController {
         view.setupView(vStack)
 
         NSLayoutConstraint.activate([
-            registerButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height54.rawValue),
             vStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             vStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
             vStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue)

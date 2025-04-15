@@ -7,23 +7,41 @@
 
 import Foundation
 
-final class AddedExpensesViewModel {
+public protocol AddedExpensesViewModelProtocol: AnyObject {
+
+    // Outputs
+    var onCategorySelected: ((Int?) -> Void)? { get set }
+    var onAmountChanged: ((String) -> Void)? { get set }
+    var onFormValidationChanged: ((Bool) -> Void)? { get set }
+    var onDateChanged: ((Date) -> Void)? { get set }
+
+    // State
+    var selectedCategoryIndex: Int? { get }
+    var selectDate: Date { get }
+
+    // Inputs
+    func selectCategory(at index: Int)
+    func updateAmount(_ text: String)
+    func updateDate(_ date: Date)
+}
+
+public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
 
     // MARK: - Outputs
 
-    var onCategorySelected: ((Int?) -> Void)?
-    var onAmountChanged: ((String) -> Void)?
-    var onFormValidationChanged: ((Bool) -> Void)?
-    var ondateChanged: ((Date) -> Void)?
+    public var onCategorySelected: ((Int?) -> Void)?
+    public var onAmountChanged: ((String) -> Void)?
+    public var onFormValidationChanged: ((Bool) -> Void)?
+    public var onDateChanged: ((Date) -> Void)?
 
     // MARK: - State
 
-    private(set) var selectedCategoryIndex: Int? {
+    private(set) public var selectedCategoryIndex: Int? {
         didSet { onCategorySelected?(selectedCategoryIndex) }
     }
 
-    private(set) var selectDate: Date = Date() {
-        didSet { ondateChanged?(selectDate) }
+    private(set) public var selectDate: Date = Date() {
+        didSet { onDateChanged?(selectDate) }
     }
 
     private var amount: String = "" {
@@ -33,17 +51,21 @@ final class AddedExpensesViewModel {
         }
     }
 
+    // MARK: - Init
+
+    public init() {}
+
     // MARK: - Inputs
 
-    func selectCategory(at index: Int) {
+    public func selectCategory(at index: Int) {
         selectedCategoryIndex = index
     }
 
-    func updateAmount(_ text: String) {
+    public func updateAmount(_ text: String) {
         amount = text
     }
 
-    func updatedae(_ date: Date) {
+    public func updateDate(_ date: Date) {
         selectDate = date
     }
 

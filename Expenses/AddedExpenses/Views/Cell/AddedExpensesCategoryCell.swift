@@ -9,7 +9,7 @@ import UIKit
 import Core
 import UIComponents
 
-final class AddedExpensesCategoryCell: UICollectionViewCell {
+public final class AddedExpensesCategoryCell: UICollectionViewCell, ReuseIdentifying {
 
     // MARK: - Private Properties
 

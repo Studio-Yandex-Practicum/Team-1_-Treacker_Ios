@@ -26,7 +26,8 @@ public final class Router: RouterProtocol {
         if AuthService.shared.isAuthorized {
             routeToMainFlow()
         } else {
-            routeToAuthFlow()
+            //routeToAuthFlow()
+            routeToAddedExpensesFlow()
         }
     }
 
@@ -83,6 +84,12 @@ public final class Router: RouterProtocol {
             .store(in: &cancellables)
 
         from.navigationController?.pushViewController(recVC, animated: true)
+    }
+
+    public func routeToAddedExpensesFlow() {
+        let viewModel = AddedExpensesViewModel()
+        let addedExpensesVC = AddedExpensesViewController(viewModel: viewModel)
+        setRootViewController(UINavigationController(rootViewController: addedExpensesVC))
     }
 
     private func setRootViewController(_ viewController: UIViewController) {

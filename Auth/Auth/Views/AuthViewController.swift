@@ -62,7 +62,7 @@ public final class AuthViewController: UIViewController {
     )
 
     private lazy var orLabel: UILabel = .init(
-        text: GlobalConstants.or.rawValue,
+        text: GlobalConstants.orLabel.rawValue,
         font: .h5,
         color: .secondaryText,
         alignment: .center
@@ -152,7 +152,6 @@ private extension AuthViewController {
         NSLayoutConstraint.activate([
             emailField.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height60.rawValue),
             passwordField.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height60.rawValue),
-            loginButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height54.rawValue),
             googleButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height40.rawValue),
             appleButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height40.rawValue),
             notAccauntButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
@@ -359,7 +358,14 @@ private extension AuthViewController {
         viewModel.didTapGoogleLogin(handler: handler)
     }
 
-    @objc private func didTapApple() {}
+    @objc private func didTapApple() {
+        AlertService.present(
+            on: self,
+            title: .oups,
+            message: GlobalConstants.alertPlaceholder.rawValue,
+            actions: [.init(title: GlobalConstants.okButton.rawValue)]
+        )
+    }
 
     @objc private func didNotAccaunt() {
         viewModel.didTapRegister()
