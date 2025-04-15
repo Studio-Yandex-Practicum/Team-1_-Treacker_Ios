@@ -12,8 +12,14 @@ import Expenses
 import Analytics
 
 public final class Router: RouterProtocol {
-    public static let shared = Router()
+    public static var shared: Router!
     public var window: UIWindow?
+    private let coreDataAssembly: CoreDataAssemblyProtocol
+
+    public init(coreDataAssembly: CoreDataAssemblyProtocol) {
+        self.coreDataAssembly = coreDataAssembly
+        Router.shared = self
+    }
 
     public func startApp(using window: UIWindow) {
         self.window = window
@@ -30,8 +36,9 @@ public final class Router: RouterProtocol {
     }
 
     public func routeToMainFlow() {
-        let viewModel = ExpenseListViewModel()
-        let mainVC = ExpenseListViewController(viewModel: viewModel)
+        let viewModel = AnalyticsViewModel(serviceExpense: coreDataAssembly.expenseService, serviceCategory: coreDataAssembly.categoryService)
+        let mainVC = AnalyticsViewController(viewModel: viewModel)
+        viewModel.view = mainVC
         setRootViewController(UINavigationController(rootViewController: mainVC))
     }
 
