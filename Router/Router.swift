@@ -9,11 +9,13 @@ import UIKit
 import Core
 import Auth
 import Expenses
+import Combine
 import Analytics
 
 public final class Router: RouterProtocol {
     public static var shared: Router!
     public var window: UIWindow?
+    private var cancellables = Set<AnyCancellable>()
     private let coreDataAssembly: CoreDataAssemblyProtocol
 
     public init(coreDataAssembly: CoreDataAssemblyProtocol) {
@@ -31,7 +33,7 @@ public final class Router: RouterProtocol {
         if AuthService.shared.isAuthorized {
             routeToMainFlow()
         } else {
-            routeToRecoverFlow()
+            routeToAuthFlow()
         }
     }
 
@@ -43,19 +45,52 @@ public final class Router: RouterProtocol {
     }
 
     public func routeToAuthFlow() {
-        let authVM = AuthViewModel(router: self)
-        let authVC = AuthViewController(viewModel: authVM)
+        let viewModel = AuthViewModel(router: self)
+        let authVC = AuthViewController(viewModel: viewModel)
+
+        viewModel.openRegister
+            .sink { [weak self, weak authVC] in
+                guard let self, let fromVC = authVC else { return }
+                self.routeToRegisterFlow(from: fromVC)
+            }
+            .store(in: &cancellables)
+
+        viewModel.openRecover
+            .sink { [weak self, weak authVC] in
+                guard let self, let fromVC = authVC else { return }
+                self.routeToRecoverFlow(from: fromVC)
+            }
+            .store(in: &cancellables)
+
         setRootViewController(UINavigationController(rootViewController: authVC))
     }
 
-    public func routeToRegisterFlow() {
-        let regVC = RegisterViewController()
-        setRootViewController(regVC)
+    public func routeToRegisterFlow(from: UIViewController) {
+        let viewModel = RegisterViewModel()
+        let regVC = RegisterViewController(viewModel: viewModel)
+
+        viewModel.onRegisterSuccess
+            .sink { [weak self] in
+                guard let self else { return }
+                self.routeToMainFlow()
+            }
+            .store(in: &cancellables)
+
+        from.navigationController?.pushViewController(regVC, animated: true)
     }
 
-    public func routeToRecoverFlow() {
-        let regVC = RecoverViewController()
-        setRootViewController(regVC)
+    public func routeToRecoverFlow(from: UIViewController) {
+        let viewModel = RecoverViewModel()
+        let recVC = RecoverViewController(viewModel: viewModel)
+
+        viewModel.onRecoverySuccess
+            .sink { [weak self] in
+                guard let self else { return }
+                self.routeToAuthFlow()
+            }
+            .store(in: &cancellables)
+
+        from.navigationController?.pushViewController(recVC, animated: true)
     }
 
     private func setRootViewController(_ viewController: UIViewController) {

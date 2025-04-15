@@ -1,5 +1,5 @@
 //
-//  RegisterViewController.swift
+//  RecoverViewController.swift
 //  Auth
 //
 //  Created by Konstantin Lyashenko on 10.04.2025.
@@ -10,36 +10,38 @@ import Core
 import UIComponents
 import Combine
 
-public final class RegisterViewController: UIViewController {
+public final class RecoverViewController: UIViewController {
 
     // MARK: - Private Properties
 
-    private let viewModel: RegisterViewModel
+    private let viewModel: RecoverViewModel
     private var cancellable = Set<AnyCancellable>()
 
     private lazy var titleLabel = makeLabel(
-        text: GlobalConstants.register.rawValue,
+        text: GlobalConstants.recPass.rawValue,
         font: .h1,
         color: .primaryText,
         alignment: .left
     )
 
-    private lazy var emailField = CustomTextField(placeholder: GlobalConstants.email.rawValue)
-
-    private lazy var passwordField =  CustomTextField(
-        placeholder: GlobalConstants.pass.rawValue,
-        isPassword: true
+    private lazy var subtitleLabel = makeLabel(
+        text: GlobalConstants.recInfoSubtitle.rawValue,
+        font: .h5,
+        color: .secondaryText,
+        alignment: .left
     )
 
-    private lazy var registerButton = UIButton.makeButton(
-        title: .regButton,
+    private lazy var emailField = CustomTextField(placeholder: GlobalConstants.email.rawValue)
+
+    private lazy var confirmButton = UIButton.makeButton(
+        title: .confirm,
         target: self,
-        action: #selector(didTapRegister)
+        action: #selector(didTapConfirm)
     )
 
     // MARK: Lifecycle
 
-    public init(viewModel: RegisterViewModel) {
+    public init(viewModel: RecoverViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -60,21 +62,25 @@ public final class RegisterViewController: UIViewController {
 
 // MARK: - Setup UI
 
-private extension RegisterViewController {
+private extension RecoverViewController {
     private func setupUI() {
         let vStack = UIStackView(arrangedSubviews: [
             titleLabel,
+            subtitleLabel,
             emailField,
-            passwordField,
-            registerButton
+            confirmButton
         ])
         vStack.axis = .vertical
         vStack.spacing = UIConstants.Spacing.medium16.rawValue
+        vStack.setCustomSpacing(
+            UIConstants.Spacing.small8.rawValue,
+            after: titleLabel
+        )
 
         view.setupView(vStack)
 
         NSLayoutConstraint.activate([
-            registerButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height54.rawValue),
+            confirmButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height54.rawValue),
             vStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             vStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
             vStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue)
@@ -101,17 +107,16 @@ private extension RegisterViewController {
         navigationItem.hidesBackButton = true
         navigationItem.leftBarButtonItem = .customBackButton(
             target: self,
-            action: #selector(didTapBack),
-            tintColor: .primaryText
+            action: #selector(didTapBack)
         )
     }
 }
 
 // MARK: - Actions
 
-private extension RegisterViewController {
-    @objc private func didTapRegister() {
-        viewModel.register()
+private extension RecoverViewController {
+    @objc private func didTapConfirm() {
+        viewModel.recover()
     }
 
     @objc private func didTapBack() {
@@ -121,14 +126,25 @@ private extension RegisterViewController {
 
 // MARK: - Bindings
 
-private extension RegisterViewController {
+private extension RecoverViewController {
     private func bindViewModel() {
         emailField.textPublisher
             .assign(to: \.email, on: viewModel)
             .store(in: &cancellable)
 
-        passwordField.textPublisher
-            .assign(to: \.password, on: viewModel)
+        viewModel.onRecoverySuccess
+            .sink { [weak self] in
+                guard let self else { return }
+                AlertService.present(
+                    on: self,
+                    title: .sendMessage,
+                    message: GlobalConstants.checkMail.rawValue,
+                    actions: [
+                        .init(title: GlobalConstants.okButton.rawValue, handler: {
+                            self.navigationController?.popViewController(animated: true)
+                        })
+                    ])
+            }
             .store(in: &cancellable)
 
         viewModel.$state
@@ -136,12 +152,10 @@ private extension RegisterViewController {
             .sink { [weak self] state in
                 guard let self else { return }
                 switch state {
-                case .idle(let isValid, _, _):
-                    registerButton.isEnabled = isValid
-                    registerButton.alpha = isValid ? 1.0 : 0.5
+                case .idle:
+                    self.confirmButton.isEnabled = true
                 case .loading:
-                    registerButton.isEnabled = false
-                    registerButton.alpha = 0.5
+                    self.confirmButton.isEnabled = false
                 case .success:
                     break
                 case .failure(let error):

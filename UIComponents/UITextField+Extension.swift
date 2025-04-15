@@ -7,8 +7,11 @@
 
 import UIKit
 import Core
+import Combine
 
 public final class CustomTextField: UITextField {
+
+    // MARK: - Private properties
 
     private let placeholderText: String
     private let isPassword: Bool
@@ -47,10 +50,24 @@ public final class CustomTextField: UITextField {
         right: UIConstants.Constants.large52.rawValue
     )
 
+    // MARK: - Lifecycle
+
     public init(placeholder: String, isPassword: Bool = false) {
         self.placeholderText = placeholder
         self.isPassword = isPassword
         super.init(frame: .zero)
+
+        if isPassword {
+            self.textContentType = .password
+            self.isSecureTextEntry = true
+            self.keyboardType = .default
+        } else {
+            self.textContentType = .emailAddress
+            self.keyboardType = .emailAddress
+            self.autocapitalizationType = .none
+            self.autocorrectionType = .no
+        }
+
         self.tintColor = .primaryText
         setupView()
 
@@ -64,6 +81,8 @@ public final class CustomTextField: UITextField {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // MARK: - Public methods
+
     public override func textRect(forBounds bounds: CGRect) -> CGRect {
         bounds.inset(by: textPadding)
     }
@@ -71,6 +90,8 @@ public final class CustomTextField: UITextField {
     public override func editingRect(forBounds bounds: CGRect) -> CGRect {
         bounds.inset(by: textPadding)
     }
+
+    // MARK: - Private methods
 
     private func setupView() {
         layer.cornerRadius = UIConstants.CornerRadius.medium16.rawValue
@@ -101,7 +122,10 @@ public final class CustomTextField: UITextField {
         NSLayoutConstraint.activate([
             eyeButton.topAnchor.constraint(equalTo: eyeContainer.topAnchor),
             eyeButton.leadingAnchor.constraint(equalTo: eyeContainer.leadingAnchor),
-            eyeButton.trailingAnchor.constraint(equalTo: eyeContainer.trailingAnchor, constant: -UIConstants.Constants.medium16.rawValue),
+            eyeButton.trailingAnchor.constraint(
+                equalTo: eyeContainer.trailingAnchor,
+                constant: -UIConstants.Constants.medium16.rawValue
+            ),
             eyeButton.bottomAnchor.constraint(equalTo: eyeContainer.bottomAnchor),
             eyeButton.widthAnchor.constraint(equalToConstant: UIConstants.Widths.width24.rawValue),
             eyeButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height24.rawValue)
@@ -125,6 +149,8 @@ public final class CustomTextField: UITextField {
             layoutIfNeeded()
         }
     }
+
+    // MARK: - Actions
 
     @objc private func toggleSecureText() {
         isSecureTextEntry.toggle()
@@ -150,5 +176,22 @@ public final class CustomTextField: UITextField {
 
     @objc private func textFieldDidEnd() {
         updateFloatingLabel(animated: true)
+    }
+}
+
+// MARK: - Publisher
+
+public extension UITextField {
+    var textPublisher: AnyPublisher<String, Never> {
+        NotificationCenter.default.publisher(for: UITextField.textDidChangeNotification, object: self)
+            .map { ($0.object as? UITextField)?.text ?? "" }
+            .eraseToAnyPublisher()
+    }
+
+    var didEndEditingPublisher: AnyPublisher<Void, Never> {
+        NotificationCenter.default
+            .publisher(for: UITextField.textDidEndEditingNotification, object: self)
+            .map { _ in () }
+            .eraseToAnyPublisher()
     }
 }

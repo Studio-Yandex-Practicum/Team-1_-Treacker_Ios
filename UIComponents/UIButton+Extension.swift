@@ -41,3 +41,32 @@ public extension UIButton {
             self.addTarget(target, action: action, for: .touchUpInside)
         }
 }
+
+public extension UIButton {
+    static func makeButton(title: GlobalConstants, target: Any?, action: Selector) -> UIButton {
+        let button = UIButton(type: .system)
+        button.setTitle(title.rawValue, for: .normal)
+        button.titleLabel?.font = .h4
+        button.tintColor = .whiteText
+        button.layer.cornerRadius = UIConstants.CornerRadius.medium16.rawValue
+        button.clipsToBounds = true
+        button.isEnabled = false
+
+        let normalColor = UIColor.cAccent
+        let disabledColor = normalColor.withAlphaComponent(0.5)
+
+        button.setBackgroundImage(
+            UIImage.resizableImage(withColor: normalColor, cornerRadius: UIConstants.CornerRadius.medium16.rawValue),
+            for: .normal
+        )
+        button.setBackgroundImage(
+            UIImage.resizableImage(withColor: disabledColor, cornerRadius: UIConstants.CornerRadius.medium16.rawValue),
+            for: .disabled
+        )
+        button.setTitleColor(.whiteText, for: .normal)
+        button.setTitleColor(.whiteText.withAlphaComponent(0.5), for: .disabled)
+        button.addTarget(target, action: action, for: .touchUpInside)
+
+        return button
+    }
+}
