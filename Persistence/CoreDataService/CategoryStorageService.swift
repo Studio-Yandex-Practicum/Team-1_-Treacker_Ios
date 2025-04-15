@@ -22,8 +22,6 @@ final class CategoryStorageService: CategoryStorageServiceProtocol {
 
         let results: [CategoryCD] = coreDataManager.fetch(predicate: nil, sortDescriptors: [sortDescriptor])
 
-        Logger.shared.log(.info, message: "✅ 💾 Категории успешно загружены из Core Data)")
-
         return convertCategories(from: results)
     }
 
@@ -39,12 +37,10 @@ final class CategoryStorageService: CategoryStorageServiceProtocol {
         coreDataManager.save { (categoryCD: CategoryCD, context) in
             categoryCD.id = category.id
             categoryCD.name = category.name
-            categoryCD.colorName = category.colorName
-            categoryCD.iconName = category.iconName
+            categoryCD.colorBgName = category.colorBgName
+            categoryCD.colorPrimaryName = category.colorPrimaryName
             categoryCD.expense = []
         }
-
-        Logger.shared.log(.info, message: "✅ 💾 Категория успешно сохранена в Core Data)")
     }
 
     func deleteCategory(_ categoryId: UUID) {
@@ -57,7 +53,6 @@ final class CategoryStorageService: CategoryStorageServiceProtocol {
         }
 
         coreDataManager.delete(expenseToDelete)
-        Logger.shared.log(.info, message: "✅ 🗑️ 💾 Категория с id \(categoryId) успешно удалён")
     }
 
     private func convertCategories(from: [CategoryCD]) -> [ExpenseCategory] {
@@ -66,8 +61,8 @@ final class CategoryStorageService: CategoryStorageServiceProtocol {
         for categoryCD in from {
             guard let categoryId = categoryCD.id,
                   let name = categoryCD.name,
-                  let iconName = categoryCD.iconName,
-                  let colorName = categoryCD.colorName
+                  let colorBgName = categoryCD.colorBgName,
+                  let colorPrimaryName = categoryCD.colorPrimaryName
             else {
                 continue
             }
@@ -75,8 +70,8 @@ final class CategoryStorageService: CategoryStorageServiceProtocol {
             let category = ExpenseCategory(
                 id: categoryId,
                 name: name,
-                colorName: colorName,
-                iconName: iconName,
+                colorBgName: colorBgName,
+                colorPrimaryName: colorPrimaryName,
                 expense: []
             )
 

@@ -8,7 +8,7 @@
 import UIKit
 import UIComponents
 
-final class CellAnalitycs: UICollectionViewCell, ReuseIdentifying {
+final class CellAnalytics: UICollectionViewCell, ReuseIdentifying {
 
     // MARK: - Private Properties
 
@@ -56,7 +56,7 @@ final class CellAnalitycs: UICollectionViewCell, ReuseIdentifying {
 
 // MARK: - Extension: Setup Layout
 
-extension CellAnalitycs {
+extension CellAnalytics {
     private func setupLayout() {
         self.setupView(pieChart)
         self.setupView(labelPercent)

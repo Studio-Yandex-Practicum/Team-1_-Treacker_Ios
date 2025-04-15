@@ -19,13 +19,24 @@ final class CoreDataManager {
     private var context: NSManagedObjectContext { persistentContainer.viewContext }
 
     init() {
-        persistentContainer = NSPersistentContainer(name: "SpendWise")
+        guard let modelURL = Bundle(for: CoreDataManager.self).url(forResource: "SpendWise", withExtension: "momd"),
+              let model = NSManagedObjectModel(contentsOf: modelURL) else {
+            Logger.shared.log(.error, message: "❌ 💾 Не удалось найти или загрузить модель CoreData SpendWise")
+            fatalError("❌ 💾 Не удалось найти или загрузить модель CoreData SpendWise")
+        }
+        persistentContainer = NSPersistentContainer(name: "SpendWise", managedObjectModel: model)
+
+        let semaphore = DispatchSemaphore(value: 0)
+        
         persistentContainer.loadPersistentStores { _, error in
             if let error = error {
                 Logger.shared.log(.error, message: "❌ 💾 Ошибка загрузки Core Data: \(error.localizedDescription)")
                 fatalError("❌ 💾 Ошибка загрузки Core Data: \(error.localizedDescription)")
             }
+            semaphore.signal()
         }
+
+        semaphore.wait()
         Logger.shared.log(.info, message: "✅ 💾 Core Data загружена успешно")
     }
 
@@ -45,8 +56,7 @@ final class CoreDataManager {
 }
 
 extension CoreDataManager: CoreDataManagerProtocol {
-    func fetch<T: NSManagedObject>(predicate: NSPredicate?,
-                                   sortDescriptors: [NSSortDescriptor]?) -> [T] {
+    func fetch<T: NSManagedObject>(predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]?) -> [T] {
         let request = T.fetchRequest()
         request.predicate = predicate
         request.sortDescriptors = sortDescriptors == [] ? nil : sortDescriptors

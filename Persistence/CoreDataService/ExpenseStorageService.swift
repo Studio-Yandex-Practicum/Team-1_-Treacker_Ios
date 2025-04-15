@@ -22,23 +22,20 @@ final class ExpenseStorageService: ExpenseStorageServiceProtocol {
         let startOfDay = startDate.startOfDay
         let endOdDay: Date = endDate?.endOfDay ?? startDate.endOfDay
 
-//        let categories: [String]? = categories?.count == 0 ? nil : categories
-
         var predicates: [NSPredicate] = []
 
         let datePredicate = NSPredicate(format: "date >= %@ AND date <= %@", startOfDay as NSDate, endOdDay as NSDate)
         predicates.append(datePredicate)
-//        if let categories, !categories.isEmpty {
-//            let categoryPredicate = NSPredicate(format: "categoryName IN %@", categories)
-//            predicates.append(categoryPredicate)
-//        }
+        
+        if let categories, !categories.isEmpty {
+            let categoryPredicate = NSPredicate(format: "categoryName IN %@", categories)
+            predicates.append(categoryPredicate)
+        }
 
         let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         let sortDescriptor = NSSortDescriptor(key: "date", ascending: false)
 
         let results: [ExpenseCD] = coreDataManager.fetch(predicate: compoundPredicate, sortDescriptors: [sortDescriptor])
-
-        Logger.shared.log(.info, message: "✅ 💾 Расходы успешно загружены из Core Data)")
 
         return convertToCategories(from: results)
     }
@@ -65,8 +62,6 @@ final class ExpenseStorageService: ExpenseStorageServiceProtocol {
 
             expenseCD.amount = amountCD
         }
-
-        Logger.shared.log(.info, message: "✅ 💾 Расходы успешно сохранен в Core Data)")
     }
 
     func deleteExpense(_ expenseId: UUID) {
@@ -79,7 +74,6 @@ final class ExpenseStorageService: ExpenseStorageServiceProtocol {
         }
 
         coreDataManager.delete(expenseToDelete)
-        Logger.shared.log(.info, message: "✅ 🗑️ 💾 Расход с id \(expenseId) успешно удалён")
     }
 
     private func convertToCategories(from cdExpenses: [ExpenseCD]) -> [ExpenseCategory] {
@@ -91,8 +85,8 @@ final class ExpenseStorageService: ExpenseStorageServiceProtocol {
             guard let categoryCD = categoryCDOptional,
                   let categoryId = categoryCD.id,
                   let name = categoryCD.name,
-                  let iconName = categoryCD.iconName,
-                  let colorName = categoryCD.colorName
+                  let colorBgName = categoryCD.colorBgName,
+                  let colorPrimaryName = categoryCD.colorPrimaryName
             else {
                 continue
             }
@@ -119,8 +113,8 @@ final class ExpenseStorageService: ExpenseStorageServiceProtocol {
             let category = ExpenseCategory(
                 id: categoryId,
                 name: name,
-                colorName: colorName,
-                iconName: iconName,
+                colorBgName: colorBgName,
+                colorPrimaryName: colorPrimaryName,
                 expense: expenses
             )
 
