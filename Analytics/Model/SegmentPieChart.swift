@@ -7,7 +7,12 @@
 
 import UIKit
 
-struct SegmentPieChart {
+public struct SegmentPieChart {
     let color: UIColor
     let value: CGFloat
+
+    init(color: String, value: CGFloat) {
+        self.color = UIColor.from(colorName: color)
+        self.value = value
+    }
 }

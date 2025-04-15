@@ -33,7 +33,7 @@ final class ExpenseStorageService: ExpenseStorageServiceProtocol {
         }
 
         let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
-//        let sortDescriptor = NSSortDescriptor(key: "date", ascending: false)
+        let sortDescriptor = NSSortDescriptor(key: "date", ascending: false)
 
         let results: [ExpenseCD] = coreDataManager.fetch(predicate: compoundPredicate, sortDescriptors: nil)
 

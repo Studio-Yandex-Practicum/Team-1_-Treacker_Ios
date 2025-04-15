@@ -54,4 +54,10 @@ public enum GlobalConstants: String {
     case analyticsTimePeriodMonth = "Месяц"
     case analyticsTimePeriodYear = "Год"
     case analyticsTimePeriodCustom = "Период"
+    case analyticsRUB = "₽"
+    case analyticsUSD = "$"
+    case analyticsEUR = "€"
+
+    case analyticsCellCategoryOperation = "операция"
+    case analyticsCellCategoryPercent = "%"
 }

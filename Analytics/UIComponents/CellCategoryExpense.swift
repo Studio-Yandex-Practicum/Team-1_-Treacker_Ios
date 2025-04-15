@@ -107,8 +107,14 @@ final class CellCategoryExpense: UITableViewCell, ReuseIdentifying {
 
     // MARK: - Public Functions
 
-    func configureCell() {
-        
+    func configureCell(category: ModelCellCategory) {
+        iconView.image = UIImage(named: category.nameIcon)
+        iconView.backgroundColor = category.iconColorBg
+        iconView.tintColor = category.iconColorPrimary
+        labelName.text = category.name
+        labelCount.text = category.countExpenses + " " + GlobalConstants.analyticsCellCategoryOperation.rawValue
+        labelAmount.text = category.amount + " " + GlobalConstants.analyticsRUB.rawValue
+        labelPercent.text = category.percentageOfTotal + GlobalConstants.analyticsCellCategoryPercent.rawValue
     }
 }
 
