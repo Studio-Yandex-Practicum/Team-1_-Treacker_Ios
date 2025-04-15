@@ -29,5 +29,16 @@
         </dict>
         <key>UILaunchStoryboardName</key>
         <string>LaunchScreen</string>
+
+        <key>CFBundleURLTypes</key>
+            <array>
+                <dict>
+                    <key>CFBundleURLSchemes</key>
+                    <array>
+                        <string>com.googleusercontent.apps.834110693747-68jml4i3hp6b69353vpbbm1989he3dcb</string>
+                    </array>
+                </dict>
+            </array>
     </dict>
 </plist>
+
