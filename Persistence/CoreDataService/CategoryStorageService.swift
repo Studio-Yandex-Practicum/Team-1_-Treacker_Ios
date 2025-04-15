@@ -39,6 +39,7 @@ final class CategoryStorageService: CategoryStorageServiceProtocol {
             categoryCD.name = category.name
             categoryCD.colorBgName = category.colorBgName
             categoryCD.colorPrimaryName = category.colorPrimaryName
+            categoryCD.nameIcon = category.nameIcon
             categoryCD.expense = []
         }
     }
@@ -62,7 +63,8 @@ final class CategoryStorageService: CategoryStorageServiceProtocol {
             guard let categoryId = categoryCD.id,
                   let name = categoryCD.name,
                   let colorBgName = categoryCD.colorBgName,
-                  let colorPrimaryName = categoryCD.colorPrimaryName
+                  let colorPrimaryName = categoryCD.colorPrimaryName,
+                  let nameIcon = categoryCD.nameIcon
             else {
                 continue
             }
@@ -72,6 +74,7 @@ final class CategoryStorageService: CategoryStorageServiceProtocol {
                 name: name,
                 colorBgName: colorBgName,
                 colorPrimaryName: colorPrimaryName,
+                nameIcon: nameIcon,
                 expense: []
             )
 

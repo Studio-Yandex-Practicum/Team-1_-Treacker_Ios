@@ -33,9 +33,9 @@ final class ExpenseStorageService: ExpenseStorageServiceProtocol {
         }
 
         let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
-        let sortDescriptor = NSSortDescriptor(key: "date", ascending: false)
+//        let sortDescriptor = NSSortDescriptor(key: "date", ascending: false)
 
-        let results: [ExpenseCD] = coreDataManager.fetch(predicate: compoundPredicate, sortDescriptors: [sortDescriptor])
+        let results: [ExpenseCD] = coreDataManager.fetch(predicate: compoundPredicate, sortDescriptors: nil)
 
         return convertToCategories(from: results)
     }
@@ -86,7 +86,8 @@ final class ExpenseStorageService: ExpenseStorageServiceProtocol {
                   let categoryId = categoryCD.id,
                   let name = categoryCD.name,
                   let colorBgName = categoryCD.colorBgName,
-                  let colorPrimaryName = categoryCD.colorPrimaryName
+                  let colorPrimaryName = categoryCD.colorPrimaryName,
+                  let nameIcon = categoryCD.nameIcon
             else {
                 continue
             }
@@ -115,6 +116,7 @@ final class ExpenseStorageService: ExpenseStorageServiceProtocol {
                 name: name,
                 colorBgName: colorBgName,
                 colorPrimaryName: colorPrimaryName,
+                nameIcon: nameIcon,
                 expense: expenses
             )
 
