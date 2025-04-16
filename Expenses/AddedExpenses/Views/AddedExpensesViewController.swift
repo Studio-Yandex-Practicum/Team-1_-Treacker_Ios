@@ -112,38 +112,49 @@ public final class AddedExpensesViewController: UIViewController {
     }
 
     private func makeCollectionView() -> UICollectionView {
+        
+        let screenWidth = UIScreen.main.bounds.width
+        let screenScale = UIScreen.main.scale
+
+        let spacing: CGFloat = 8
+        let itemsPerRow: CGFloat = 5
+        let totalSpacing = spacing * (itemsPerRow - 1)
+        let availableWidth = screenWidth - 32 - totalSpacing
+        let rawItemWidth = availableWidth / itemsPerRow
+        let adjustedItemWidth = floor(rawItemWidth * screenScale) / screenScale
+
+        let cellHeight: CGFloat = 88
+
         let itemSize = NSCollectionLayoutSize(
-            widthDimension: .absolute(59),
-            heightDimension: .absolute(88)
+            widthDimension: .absolute(adjustedItemWidth),
+            heightDimension: .absolute(cellHeight)
         )
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
         let horizontalGroupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .absolute(72)
+            heightDimension: .absolute(cellHeight)
         )
         let horizontalGroup = NSCollectionLayoutGroup.horizontal(
             layoutSize: horizontalGroupSize,
-            repeatingSubitem: item,
-            count: 5
+            subitems: [item]
         )
-        horizontalGroup.interItemSpacing = .fixed(8.5)
 
+        let verticalGroupHeight = (cellHeight * 2) + 20
         let verticalGroupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .absolute(156)
+            heightDimension: .absolute(verticalGroupHeight)
         )
         let verticalGroup = NSCollectionLayoutGroup.vertical(
             layoutSize: verticalGroupSize,
             subitems: [horizontalGroup, horizontalGroup]
         )
-        verticalGroup.interItemSpacing = .fixed(10)
 
         let section = NSCollectionLayoutSection(group: verticalGroup)
         section.orthogonalScrollingBehavior = .groupPaging
         section.contentInsets = NSDirectionalEdgeInsets(top: 20, leading: 16, bottom: 0, trailing: 16)
 
-        section.visibleItemsInvalidationHandler = { [weak self] (visibleItems, contentOffset, environment) in
+        section.visibleItemsInvalidationHandler = { [weak self] (_, contentOffset, environment) in
             guard let self else { return }
             let pageWidth = environment.container.contentSize.width
             let currentPage = Int(round(contentOffset.x / pageWidth))
@@ -163,6 +174,7 @@ public final class AddedExpensesViewController: UIViewController {
         collectionView.register(AddedExpensesCategoryCell.self)
         collectionView.delegate = self
         collectionView.dataSource = self
+
         return collectionView
     }
 

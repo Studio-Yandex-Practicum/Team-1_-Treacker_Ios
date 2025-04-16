@@ -71,12 +71,8 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
     // MARK: - Inputs
 
     public func loadCategories() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-            guard let self else { return }
-
-            self.categories = self.mockCategories()
-            self.onCategoriesLoaded?(self.categories)
-        }
+        categories = self.mockCategories()
+        onCategoriesLoaded?(categories)
     }
 
     public func category(at index: Int) -> CategoryModel {
