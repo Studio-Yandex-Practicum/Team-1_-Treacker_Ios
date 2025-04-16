@@ -99,21 +99,21 @@ extension AddedExpensesViewController {
             noteTextField
         ])
         stack.axis = .vertical
-        stack.spacing = 16
-        stack.setCustomSpacing(0, after: collectionView)
-        stack.setCustomSpacing(4, after: pageControl)
-        stack.setCustomSpacing(12, after: dateTextField)
+        stack.spacing = UIConstants.Spacing.medium16.rawValue
+        stack.setCustomSpacing(UIConstants.Spacing.zero.rawValue, after: collectionView)
+        stack.setCustomSpacing(UIConstants.Spacing.small4.rawValue, after: pageControl)
+        stack.setCustomSpacing(UIConstants.Spacing.medium12.rawValue, after: dateTextField)
         view.setupView(stack)
         view.setupView(addButton)
 
         NSLayoutConstraint.activate([
             dateTextField.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height60.rawValue),
-            collectionView.heightAnchor.constraint(equalToConstant: 200),
-            stack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            stack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            stack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            addButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            addButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            collectionView.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height200.rawValue),
+            stack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: UIConstants.Constants.large20.rawValue),
+            stack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
+            stack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
+            addButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
+            addButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
             addButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
@@ -121,13 +121,16 @@ extension AddedExpensesViewController {
 
 // MARK: - Setup Collection View
 
-extension AddedExpensesViewController {
+private extension AddedExpensesViewController {
 
     private func makeCollectionView() -> UICollectionView {
         let layout = UICollectionViewCompositionalLayout(section: makeSection())
 
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.isPagingEnabled = false
+        collectionView.alwaysBounceVertical = false
+        collectionView.alwaysBounceHorizontal = true
+        collectionView.isScrollEnabled = true
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.backgroundColor = .primaryBg
         collectionView.layer.cornerRadius = UIConstants.CornerRadius.medium16.rawValue
@@ -139,8 +142,8 @@ extension AddedExpensesViewController {
     }
 
     private func calculateItemWidth(screenWidth: CGFloat, screenScale: CGFloat) -> CGFloat {
-        let spacing: CGFloat = 8
-        let itemsPerRow: CGFloat = 5
+        let spacing: CGFloat = UIConstants.Spacing.small8.rawValue
+        let itemsPerRow: CGFloat = UIConstants.Constants.small5.rawValue
         let totalSpacing = spacing * (itemsPerRow - 1)
         let availableWidth = screenWidth - 32 - totalSpacing
         let rawItemWidth = availableWidth / itemsPerRow
@@ -152,7 +155,7 @@ extension AddedExpensesViewController {
         let screenScale = UIScreen.main.scale
 
         let itemWidth = calculateItemWidth(screenWidth: screenWidth, screenScale: screenScale)
-        let cellHeight: CGFloat = 88
+        let cellHeight: CGFloat = UIConstants.Heights.height70.rawValue
 
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .absolute(itemWidth),
@@ -169,7 +172,7 @@ extension AddedExpensesViewController {
             subitems: [item]
         )
 
-        let verticalGroupHeight = (cellHeight * 2) + 20
+        let verticalGroupHeight = (cellHeight * 2) + UIConstants.Heights.height20.rawValue
         let verticalGroupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
             heightDimension: .absolute(verticalGroupHeight)
@@ -178,10 +181,16 @@ extension AddedExpensesViewController {
             layoutSize: verticalGroupSize,
             subitems: [horizontalGroup, horizontalGroup]
         )
+        verticalGroup.interItemSpacing = .fixed(UIConstants.Spacing.large20.rawValue)
 
         let section = NSCollectionLayoutSection(group: verticalGroup)
         section.orthogonalScrollingBehavior = .groupPaging
-        section.contentInsets = NSDirectionalEdgeInsets(top: 20, leading: 16, bottom: 0, trailing: 16)
+        section.contentInsets = NSDirectionalEdgeInsets(
+            top: UIConstants.Insets.large20.rawValue,
+            leading: UIConstants.Insets.medium16.rawValue,
+            bottom: UIConstants.Insets.zero.rawValue,
+            trailing: UIConstants.Insets.medium16.rawValue
+        )
 
         section.visibleItemsInvalidationHandler = { [weak self] (_, contentOffset, environment) in
             guard let self else { return }
@@ -197,7 +206,7 @@ extension AddedExpensesViewController {
 
 // MARK: - Bindings
 
-extension AddedExpensesViewController {
+private extension AddedExpensesViewController {
 
     private func bindViewModel() {
         viewModel.onFormValidationChanged = { [weak self] isValid in
@@ -222,7 +231,7 @@ extension AddedExpensesViewController {
 
 // MARK: - Actions
 
-extension AddedExpensesViewController {
+private extension AddedExpensesViewController {
 
     private func setupActions() {
         amountTextField.addTarget(
