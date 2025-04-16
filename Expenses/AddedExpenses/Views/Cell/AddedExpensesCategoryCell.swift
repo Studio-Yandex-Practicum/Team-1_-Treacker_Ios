@@ -63,6 +63,7 @@ private extension AddedExpensesCategoryCell {
         iconImageView.constraintCenters(to: iconContainer)
 
         NSLayoutConstraint.activate([
+            titleLabel.widthAnchor.constraint(equalToConstant: UIConstants.Widths.width52.rawValue),
             iconContainer.widthAnchor.constraint(equalToConstant: UIConstants.Widths.width52.rawValue),
             iconContainer.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height52.rawValue),
             iconImageView.widthAnchor.constraint(equalToConstant: UIConstants.Widths.width24.rawValue),

@@ -51,7 +51,7 @@ public final class AddedExpensesViewController: UIViewController {
 
     private lazy var closeButton: UIButton = {
         let button = UIButton(type: .system)
-        let image = UIImage(systemName: "xmark")?.withRenderingMode(.alwaysTemplate)
+        let image = UIImage(named: AppIcon.close.rawValue)?.withRenderingMode(.alwaysTemplate)
         button.setImage(image, for: .normal)
         button.tintColor = .primaryText
         button.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
@@ -78,8 +78,11 @@ public final class AddedExpensesViewController: UIViewController {
         bindViewModel()
         viewModel.loadCategories()
     }
+}
 
-    // MARK: - Setup UI
+// MARK: - Setup UI
+
+extension AddedExpensesViewController {
 
     private func setupUI() {
         let hStack = UIStackView(arrangedSubviews: [
@@ -93,40 +96,66 @@ public final class AddedExpensesViewController: UIViewController {
             collectionView,
             pageControl,
             dateTextField,
-            noteTextField,
-            addButton
+            noteTextField
         ])
         stack.axis = .vertical
         stack.spacing = 16
         stack.setCustomSpacing(0, after: collectionView)
         stack.setCustomSpacing(4, after: pageControl)
+        stack.setCustomSpacing(12, after: dateTextField)
         view.setupView(stack)
+        view.setupView(addButton)
 
         NSLayoutConstraint.activate([
             dateTextField.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height60.rawValue),
             collectionView.heightAnchor.constraint(equalToConstant: 200),
-            stack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            stack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            stack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+            stack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            stack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            stack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            addButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            addButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            addButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
+}
+
+// MARK: - Setup Collection View
+
+extension AddedExpensesViewController {
 
     private func makeCollectionView() -> UICollectionView {
-        
-        let screenWidth = UIScreen.main.bounds.width
-        let screenScale = UIScreen.main.scale
+        let layout = UICollectionViewCompositionalLayout(section: makeSection())
 
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.isPagingEnabled = false
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.backgroundColor = .primaryBg
+        collectionView.layer.cornerRadius = UIConstants.CornerRadius.medium16.rawValue
+        collectionView.clipsToBounds = true
+        collectionView.register(AddedExpensesCategoryCell.self)
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        return collectionView
+    }
+
+    private func calculateItemWidth(screenWidth: CGFloat, screenScale: CGFloat) -> CGFloat {
         let spacing: CGFloat = 8
         let itemsPerRow: CGFloat = 5
         let totalSpacing = spacing * (itemsPerRow - 1)
         let availableWidth = screenWidth - 32 - totalSpacing
         let rawItemWidth = availableWidth / itemsPerRow
-        let adjustedItemWidth = floor(rawItemWidth * screenScale) / screenScale
+        return floor(rawItemWidth * screenScale) / screenScale
+    }
 
+    private func makeSection() -> NSCollectionLayoutSection {
+        let screenWidth = UIScreen.main.bounds.width
+        let screenScale = UIScreen.main.scale
+
+        let itemWidth = calculateItemWidth(screenWidth: screenWidth, screenScale: screenScale)
         let cellHeight: CGFloat = 88
 
         let itemSize = NSCollectionLayoutSize(
-            widthDimension: .absolute(adjustedItemWidth),
+            widthDimension: .absolute(itemWidth),
             heightDimension: .absolute(cellHeight)
         )
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
@@ -162,23 +191,13 @@ public final class AddedExpensesViewController: UIViewController {
                 self.pageControl.currentPage = currentPage
             }
         }
-
-        let layout = UICollectionViewCompositionalLayout(section: section)
-
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.isPagingEnabled = false
-        collectionView.showsHorizontalScrollIndicator = false
-        collectionView.backgroundColor = .primaryBg
-        collectionView.layer.cornerRadius = UIConstants.CornerRadius.medium16.rawValue
-        collectionView.clipsToBounds = true
-        collectionView.register(AddedExpensesCategoryCell.self)
-        collectionView.delegate = self
-        collectionView.dataSource = self
-
-        return collectionView
+        return section
     }
+}
 
-    // MARK: - Bindings
+// MARK: - Bindings
+
+extension AddedExpensesViewController {
 
     private func bindViewModel() {
         viewModel.onFormValidationChanged = { [weak self] isValid in
@@ -199,8 +218,11 @@ public final class AddedExpensesViewController: UIViewController {
             self.collectionView.reloadData()
         }
     }
+}
 
-    // MARK: - Actions
+// MARK: - Actions
+
+extension AddedExpensesViewController {
 
     private func setupActions() {
         amountTextField.addTarget(
@@ -227,6 +249,7 @@ public final class AddedExpensesViewController: UIViewController {
 // MARK: - UICollectionViewDelegate
 
 extension AddedExpensesViewController: UICollectionViewDelegate {
+
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let pageWidth = scrollView.frame.width
         let currentPage = Int((scrollView.contentOffset.x + pageWidth / 2) / pageWidth)
@@ -237,11 +260,18 @@ extension AddedExpensesViewController: UICollectionViewDelegate {
 // MARK: - UICollectionViewDataSource
 
 extension AddedExpensesViewController: UICollectionViewDataSource {
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+
+    public func collectionView(
+        _ collectionView: UICollectionView,
+        numberOfItemsInSection section: Int
+    ) -> Int {
         viewModel.categoriesCount
     }
 
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    public func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         let category = viewModel.category(at: indexPath.item)
         let cell: AddedExpensesCategoryCell = collectionView.dequeueReusableCell(indexPath: indexPath)
         let iconColor = category.colorName
@@ -249,8 +279,8 @@ extension AddedExpensesViewController: UICollectionViewDataSource {
         cell.configure(
             title: category.name,
             image: UIImage(named: category.iconName),
-            iconColor: UIColor(named: String(iconColor.dropLast(3))) ?? .systemGray5,
-            backgrounColor: UIColor(named: category.colorName) ?? .systemGray5
+            iconColor: UIColor(named: String(iconColor.dropLast(3))) ?? .systemGray,
+            backgrounColor: UIColor(named: category.colorName) ?? .systemGray
         )
         return cell
     }

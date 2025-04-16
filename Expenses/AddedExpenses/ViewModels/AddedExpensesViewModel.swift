@@ -110,7 +110,7 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
             .init(id: UUID(), name: "Еда вне дома", colorName: "ic-red-new-bg", iconName: AppIcon.fastfood.rawValue, expense: []),
             .init(id: UUID(), name: "Развлечения", colorName: "ic-violet-new-bg", iconName: AppIcon.present.rawValue, expense: []),
             .init(id: UUID(), name: "Авто", colorName: "ic-yellow-new-bg", iconName: AppIcon.shop.rawValue, expense: []),
-            .init(id: UUID(), name: "Покупки", colorName: "ic-blue-new-bge", iconName: AppIcon.doctor.rawValue, expense: []),
+            .init(id: UUID(), name: "Покупки", colorName: "ic-blue-new-bg", iconName: AppIcon.doctor.rawValue, expense: []),
             .init(id: UUID(), name: "Еда вне дома", colorName: "ic-bright-blue-new-bg", iconName: AppIcon.dog.rawValue, expense: []),
             .init(id: UUID(), name: "Развлечения", colorName: "ic-bright-green-new-bg", iconName: AppIcon.cat.rawValue, expense: []),
             .init(id: UUID(), name: "Игры", colorName: "ic-dark-blue-new-bg", iconName: AppIcon.gamepad.rawValue, expense: []),
