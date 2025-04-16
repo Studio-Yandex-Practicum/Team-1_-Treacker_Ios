@@ -11,6 +11,8 @@ import UIComponents
 
 public final class AddedExpensesViewController: UIViewController {
 
+    // MARK: - Properties
+
     private let viewModel: AddedExpensesViewModelProtocol
 
     private lazy var titleLabel: UILabel = .init(
@@ -32,7 +34,18 @@ public final class AddedExpensesViewController: UIViewController {
         return field
     }()
 
-    private lazy var collectionView = makeCollectionView()
+    private lazy var collectionView: UICollectionView = makeCollectionView()
+
+    private lazy var pageControl: UIPageControl = {
+        let control = UIPageControl()
+        control.currentPage = 0
+        control.numberOfPages = 0
+        control.pageIndicatorTintColor = .lightGray
+        control.currentPageIndicatorTintColor = .cAccent
+        control.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
+        control.isUserInteractionEnabled = false
+        return control
+    }()
 
     private lazy var addButton: UIButton = .makeButton(title: .add, target: self, action: #selector(addTapped))
 
@@ -65,13 +78,10 @@ public final class AddedExpensesViewController: UIViewController {
         bindViewModel()
         viewModel.loadCategories()
     }
-}
 
-// MARK: - Setup UI
+    // MARK: - Setup UI
 
-private extension AddedExpensesViewController {
-
-    func setupUI() {
+    private func setupUI() {
         let hStack = UIStackView(arrangedSubviews: [
             titleLabel, closeButton
         ])
@@ -81,12 +91,15 @@ private extension AddedExpensesViewController {
             hStack,
             amountTextField,
             collectionView,
+            pageControl,
             dateTextField,
             noteTextField,
             addButton
         ])
         stack.axis = .vertical
         stack.spacing = 16
+        stack.setCustomSpacing(0, after: collectionView)
+        stack.setCustomSpacing(4, after: pageControl)
         view.setupView(stack)
 
         NSLayoutConstraint.activate([
@@ -98,27 +111,64 @@ private extension AddedExpensesViewController {
         ])
     }
 
-    func makeCollectionView() -> UICollectionView {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.minimumLineSpacing = 12
-        layout.itemSize = CGSize(width: 80, height: 200)
+    private func makeCollectionView() -> UICollectionView {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .absolute(59),
+            heightDimension: .absolute(88)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+
+        let horizontalGroupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .absolute(72)
+        )
+        let horizontalGroup = NSCollectionLayoutGroup.horizontal(
+            layoutSize: horizontalGroupSize,
+            repeatingSubitem: item,
+            count: 5
+        )
+        horizontalGroup.interItemSpacing = .fixed(8.5)
+
+        let verticalGroupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .absolute(156)
+        )
+        let verticalGroup = NSCollectionLayoutGroup.vertical(
+            layoutSize: verticalGroupSize,
+            subitems: [horizontalGroup, horizontalGroup]
+        )
+        verticalGroup.interItemSpacing = .fixed(10)
+
+        let section = NSCollectionLayoutSection(group: verticalGroup)
+        section.orthogonalScrollingBehavior = .groupPaging
+        section.contentInsets = NSDirectionalEdgeInsets(top: 20, leading: 16, bottom: 0, trailing: 16)
+
+        section.visibleItemsInvalidationHandler = { [weak self] (visibleItems, contentOffset, environment) in
+            guard let self else { return }
+            let pageWidth = environment.container.contentSize.width
+            let currentPage = Int(round(contentOffset.x / pageWidth))
+            DispatchQueue.main.async {
+                self.pageControl.currentPage = currentPage
+            }
+        }
+
+        let layout = UICollectionViewCompositionalLayout(section: section)
 
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.register(AddedExpensesCategoryCell.self)
-        collectionView.backgroundColor = .clear
+        collectionView.isPagingEnabled = false
         collectionView.showsHorizontalScrollIndicator = false
+        collectionView.backgroundColor = .primaryBg
+        collectionView.layer.cornerRadius = UIConstants.CornerRadius.medium16.rawValue
+        collectionView.clipsToBounds = true
+        collectionView.register(AddedExpensesCategoryCell.self)
         collectionView.delegate = self
         collectionView.dataSource = self
         return collectionView
     }
-}
 
-// MARK: - Bindings
+    // MARK: - Bindings
 
-private extension AddedExpensesViewController {
-
-    func bindViewModel() {
+    private func bindViewModel() {
         viewModel.onFormValidationChanged = { [weak self] isValid in
             self?.addButton.isEnabled = isValid
         }
@@ -131,17 +181,16 @@ private extension AddedExpensesViewController {
             self?.collectionView.reloadData()
         }
 
-        viewModel.onCategoriesLoaded = { [weak self] _ in
-            self?.collectionView.reloadData()
+        viewModel.onCategoriesLoaded = { [weak self] categories in
+            guard let self else { return }
+            self.pageControl.numberOfPages = Int(ceil(Double(categories.count) / 10.0))
+            self.collectionView.reloadData()
         }
     }
-}
 
-// MARK: - Actions
+    // MARK: - Actions
 
-private extension AddedExpensesViewController {
-
-    func setupActions() {
+    private func setupActions() {
         amountTextField.addTarget(
             self,
             action: #selector(amountChanged(_:)),
@@ -149,15 +198,15 @@ private extension AddedExpensesViewController {
         )
     }
 
-    @objc func closeTapped() {
+    @objc private func closeTapped() {
         dismiss(animated: true)
     }
 
-    @objc func amountChanged(_ sender: UITextField) {
+    @objc private func amountChanged(_ sender: UITextField) {
         viewModel.updateAmount(sender.text ?? "")
     }
 
-    @objc func addTapped() {
+    @objc private func addTapped() {
         print("✅ Расход сохранён!")
         // TODO: вызывать сервис сохранения, закрыть модуль, показать алерт
     }
@@ -165,7 +214,13 @@ private extension AddedExpensesViewController {
 
 // MARK: - UICollectionViewDelegate
 
-extension AddedExpensesViewController: UICollectionViewDelegate {}
+extension AddedExpensesViewController: UICollectionViewDelegate {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let pageWidth = scrollView.frame.width
+        let currentPage = Int((scrollView.contentOffset.x + pageWidth / 2) / pageWidth)
+        pageControl.currentPage = currentPage
+    }
+}
 
 // MARK: - UICollectionViewDataSource
 
@@ -177,10 +232,12 @@ extension AddedExpensesViewController: UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let category = viewModel.category(at: indexPath.item)
         let cell: AddedExpensesCategoryCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+        let iconColor = category.colorName
+
         cell.configure(
             title: category.name,
             image: UIImage(named: category.iconName),
-            iconColor: .secondaryText,
+            iconColor: UIColor(named: String(iconColor.dropLast(3))) ?? .systemGray5,
             backgrounColor: UIColor(named: category.colorName) ?? .systemGray5
         )
         return cell

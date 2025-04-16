@@ -7,6 +7,7 @@
 
 import Foundation
 import Persistence
+import Core
 
 public protocol AddedExpensesViewModelProtocol: AnyObject {
 
@@ -101,16 +102,24 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
 
     private func mockCategories() -> [CategoryModel] {
         return [
-            .init(id: UUID(), name: "Транспорт", colorName: "blue", iconName: "bus", expense: []),
-            .init(id: UUID(), name: "Кафе", colorName: "red", iconName: "coffee", expense: []),
-            .init(id: UUID(), name: "Медицина", colorName: "purple", iconName: "stethoscope", expense: []),
-            .init(id: UUID(), name: "Дом", colorName: "pink", iconName: "home", expense: []),
-            .init(id: UUID(), name: "Авто", colorName: "green", iconName: "car", expense: []),
-            .init(id: UUID(), name: "Покупки", colorName: "orange", iconName: "cart", expense: []),
-            .init(id: UUID(), name: "Еда вне дома", colorName: "cyan", iconName: "pizza", expense: []),
-            .init(id: UUID(), name: "Развлечения", colorName: "lightGreen", iconName: "party", expense: []),
-            .init(id: UUID(), name: "Игры", colorName: "lightBlue", iconName: "gamepad", expense: []),
-            .init(id: UUID(), name: "Добавить", colorName: "gray", iconName: "plus", expense: [])
+            .init(id: UUID(), name: "Транспорт", colorName: "ic-blue-new-bg", iconName: AppIcon.bus.rawValue, expense: []),
+            .init(id: UUID(), name: "Кафе", colorName: "ic-bright-blue-new-bg", iconName: AppIcon.coffee.rawValue, expense: []),
+            .init(id: UUID(), name: "Медицина", colorName: "ic-bright-blue-new-bg", iconName: AppIcon.medicine.rawValue, expense: []),
+            .init(id: UUID(), name: "Дом", colorName: "ic-dark-blue-new-bg", iconName: AppIcon.home.rawValue, expense: []),
+            .init(id: UUID(), name: "Авто", colorName: "ic-dark-green-new-bg", iconName: AppIcon.car.rawValue, expense: []),
+            .init(id: UUID(), name: "Покупки", colorName: "ic-orange-new-bg", iconName: AppIcon.shoping.rawValue, expense: []),
+            .init(id: UUID(), name: "Еда вне дома", colorName: "ic-green-new-bg", iconName: AppIcon.fastfood.rawValue, expense: []),
+            .init(id: UUID(), name: "Развлечения", colorName: "ic-pink-new-bg", iconName: AppIcon.party.rawValue, expense: []),
+            .init(id: UUID(), name: "Авто", colorName: "ic-purple-new-bg", iconName: AppIcon.car.rawValue, expense: []),
+            .init(id: UUID(), name: "Еда вне дома", colorName: "ic-red-new-bg", iconName: AppIcon.fastfood.rawValue, expense: []),
+            .init(id: UUID(), name: "Развлечения", colorName: "ic-violet-new-bg", iconName: AppIcon.present.rawValue, expense: []),
+            .init(id: UUID(), name: "Авто", colorName: "ic-yellow-new-bg", iconName: AppIcon.shop.rawValue, expense: []),
+            .init(id: UUID(), name: "Покупки", colorName: "ic-blue-new-bge", iconName: AppIcon.doctor.rawValue, expense: []),
+            .init(id: UUID(), name: "Еда вне дома", colorName: "ic-bright-blue-new-bg", iconName: AppIcon.dog.rawValue, expense: []),
+            .init(id: UUID(), name: "Развлечения", colorName: "ic-bright-green-new-bg", iconName: AppIcon.cat.rawValue, expense: []),
+            .init(id: UUID(), name: "Игры", colorName: "ic-dark-blue-new-bg", iconName: AppIcon.gamepad.rawValue, expense: []),
+            .init(id: UUID(), name: "Продажные женщины", colorName: "ic-green-new-bg", iconName: AppIcon.child.rawValue, expense: []),
+            .init(id: UUID(), name: "Добавить", colorName: "ic-gray-bg", iconName: AppIcon.plus.rawValue, expense: [])
         ]
     }
 }

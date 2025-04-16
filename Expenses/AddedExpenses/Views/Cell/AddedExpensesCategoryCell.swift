@@ -52,25 +52,26 @@ public final class AddedExpensesCategoryCell: UICollectionViewCell, ReuseIdentif
 private extension AddedExpensesCategoryCell {
 
     private func setupUI() {
-        contentView.setupView(iconContainer)
+        let stack = UIStackView(arrangedSubviews: [titleLabel, iconContainer])
+        stack.axis = .vertical
+        stack.alignment = .center
+        stack.spacing = 4
+
+        contentView.setupView(stack)
+
         iconContainer.setupView(iconImageView)
-        contentView.setupView(titleLabel)
+        iconImageView.constraintCenters(to: iconContainer)
 
         NSLayoutConstraint.activate([
-            iconContainer.topAnchor.constraint(equalTo: contentView.topAnchor),
-            iconContainer.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             iconContainer.widthAnchor.constraint(equalToConstant: UIConstants.Widths.width52.rawValue),
             iconContainer.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height52.rawValue),
+            iconImageView.widthAnchor.constraint(equalToConstant: UIConstants.Widths.width24.rawValue),
+            iconImageView.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height24.rawValue),
 
-            iconImageView.centerXAnchor.constraint(equalTo: iconContainer.centerXAnchor),
-            iconImageView.centerYAnchor.constraint(equalTo: iconContainer.centerYAnchor),
-            iconImageView.widthAnchor.constraint(equalToConstant: UIConstants.Widths.width40.rawValue),
-            iconImageView.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height40.rawValue),
-
-            titleLabel.topAnchor.constraint(equalTo: iconContainer.bottomAnchor, constant: UIConstants.Constants.small8.rawValue),
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            titleLabel.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor)
+            stack.topAnchor.constraint(equalTo: contentView.topAnchor),
+            stack.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor),
+            stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         ])
     }
 }
