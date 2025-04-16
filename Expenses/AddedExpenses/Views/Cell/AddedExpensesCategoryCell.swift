@@ -59,8 +59,8 @@ private extension AddedExpensesCategoryCell {
         NSLayoutConstraint.activate([
             iconContainer.topAnchor.constraint(equalTo: contentView.topAnchor),
             iconContainer.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            iconContainer.widthAnchor.constraint(equalToConstant: UIConstants.Widths.width100.rawValue),
-            iconContainer.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height100.rawValue),
+            iconContainer.widthAnchor.constraint(equalToConstant: UIConstants.Widths.width52.rawValue),
+            iconContainer.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height52.rawValue),
 
             iconImageView.centerXAnchor.constraint(equalTo: iconContainer.centerXAnchor),
             iconImageView.centerYAnchor.constraint(equalTo: iconContainer.centerYAnchor),
@@ -77,9 +77,9 @@ private extension AddedExpensesCategoryCell {
 
 // MARK: - Configure Cell
 
-private extension AddedExpensesCategoryCell {
+public extension AddedExpensesCategoryCell {
 
-    private func configure(
+    func configure(
         title: String,
         image: UIImage?,
         iconColor: UIColor,

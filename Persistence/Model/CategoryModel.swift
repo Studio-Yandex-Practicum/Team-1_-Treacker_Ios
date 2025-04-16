@@ -7,10 +7,18 @@
 
 import Foundation
 
-public struct Category {
-    let id: UUID
-    let name: String
-    let colorName: String
-    let iconName: String
-    let expense: [Expense]
+public struct CategoryModel {
+    public let id: UUID
+    public let name: String
+    public let colorName: String
+    public let iconName: String
+    public let expense: [Expense]
+
+    public init(id: UUID, name: String, colorName: String, iconName: String, expense: [Expense]) {
+        self.id = id
+        self.name = name
+        self.colorName = colorName
+        self.iconName = iconName
+        self.expense = expense
+    }
 }

@@ -109,7 +109,7 @@ public final class CustomTextField: UITextField {
         NSLayoutConstraint.activate([
             floatingLabel.leadingAnchor.constraint(
                 equalTo: self.leadingAnchor,
-                constant: UIConstants.Constants.large20.rawValue
+                constant: UIConstants.Constants.medium16.rawValue
             ),
             floatingLabelTopConstraint
         ])

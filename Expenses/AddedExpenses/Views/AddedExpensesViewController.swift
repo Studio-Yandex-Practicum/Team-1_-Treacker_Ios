@@ -29,7 +29,6 @@ public final class AddedExpensesViewController: UIViewController {
         field.onDateSelected = { [weak self] date in
             self?.viewModel.updateDate(date)
         }
-        field.heightAnchor.constraint(equalToConstant: 60).isActive = true
         return field
     }()
 
@@ -64,6 +63,7 @@ public final class AddedExpensesViewController: UIViewController {
         setupUI()
         setupActions()
         bindViewModel()
+        viewModel.loadCategories()
     }
 }
 
@@ -90,6 +90,8 @@ private extension AddedExpensesViewController {
         view.setupView(stack)
 
         NSLayoutConstraint.activate([
+            dateTextField.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height60.rawValue),
+            collectionView.heightAnchor.constraint(equalToConstant: 200),
             stack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
             stack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             stack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
@@ -100,7 +102,7 @@ private extension AddedExpensesViewController {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = 12
-        layout.itemSize = CGSize(width: 80, height: 120)
+        layout.itemSize = CGSize(width: 80, height: 200)
 
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.register(AddedExpensesCategoryCell.self)
@@ -126,6 +128,10 @@ private extension AddedExpensesViewController {
         }
 
         viewModel.onCategorySelected = { [weak self] _ in
+            self?.collectionView.reloadData()
+        }
+
+        viewModel.onCategoriesLoaded = { [weak self] _ in
             self?.collectionView.reloadData()
         }
     }
@@ -165,11 +171,18 @@ extension AddedExpensesViewController: UICollectionViewDelegate {}
 
 extension AddedExpensesViewController: UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1
+        viewModel.categoriesCount
     }
 
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let category = viewModel.category(at: indexPath.item)
         let cell: AddedExpensesCategoryCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+        cell.configure(
+            title: category.name,
+            image: UIImage(named: category.iconName),
+            iconColor: .secondaryText,
+            backgrounColor: UIColor(named: category.colorName) ?? .systemGray5
+        )
         return cell
     }
 }
