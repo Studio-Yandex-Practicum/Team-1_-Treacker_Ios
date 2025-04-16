@@ -36,7 +36,7 @@ final class UITimePeriodSegmentControl: UIView {
 
     private lazy var currentIndexView: UIView = {
         let view = UIView()
-        view.layer.cornerRadius = 8
+        view.layer.cornerRadius = UIConstants.CornerRadius.small8.rawValue
         view.layer.masksToBounds = true
         view.backgroundColor = .secondaryBg
         return view
@@ -61,13 +61,14 @@ final class UITimePeriodSegmentControl: UIView {
         self.didTapSegment = didTapSegment
         self.selectedTimePeriod = .day
         self.segments = [.day, .week, .month, .year, .custom]
-        self.padding = 4
+        self.padding = UIConstants.Padding.small4.rawValue
         super.init(frame: .zero)
 
         settingsView()
         setupLayout()
     }
 
+    @available(*, unavailable)
     required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

@@ -20,7 +20,7 @@ final class CellAnalytics: UICollectionViewCell, ReuseIdentifying {
 
     private lazy var labelAmount: UILabel = {
         let label = UILabel()
-        label.font = UIFont.h2
+        label.font = .h2
         label.textColor = .primaryText
         return label
     }()
@@ -30,7 +30,7 @@ final class CellAnalytics: UICollectionViewCell, ReuseIdentifying {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        backgroundColor = .none
+        backgroundColor = .secondaryBg
         setupLayout()
     }
 

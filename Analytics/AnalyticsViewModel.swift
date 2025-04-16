@@ -44,6 +44,7 @@ public final class AnalyticsViewModel {
     private var listDateInterval: [DateInterval] = []
     private var categoryReports: [PeriodCategoryReport] = []
     private var titleDateInterval: [String] = []
+    private let dateFormatter = DateFormatter()
 
     // MARK: - Initializers
 
@@ -145,14 +146,12 @@ public final class AnalyticsViewModel {
     }
 
     private func monthName(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ru_RU")
-        formatter.dateFormat = "LLLL"
-        return formatter.string(from: date).capitalized
+        dateFormatter.locale = Locale(identifier: "ru_RU")
+        dateFormatter.dateFormat = "LLLL"
+        return dateFormatter.string(from: date).capitalized
     }
 
     private func formatDateRange(from startDate: Date, to endDate: Date) -> String {
-        let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "ru_RU")
 
         let startComponents = calendar.dateComponents([.day, .month, .year], from: startDate)

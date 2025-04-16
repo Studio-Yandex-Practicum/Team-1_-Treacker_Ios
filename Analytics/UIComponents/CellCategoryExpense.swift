@@ -37,7 +37,7 @@ final class CellCategoryExpense: UITableViewCell, ReuseIdentifying {
     private lazy var labelName: UILabel = {
         let label = UILabel()
         label.text = nameCategory
-        label.font = UIFont.h4
+        label.font = .h4
         label.textColor = .primaryText
         return label
     }()
@@ -45,7 +45,7 @@ final class CellCategoryExpense: UITableViewCell, ReuseIdentifying {
     private lazy var labelCount: UILabel = {
         let label = UILabel()
         label.text = nameCategory
-        label.font = UIFont.hintFont
+        label.font = .hintFont
         label.textColor = .secondaryText
         return label
     }()
@@ -61,7 +61,7 @@ final class CellCategoryExpense: UITableViewCell, ReuseIdentifying {
     private lazy var labelAmount: UILabel = {
         let label = UILabel()
         label.text = nameCategory
-        label.font = UIFont.hintFont
+        label.font = .hintFont
         label.textColor = .primaryText
         return label
     }()
@@ -69,7 +69,7 @@ final class CellCategoryExpense: UITableViewCell, ReuseIdentifying {
     private lazy var labelPercent: UILabel = {
         let label = UILabel()
         label.text = nameCategory
-        label.font = UIFont.h4
+        label.font = .h4
         label.textColor = .secondaryText
         return label
     }()
@@ -113,7 +113,7 @@ final class CellCategoryExpense: UITableViewCell, ReuseIdentifying {
         iconView.tintColor = category.iconColorPrimary
         labelName.text = category.name
         labelCount.text = category.countExpenses + " " + GlobalConstants.analyticsCellCategoryOperation.rawValue
-        labelAmount.text = category.amount + " " + GlobalConstants.analyticsRUB.rawValue
+        labelAmount.text = category.amount + " " + GlobalConstants.symbolRUB.rawValue
         labelPercent.text = category.percentageOfTotal + GlobalConstants.analyticsCellCategoryPercent.rawValue
     }
 }

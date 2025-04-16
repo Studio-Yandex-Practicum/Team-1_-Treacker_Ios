@@ -58,4 +58,8 @@ public enum UIConstants {
         case width24 = 24.0
         case width100 = 100.0
     }
+
+    public enum Padding: CGFloat {
+        case small4 = 4.0
+    }
 }

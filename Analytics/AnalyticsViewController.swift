@@ -21,10 +21,9 @@ public final class AnalyticsViewController: UIViewController {
     private var viewModel: AnalyticsViewModelProtocol
     private var isProgrammaticScroll = false
     private var itemWidth = CGFloat(UIScreen.main.bounds.width)
-    private var currentIndex: Int = 2
+    private var currentIndex = 2
 
-    // MARK: - UI Components
-    // MARK: - ButtonNewExpense
+    // MARK: - UI Components: ButtonNewExpense
 
     private lazy var buttonNewExpense: UIButton = {
         let button = UIButton()
@@ -48,7 +47,7 @@ public final class AnalyticsViewController: UIViewController {
     private lazy var labelTitle: UILabel = {
         let label = UILabel()
         label.text = GlobalConstants.analyticsTitle.rawValue
-        label.font = UIFont.h1
+        label.font = .h1
         label.textColor = .primaryText
         return label
     }()
@@ -63,7 +62,7 @@ public final class AnalyticsViewController: UIViewController {
 
         let stack = UIStackView(arrangedSubviews: [labelTitle, buttonCategory, buttonSettings])
         stack.axis = .horizontal
-        stack.spacing = 8
+        stack.spacing = UIConstants.Spacing.small8.rawValue
         return stack
     }()
 
@@ -78,7 +77,7 @@ public final class AnalyticsViewController: UIViewController {
     private lazy var labelTimePeriod: UILabel = {
         let label = UILabel()
         label.text = viewModel.getStringDateInterval(index: currentIndex)
-        label.font = UIFont.h3
+        label.font = .h3
         label.textColor = .secondaryText
         return label
     }()
@@ -117,7 +116,7 @@ public final class AnalyticsViewController: UIViewController {
     private lazy var labelCategory: UILabel = {
         let label = UILabel()
         label.text = GlobalConstants.analyticsTitleExpense.rawValue
-        label.font = UIFont.h4
+        label.font = .h4
         label.textColor = .secondaryText
         return label
     }()
@@ -178,20 +177,19 @@ public final class AnalyticsViewController: UIViewController {
     // MARK: - Actions
 
     @objc private func didNewExpense() {
-        print("Кнопка создания нового расхода нажата")
+        // TODO: Добавить переход на экран создания расхода
         viewModel.test()
     }
 
     @objc private func didCategory() {
-        print("Кнопка выбора категорий нажата")
+        // TODO: Добавить экран выбора категорий для сортировки
     }
 
     @objc private func didSettings() {
-        print("Кнопка настройки нажата")
+        // TODO: Добавить переход на экран настроек
     }
 
     @objc private func didSort() {
-        print("Кнопка сортировки нажата")
         viewModel.updateCategorySortOrder()
     }
 
@@ -206,7 +204,7 @@ public final class AnalyticsViewController: UIViewController {
         if period != .custom {
             viewModel.updateTypeTimePeriod(period: period)
         } else {
-            print("Выбран кастом, все может сломаться!")
+            // TODO: Реализовать отображение календаря с выбором дат и поведение экрана
         }
     }
 
