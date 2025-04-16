@@ -193,7 +193,7 @@ extension AnalyticsViewModel: AnalyticsViewModelProtocol {
 
         var segments: [SegmentPieChart] = []
         if report.totalAmount == 0.0 {
-            segments.append(SegmentPieChart(color: "ic-gray-primary", value: 100))
+            segments.append(SegmentPieChart())
         } else {
             for category in report.summaries {
                 segments.append(SegmentPieChart(color: category.category.colorPrimaryName, value: category.percent))

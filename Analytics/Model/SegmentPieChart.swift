@@ -12,7 +12,12 @@ public struct SegmentPieChart {
     let value: CGFloat
 
     init(color: String, value: CGFloat) {
-        self.color = UIColor.from(colorName: color)
+        self.color = .from(colorName: color)
         self.value = value
+    }
+
+    init() {
+        self.color = .icGrayPrimary
+        self.value = 100
     }
 }
