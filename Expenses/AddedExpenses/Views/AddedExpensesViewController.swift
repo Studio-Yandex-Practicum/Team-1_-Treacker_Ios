@@ -278,7 +278,6 @@ private extension AddedExpensesViewController {
     }
 
     @objc private func addTapped() {
-        print("✅ Расход сохранён!")
         // TODO: вызывать сервис сохранения, закрыть модуль, показать алерт
     }
 }
