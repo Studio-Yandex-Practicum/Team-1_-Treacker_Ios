@@ -113,8 +113,7 @@ extension CellCategoryExpense {
             stackContent.topAnchor.constraint(equalTo: self.topAnchor, constant: UIConstants.Constants.small8.rawValue),
             stackContent.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
             stackContent.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
-            stackContent.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -UIConstants.Constants.small8.rawValue),
+            stackContent.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -UIConstants.Constants.small8.rawValue)
         ])
     }
 }
-

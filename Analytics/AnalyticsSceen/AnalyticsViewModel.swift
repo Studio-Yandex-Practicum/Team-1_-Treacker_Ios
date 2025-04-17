@@ -172,9 +172,9 @@ public final class AnalyticsViewModel {
             totalAmount += categorySummary.amount
             summaries.append(categorySummary)
         }
-        for i in summaries.indices {
-            let percent = summaries[i].amount / totalAmount * 100
-            summaries[i].percent = percent
+        for index in summaries.indices {
+            let percent = summaries[index].amount / totalAmount * 100
+            summaries[index].percent = percent
         }
         let periodCategoryReport = PeriodCategoryReport(summaries: summaries, totalAmount: totalAmount)
         return periodCategoryReport
@@ -209,20 +209,29 @@ public final class AnalyticsViewModel {
         let startComponents = calendar.dateComponents([.day, .month, .year], from: startDate)
         let endComponents = calendar.dateComponents([.day, .month, .year], from: endDate)
 
-        if startComponents == endComponents {
+        guard let startDay = startComponents.day,
+              let startMonth = startComponents.month,
+              let startYear = startComponents.year,
+              let endDay = endComponents.day,
+              let endMonth = endComponents.month,
+              let endYear = endComponents.year else {
+            return ""
+        }
+
+        if startDay == endDay, startMonth == endMonth, startYear == endYear {
             dateFormatter.dateFormat = "d MMMM yyyy"
             return dateFormatter.string(from: startDate)
         }
 
-        if startComponents.month == endComponents.month, startComponents.year == endComponents.year {
-            return "\(startComponents.day!) – \(endComponents.day!) \(monthName(startDate)) \(startComponents.year!)"
+        if startMonth == endMonth, startYear == endYear {
+            return "\(startDay) – \(endDay) \(monthName(startDate)) \(startYear)"
         }
 
-        if startComponents.year == endComponents.year {
-            return "\(startComponents.day!) \(monthName(startDate)) – \(endComponents.day!) \(monthName(endDate)) \(startComponents.year!)"
+        if startYear == endYear {
+            return "\(startDay) \(monthName(startDate)) – \(endDay) \(monthName(endDate)) \(startYear)"
         }
 
-        return "\(startComponents.day!) \(monthName(startDate)) \(startComponents.year!) – \(endComponents.day!) \(monthName(endDate)) \(endComponents.year!)"
+        return "\(startDay) \(monthName(startDate)) \(startYear) – \(endDay) \(monthName(endDate)) \(endYear)"
     }
 
     private func addNewDateInterval() {
@@ -346,8 +355,8 @@ extension AnalyticsViewModel: AnalyticsViewModelProtocol {
 
     public func updateCategorySortOrder() {
         categorySortOrder.toggle()
-        for i in categoryReports.indices {
-            categoryReports[i] = getSortedPeriodCategoryReport(of: categoryReports[i])
+        for index in categoryReports.indices {
+            categoryReports[index] = getSortedPeriodCategoryReport(of: categoryReports[index])
         }
     }
 
@@ -400,30 +409,31 @@ extension AnalyticsViewModel: AnalyticsViewModelProtocol {
 
         let categories = serviceCategory.fetchCategories()
 
-            guard !categories.isEmpty else {
-                Logger.shared.log(.error, message: "❌ Нет доступных категорий для тестовых расходов")
-                return
-            }
+        guard !categories.isEmpty else {
+            Logger.shared.log(.error, message: "❌ Нет доступных категорий для тестовых расходов")
+            return
+        }
 
         for _ in 0..<100 {
-                let category = categories.randomElement()!
+            guard let note =  ["Кофе", "Метро", "Фильм", "Шаурма", "Такси", "Пицца", "Проезд", "Чай", "Ланч", "Попкорн"].randomElement(),
+                  let category = categories.randomElement() else { return }
 
-                let randomTimeInterval = Double.random(in: -10*86400...10*86400)
-                let randomDate = Date().addingTimeInterval(randomTimeInterval)
+            let randomTimeInterval = Double.random(in: -10*86400...10*86400)
+            let randomDate = Date().addingTimeInterval(randomTimeInterval)
 
-                let expense = Expense(
-                    id: UUID(),
-                    data: randomDate,
-                    note: ["Кофе", "Метро", "Фильм", "Шаурма", "Такси", "Пицца", "Проезд", "Чай", "Ланч", "Попкорн"].randomElement()!,
-                    amount: Amount(
-                        rub: Double.random(in: 100...500),
-                        usd: 0,
-                        eur: 0
-                    )
+            let expense = Expense(
+                id: UUID(),
+                data: randomDate,
+                note: note,
+                amount: Amount(
+                    rub: Double.random(in: 100...500),
+                    usd: 0,
+                    eur: 0
                 )
+            )
 
-                serviceExpense.addExpense(expense, toCategory: category.id)
-            }
+            serviceExpense.addExpense(expense, toCategory: category.id)
+        }
 
     }
 

@@ -90,8 +90,3 @@ extension CoreDataManager: CoreDataManagerProtocol {
         Logger.shared.log(.info, message: "✅ 🗑️ 💾 Объект \(T.self) удалён")
     }
 }
-
-
-
-
-
