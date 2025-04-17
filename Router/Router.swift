@@ -10,11 +10,18 @@ import Core
 import Auth
 import Expenses
 import Combine
+import Analytics
 
 public final class Router: RouterProtocol {
-    public static let shared = Router()
+    public static var shared: Router!
     public var window: UIWindow?
     private var cancellables = Set<AnyCancellable>()
+    private let coreDataAssembly: CoreDataAssemblyProtocol
+
+    public init(coreDataAssembly: CoreDataAssemblyProtocol) {
+        self.coreDataAssembly = coreDataAssembly
+        Router.shared = self
+    }
 
     public func startApp(using window: UIWindow) {
         self.window = window
@@ -32,8 +39,8 @@ public final class Router: RouterProtocol {
     }
 
     public func routeToMainFlow() {
-        let viewModel = ExpenseListViewModel(router: self)
-        let mainVC = ExpenseListViewController(viewModel: viewModel)
+        let viewModel = AnalyticsViewModel(serviceExpense: coreDataAssembly.expenseService, serviceCategory: coreDataAssembly.categoryService)
+        let mainVC = AnalyticsViewController(viewModel: viewModel)
         setRootViewController(UINavigationController(rootViewController: mainVC))
     }
 

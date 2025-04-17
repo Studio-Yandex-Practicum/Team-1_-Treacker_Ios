@@ -10,7 +10,7 @@ import Core
 
 extension UIColor {
 
-    private enum ColorSet: String {
+    enum ColorSet: String {
         case accentText = "Accent-text"
         case hintText = "Hint-text"
         case primaryText = "Primary-text"
@@ -145,6 +145,14 @@ extension UIColor {
     public static var icYellowNew: UIColor { color(named: .icYellowNew) }
 
     // MARK: - Static Method
+
+    public static func from(colorName: String) -> UIColor {
+        guard let colorSet = ColorSet(rawValue: colorName) else {
+            Logger.shared.log(.error, message: "❌ Invalid color name: \(colorName)")
+            return .clear
+        }
+        return color(named: colorSet)
+    }
 
     private static func color(named name: ColorSet, fallback: UIColor = .clear) -> UIColor {
         guard let color = UIColor(named: name.rawValue) else {

@@ -18,6 +18,12 @@ public enum GlobalConstants: String {
     case logSubsystem = "KV.Lyashenko.AutodocNews"
     case logCategory = "news"
 
+    // Core
+
+    case symbolRUB = "₽"
+    case symbolUSD = "$"
+    case symbolEUR = "€"
+
     // AuthVC
 
     case greeting = "Добро пожаловать"
@@ -82,4 +88,17 @@ public enum GlobalConstants: String {
     case yesterday = "Вчера"
     case today = "Сегодня"
     case tomorrow = "Завтра"
+
+    // Analytics
+
+    case analyticsTitle = "Аналитика"
+    case analyticsTitleExpense = "Категории расходов"
+    case analyticsTimePeriodDay = "День"
+    case analyticsTimePeriodWeek = "Неделя"
+    case analyticsTimePeriodMonth = "Месяц"
+    case analyticsTimePeriodYear = "Год"
+    case analyticsTimePeriodCustom = "Период"
+
+    case analyticsCellCategoryOperation = "операция"
+    case analyticsCellCategoryPercent = "%"
 }

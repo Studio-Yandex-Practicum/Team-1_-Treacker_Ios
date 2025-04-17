@@ -23,7 +23,7 @@ public extension ReuseIdentifying where Self: UICollectionViewCell {
     }
 }
 
-extension UITableView {
+public extension UITableView {
     func register<T: UITableViewCell>(_: T.Type) where T: ReuseIdentifying {
         register(T.self, forCellReuseIdentifier: T.defaultReuseIdentifier)
     }

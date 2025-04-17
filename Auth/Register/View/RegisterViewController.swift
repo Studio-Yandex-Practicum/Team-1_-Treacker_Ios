@@ -24,7 +24,7 @@ public final class RegisterViewController: UIViewController {
         alignment: .left
     )
 
-    private lazy var emailField = CustomTextField(placeholder: GlobalConstants.email.rawValue)
+    private lazy var emailField = CustomTextField(placeholder: GlobalConstants.email.rawValue, type: .email)
 
     private lazy var passwordField =  CustomTextField(
         placeholder: GlobalConstants.pass.rawValue,
@@ -55,6 +55,7 @@ public final class RegisterViewController: UIViewController {
         setupUI()
         setupNavbarItem()
         bindViewModel()
+        enableKeyboardDismissOnTap()
     }
 }
 

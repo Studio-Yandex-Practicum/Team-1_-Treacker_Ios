@@ -10,6 +10,7 @@ import Core
 import Combine
 
 public enum CustomTextFieldType {
+    case email
     case normal
     case amount(currencySymbol: String)
     case password
@@ -90,14 +91,20 @@ public final class CustomTextField: UITextField {
 
     private func configureFieldType() {
         switch fieldType {
+        case .email:
+            keyboardType = .emailAddress
+            textContentType = .emailAddress
+            autocapitalizationType = .none
+            autocorrectionType = .no
+            spellCheckingType = .no
+            smartQuotesType = .no
+            smartDashesType = .no
         case .normal:
             keyboardType = .default
             textContentType = .none
-
         case .amount(let currencySymbol):
             keyboardType = .decimalPad
             floatingLabel.text = "\(placeholderText), \(currencySymbol)"
-
         case .password:
             keyboardType = .default
             textContentType = .password

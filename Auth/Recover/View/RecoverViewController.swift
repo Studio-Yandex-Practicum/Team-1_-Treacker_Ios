@@ -31,7 +31,7 @@ public final class RecoverViewController: UIViewController {
         alignment: .left
     )
 
-    private lazy var emailField = CustomTextField(placeholder: GlobalConstants.email.rawValue)
+    private lazy var emailField = CustomTextField(placeholder: GlobalConstants.email.rawValue, type: .email)
 
     private lazy var confirmButton = UIButton.makeButton(
         title: .confirm,
@@ -57,6 +57,7 @@ public final class RecoverViewController: UIViewController {
         setupUI()
         setupNavbarItem()
         bindViewModel()
+        enableKeyboardDismissOnTap()
     }
 }
 

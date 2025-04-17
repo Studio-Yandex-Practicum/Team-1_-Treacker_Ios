@@ -33,19 +33,8 @@ public final class AuthViewController: UIViewController {
         alignment: .left
     )
 
-    private lazy var emailField: CustomTextField = {
-        let field = CustomTextField(placeholder: GlobalConstants.email.rawValue)
-        field.textContentType = .username
-        field.accessibilityIdentifier = "auth_email_field"
-        return field
-    }()
-
-    private lazy var passwordField: CustomTextField = {
-        let field = CustomTextField(placeholder: GlobalConstants.pass.rawValue, type: .password)
-        field.textContentType = .password
-        field.accessibilityIdentifier = "auth_password_field"
-        return field
-    }()
+    private lazy var emailField: CustomTextField = CustomTextField(placeholder: GlobalConstants.email.rawValue, type: .email)
+    private lazy var passwordField = CustomTextField(placeholder: GlobalConstants.pass.rawValue, type: .password)
 
     private lazy var emailHint = makeHintLabel(text: GlobalConstants.emailHint.rawValue)
     private lazy var passHint = makeHintLabel(text: GlobalConstants.passHint.rawValue)

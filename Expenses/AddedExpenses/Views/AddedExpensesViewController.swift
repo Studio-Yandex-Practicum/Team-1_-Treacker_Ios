@@ -77,6 +77,7 @@ public final class AddedExpensesViewController: UIViewController {
         setupActions()
         bindViewModel()
         viewModel.loadCategories()
+        enableKeyboardDismissOnTap()
     }
 }
 
@@ -283,13 +284,12 @@ extension AddedExpensesViewController: UICollectionViewDataSource {
     ) -> UICollectionViewCell {
         let category = viewModel.category(at: indexPath.item)
         let cell: AddedExpensesCategoryCell = collectionView.dequeueReusableCell(indexPath: indexPath)
-        let iconColor = category.colorName
 
         cell.configure(
             title: category.name,
-            image: UIImage(named: category.iconName),
-            iconColor: UIColor(named: String(iconColor.dropLast(3))) ?? .systemGray,
-            backgrounColor: UIColor(named: category.colorName) ?? .systemGray
+            image: UIImage(named: category.nameIcon),
+            iconColor: UIColor(named: category.colorPrimaryName) ?? .systemGray,
+            backgrounColor: UIColor(named: category.colorBgName) ?? .systemGray
         )
         return cell
     }

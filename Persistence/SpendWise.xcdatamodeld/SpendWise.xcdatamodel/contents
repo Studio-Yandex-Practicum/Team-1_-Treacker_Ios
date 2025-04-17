@@ -7,10 +7,11 @@
         <relationship name="expense" maxCount="1" deletionRule="Nullify" destinationEntity="ExpenseCD" inverseName="amount" inverseEntity="ExpenseCD"/>
     </entity>
     <entity name="CategoryCD" representedClassName="CategoryCD" syncable="YES" codeGenerationType="class">
-        <attribute name="colorName" attributeType="String"/>
-        <attribute name="iconName" attributeType="String"/>
+        <attribute name="colorBgName" attributeType="String"/>
+        <attribute name="colorPrimaryName" attributeType="String"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="name" attributeType="String"/>
+        <attribute name="nameIcon" attributeType="String"/>
         <relationship name="expense" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ExpenseCD" inverseName="category" inverseEntity="ExpenseCD"/>
     </entity>
     <entity name="ExpenseCD" representedClassName="ExpenseCD" syncable="YES" codeGenerationType="class">
