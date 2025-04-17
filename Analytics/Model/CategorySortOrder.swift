@@ -10,4 +10,8 @@ import Foundation
 enum CategorySortOrder {
     case totalAscending
     case totalDescending
+
+    mutating func toggle() {
+        self = self == .totalAscending ? .totalDescending : .totalAscending
+    }
 }

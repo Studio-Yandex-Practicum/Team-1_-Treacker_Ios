@@ -9,19 +9,12 @@ import UIKit
 import UIComponents
 import Core
 
-public protocol AnalyticsViewControllerProtocol {
-    func updateCollectionExpenses()
-    func updateSorted()
-}
-
 public final class AnalyticsViewController: UIViewController {
 
     // MARK: - Private Properties
 
     private var viewModel: AnalyticsViewModelProtocol
-    private var isProgrammaticScroll = false
     private var itemWidth = CGFloat(UIScreen.main.bounds.width)
-    private var currentIndex = 2
 
     // MARK: - UI Components: ButtonNewExpense
 
@@ -76,7 +69,7 @@ public final class AnalyticsViewController: UIViewController {
 
     private lazy var labelTimePeriod: UILabel = {
         let label = UILabel()
-        label.text = viewModel.getStringDateInterval(index: currentIndex)
+        label.text = viewModel.titleTimePeriod
         label.font = .h3
         label.textColor = .secondaryText
         return label
@@ -102,8 +95,8 @@ public final class AnalyticsViewController: UIViewController {
 
     private lazy var pageControl: UIPageControl = {
         let pageControl = UIPageControl()
-        pageControl.numberOfPages = viewModel.getCountDateInterval()
-        pageControl.currentPage = currentIndex
+        pageControl.numberOfPages = viewModel.pieChartDisplayItem.count
+        pageControl.currentPage = viewModel.currentIndex
         pageControl.pageIndicatorTintColor = .lightGray
         pageControl.currentPageIndicatorTintColor = .cAccent
         pageControl.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height24.rawValue).isActive = true
@@ -151,6 +144,7 @@ public final class AnalyticsViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
+        bind()
         viewModel.viewDidLoad()
         navigationController?.isNavigationBarHidden = true
         setupLayout()
@@ -158,8 +152,9 @@ public final class AnalyticsViewController: UIViewController {
 
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        let indexPath = IndexPath(item: currentIndex, section: 0)
+        let indexPath = IndexPath(item: viewModel.currentIndex, section: 0)
         analyticsCollection.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
+        pageControl.currentPage = viewModel.currentIndex
     }
 
     // MARK: - Initializers
@@ -174,11 +169,31 @@ public final class AnalyticsViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // MARK: - Bind
+
+    private func bind() {
+        viewModel.onSelectedIndex = { [weak self] index in
+            let indexPath = IndexPath(item: index, section: 0)
+            self?.analyticsCollection.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
+            self?.pageControl.currentPage = index
+            self?.tableExpenses.reloadData()
+        }
+        viewModel.onModelCellCategory = { [weak self] in
+            self?.tableExpenses.reloadData()
+        }
+        viewModel.onPieChartDisplayItem = { [weak self] count in
+            self?.analyticsCollection.reloadData()
+            self?.pageControl.numberOfPages = count
+        }
+        viewModel.onTitleTimePeriod = { [weak self] title in
+            self?.labelTimePeriod.text = title
+        }
+    }
+
     // MARK: - Actions
 
     @objc private func didNewExpense() {
         // TODO: Добавить переход на экран создания расхода
-        viewModel.test()
     }
 
     @objc private func didCategory() {
@@ -194,18 +209,14 @@ public final class AnalyticsViewController: UIViewController {
     }
 
     @objc private func pageControlChanged() {
-        let indexPath = IndexPath(item: pageControl.currentPage, section: 0)
-        analyticsCollection.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        viewModel.updateSelectedIndex(pageControl.currentPage)
     }
 
     // MARK: - Private Methods
 
     private func didTapSegment(period: TimePeriod) {
-        if period != .custom {
-            viewModel.updateTypeTimePeriod(period: period)
-        } else {
-            // TODO: Реализовать отображение календаря с выбором дат и поведение экрана
-        }
+        viewModel.updateTypeTimePeriod(period)
+        // TODO: Реализовать отображение календаря с выбором дат и поведение экрана
     }
 
     private func getButtonInNavigationBar(iconName: String) -> UIButton {
@@ -227,12 +238,12 @@ public final class AnalyticsViewController: UIViewController {
 extension AnalyticsViewController: UICollectionViewDataSource {
 
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        viewModel.getCountDateInterval()
+        viewModel.pieChartDisplayItem.count
     }
 
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell: CellAnalytics = collectionView.dequeueReusableCell(indexPath: indexPath)
-        let segment = viewModel.getAmountDateInterval(index: indexPath.item)
+        let segment = viewModel.pieChartDisplayItem[indexPath.item]
         cell.configureCell(amount: segment.amount, segments: segment.segments)
         return cell
     }
@@ -242,9 +253,6 @@ extension AnalyticsViewController: UICollectionViewDataSource {
 // MARK: - Extension: UICollectionViewDelegate
 
 extension AnalyticsViewController: UICollectionViewDelegate {
-    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        isProgrammaticScroll = false
-    }
 
     public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         guard scrollView === analyticsCollection else { return }
@@ -254,42 +262,20 @@ extension AnalyticsViewController: UICollectionViewDelegate {
 
         guard width > 0 else { return }
         let page = Int(offset / width)
-        pageControl.currentPage = page
-        labelTimePeriod.text = viewModel.getStringDateInterval(index: page)
 
-        if page == viewModel.getCountDateInterval() - 1 {
-            addNewItemAfter()
-        } else if page == 0 {
-            addNewItemBefore()
-        }
-        tableExpenses.reloadData()
+        viewModel.updateSelectedIndex(page)
     }
 
-    private func addNewItemAfter() {
-        viewModel.addNewDateInterval(direction: .after)
-        analyticsCollection.reloadData()
-        pageControl.numberOfPages = viewModel.getCountDateInterval()
-    }
-
-    private func addNewItemBefore() {
-
-        viewModel.addNewDateInterval(direction: .before)
-        analyticsCollection.reloadData()
-        pageControl.numberOfPages = viewModel.getCountDateInterval()
-        let indexPath = IndexPath(item: 1, section: 0)
-        analyticsCollection.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
-        pageControl.currentPage = 1
-    }
 }
 
 extension AnalyticsViewController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.getCountCategories(index: pageControl.currentPage)
+        viewModel.modelCellCategory.count
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: CellCategoryExpense = tableView.dequeueReusableCell()
-        let model: ModelCellCategory = viewModel.getModelCellCategory(section: pageControl.currentPage, index: indexPath[1])
+        let model: ModelCellCategory = viewModel.modelCellCategory[indexPath.row]
         cell.configureCell(category: model)
         return cell
     }
@@ -351,24 +337,5 @@ extension AnalyticsViewController {
             tableExpenses.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableExpenses.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
-    }
-}
-
-// MARK: AnalyticsViewControllerProtocol
-
-extension AnalyticsViewController: AnalyticsViewControllerProtocol {
-    public func updateCollectionExpenses() {
-        analyticsCollection.reloadData()
-        labelTimePeriod.text = viewModel.getStringDateInterval(index: currentIndex)
-        pageControl.numberOfPages = viewModel.getCountDateInterval()
-        pageControl.currentPage = currentIndex
-        let indexPath = IndexPath(item: currentIndex, section: 0)
-        analyticsCollection.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
-        tableExpenses.reloadData()
-    }
-
-    public func updateSorted() {
-        analyticsCollection.reloadData()
-        tableExpenses.reloadData()
     }
 }

@@ -11,22 +11,11 @@ import UIComponents
 
 final class CellCategoryExpense: UITableViewCell, ReuseIdentifying {
 
-    // MARK: - Private Properties
-
-    private lazy var nameIcon: AppIcon = AppIcon.shop
-    private lazy var colorIcon: UIColor = .icOrangePrimary
-    private lazy var colorBg: UIColor = .icOrangeBg
-    private lazy var nameCategory: String = "Покупки"
-
     // MARK: - UI Components
 
     private lazy var iconView: UIImageView = {
         let view = UIImageView()
-        let image = UIImage(named: nameIcon.rawValue)
-        view.image = image
         view.contentMode = .center
-        view.tintColor = colorIcon
-        view.backgroundColor = colorBg
         view.heightAnchor.constraint(equalToConstant: UIConstants.Constants.large52.rawValue).isActive = true
         view.widthAnchor.constraint(equalToConstant: UIConstants.Constants.large52.rawValue).isActive = true
         view.layer.cornerRadius = UIConstants.CornerRadius.medium16.rawValue
@@ -36,7 +25,6 @@ final class CellCategoryExpense: UITableViewCell, ReuseIdentifying {
 
     private lazy var labelName: UILabel = {
         let label = UILabel()
-        label.text = nameCategory
         label.font = .h4
         label.textColor = .primaryText
         return label
@@ -44,7 +32,6 @@ final class CellCategoryExpense: UITableViewCell, ReuseIdentifying {
 
     private lazy var labelCount: UILabel = {
         let label = UILabel()
-        label.text = nameCategory
         label.font = .hintFont
         label.textColor = .secondaryText
         return label
@@ -60,7 +47,6 @@ final class CellCategoryExpense: UITableViewCell, ReuseIdentifying {
 
     private lazy var labelAmount: UILabel = {
         let label = UILabel()
-        label.text = nameCategory
         label.font = .hintFont
         label.textColor = .primaryText
         return label
@@ -68,7 +54,6 @@ final class CellCategoryExpense: UITableViewCell, ReuseIdentifying {
 
     private lazy var labelPercent: UILabel = {
         let label = UILabel()
-        label.text = nameCategory
         label.font = .h4
         label.textColor = .secondaryText
         return label

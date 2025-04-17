@@ -10,41 +10,88 @@ import Persistence
 import Core
 
 public protocol AnalyticsViewModelProtocol {
+
     func viewDidLoad()
-    func getCountDateInterval() -> Int
-    func getAmountDateInterval(index: Int) -> (amount: String, segments: [SegmentPieChart])
-    func getStringDateInterval(index: Int) -> String
-    func addNewDateInterval(direction: Direction)
-    func getCountCategories(index: Int) -> Int
-    func getModelCellCategory(section: Int, index: Int) -> ModelCellCategory
-    func updateTypeTimePeriod(period: TimePeriod)
+
+    // Outputs
+    var onSelectedIndex: ((Int) -> Void)? { get set }
+    var onModelCellCategory: (() -> Void)? { get set }
+    var onPieChartDisplayItem: ((Int) -> Void)? { get set }
+    var onTitleTimePeriod: ((String) -> Void)? { get set }
+
+    // State
+    var currentIndex: Int { get }
+    var selectedIndex: Int { get }
+    var pieChartDisplayItem: [PieChartDisplayItem] { get }
+    var modelCellCategory: [ModelCellCategory] { get }
+    var titleTimePeriod: String { get }
+
+    // Inputs
+    func updateTypeTimePeriod(_ type: TimePeriod)
+    func updateSelectedIndex(_ index: Int)
     func updateCategorySortOrder()
-    func test()
 }
 
 public final class AnalyticsViewModel {
 
+    // MARK: - Outputs
+
+    public var onSelectedIndex: ((Int) -> Void)?
+    public var onModelCellCategory: (() -> Void)?
+    public var onPieChartDisplayItem: ((Int) -> Void)?
+    public var onTitleTimePeriod: ((String) -> Void)?
+
+    // MARK: - State
+
+    public let currentIndex = 2
+    private(set) public lazy var selectedIndex = { currentIndex }() {
+        didSet {
+            addNewDateInterval()
+            updateModelCellCategory()
+            updateTitleTimePeriod()
+            onSelectedIndex?(selectedIndex)
+        }
+    }
+    private(set) public var pieChartDisplayItem: [PieChartDisplayItem] = [] {
+        didSet { onPieChartDisplayItem?(pieChartDisplayItem.count) }
+    }
+    private(set) public var modelCellCategory: [ModelCellCategory] = [] {
+        didSet { onModelCellCategory?() }
+    }
+    private(set) public lazy var titleTimePeriod: String = { titleDateInterval[selectedIndex] }() {
+        didSet { onTitleTimePeriod?(titleTimePeriod) }
+    }
+
     // MARK: - Private Properties
 
-    public var view: AnalyticsViewControllerProtocol?
-    
     private var serviceExpense: ExpenseStorageServiceProtocol
     private var serviceCategory: CategoryStorageServiceProtocol
 
     private let calendar = Calendar.current
     private var today: Date = Date()
-    private var typeTimePeriod: TimePeriod = .day
-    private var selectedCategories: [ExpenseCategory] = [] {
+    private let dateFormatter = DateFormatter()
+
+    private var typeTimePeriod: TimePeriod = .day {
         didSet {
-            selectedCategoriesString = selectedCategories.map { $0.name }
+            updateListDateInterval()
+            updateTitleDateInterval()
+            updateAllCategories()
+            updatePieChartDisplayItem()
+            updatePieChartDisplayItem()
+            selectedIndex = currentIndex
         }
     }
-    private var categorySortOrder: CategorySortOrder = .totalDescending
+    private var selectedCategories: [ExpenseCategory] = [] {
+        didSet { selectedCategoriesString = selectedCategories.map { $0.name } }
+    }
     private var selectedCategoriesString: [String] = []
+
+    private var categorySortOrder: CategorySortOrder = .totalDescending {
+        didSet { sortedCategorySummary() }
+    }
     private var listDateInterval: [DateInterval] = []
     private var categoryReports: [PeriodCategoryReport] = []
     private var titleDateInterval: [String] = []
-    private let dateFormatter = DateFormatter()
 
     // MARK: - Initializers
 
@@ -68,7 +115,7 @@ public final class AnalyticsViewModel {
         }
     }
 
-    private func updateCategories(direction: Direction, newDateInterval: DateInterval) {
+    private func updateCategories(direction: Direction = .after, newDateInterval: DateInterval) {
         let fetchedCategories = serviceExpense.fetchExpenses(from: newDateInterval.start, to: newDateInterval.end, categories: selectedCategoriesString)
         switch direction {
         case .before:
@@ -82,13 +129,10 @@ public final class AnalyticsViewModel {
         }
     }
 
-    private func updateCategories() {
+    private func updateAllCategories() {
         categoryReports.removeAll()
         for dateInterval in listDateInterval {
-            let fetchedCategories = serviceExpense.fetchExpenses(from: dateInterval.start, to: dateInterval.end, categories: selectedCategoriesString)
-            var report = getPeriodCategoryReport(for: fetchedCategories)
-            report = getSortedPeriodCategoryReport(of: report)
-            categoryReports.append(report)
+            updateCategories(newDateInterval: dateInterval)
         }
     }
 
@@ -134,9 +178,9 @@ public final class AnalyticsViewModel {
         return categorySummary
     }
 
-    private func getSortedPeriodCategoryReport(of categoryReport: PeriodCategoryReport) -> PeriodCategoryReport {
+    private func getSortedPeriodCategoryReport(of categoryReport: PeriodCategoryReport, sorted: CategorySortOrder = .totalDescending) -> PeriodCategoryReport {
         var categoryReport = categoryReport
-        switch categorySortOrder {
+        switch sorted {
         case .totalAscending:
             categoryReport.summaries.sort { $0.amount < $1.amount }
         case .totalDescending:
@@ -172,53 +216,13 @@ public final class AnalyticsViewModel {
 
         return "\(startComponents.day!) \(monthName(startDate)) \(startComponents.year!) – \(endComponents.day!) \(monthName(endDate)) \(endComponents.year!)"
     }
-}
 
-// MARK: AnalyticsViewModelProtocol
-
-extension AnalyticsViewModel: AnalyticsViewModelProtocol {
-
-    public func viewDidLoad() {
-        updateListDateInterval()
-        updateCategories()
-        updateTitleDateInterval()
-    }
-
-    public func getCountDateInterval() -> Int {
-        categoryReports.count
-    }
-
-    public func getAmountDateInterval(index: Int) -> (amount: String, segments: [SegmentPieChart]) {
-        let report = categoryReports[index]
-
-        var segments: [SegmentPieChart] = []
-        if report.totalAmount == 0.0 {
-            segments.append(SegmentPieChart())
-        } else {
-            for category in report.summaries {
-                segments.append(SegmentPieChart(color: category.category.colorPrimaryName, value: category.percent))
-            }
+    private func addNewDateInterval() {
+        guard let direction = checkSelectedIndex(selectedIndex),
+        let date = getReferenceDate(for: direction),
+        let newDateInterval = typeTimePeriod.getAdjacentInterval(to: date, direction: direction, using: calendar) else {
+            return
         }
-
-        return ("\(Int(report.totalAmount)) ₽", segments)
-    }
-
-    public func getStringDateInterval(index: Int) -> String {
-        titleDateInterval[index]
-    }
-
-    public func addNewDateInterval(direction: Direction) {
-        var date: Date?
-
-        switch direction {
-        case .before:
-            date = listDateInterval.first?.start
-        case .after:
-            date = listDateInterval.last?.end
-        }
-        guard let date else { return }
-        let newDateInterval = typeTimePeriod.getAdjacentInterval(to: date, direction: direction, using: calendar)
-        guard let newDateInterval else { return }
 
         switch direction {
         case .before:
@@ -229,15 +233,59 @@ extension AnalyticsViewModel: AnalyticsViewModelProtocol {
 
         updateCategories(direction: direction, newDateInterval: newDateInterval)
         updateTitleDateInterval(direction: direction)
+        updateModelCellCategory()
+        updatePieChartDisplayItem()
+        if direction == .before {
+            selectedIndex = 1
+        }
     }
 
-    public func getCountCategories(index: Int) -> Int {
-        categoryReports[index].summaries.count
+    private func checkSelectedIndex(_ index: Int) -> Direction? {
+        switch selectedIndex {
+        case 0:
+            return .before
+        case categoryReports.count - 1:
+            return .after
+        default:
+            return nil
+        }
     }
 
-    public func getModelCellCategory(section: Int, index: Int) -> ModelCellCategory {
-        let categoryReport = categoryReports[section].summaries[index]
-        let category = categoryReport.category
+    private func getReferenceDate(for direction: Direction) -> Date? {
+        switch direction {
+        case .before:
+            return listDateInterval.first?.start
+        case .after:
+            return listDateInterval.last?.end
+        }
+    }
+
+    private func sortedCategorySummary() {
+        modelCellCategory = modelCellCategory.reversed()
+    }
+
+    private func getPieChartDisplayItem(for report: PeriodCategoryReport) -> PieChartDisplayItem {
+        var segments: [SegmentPieChart] = []
+        if report.totalAmount == 0.0 {
+            segments.append(SegmentPieChart())
+        } else {
+            for category in report.summaries {
+                segments.append(SegmentPieChart(color: category.category.colorPrimaryName, value: category.percent))
+            }
+        }
+        return PieChartDisplayItem(amount: "\(Int(report.totalAmount)) ₽", segments: segments)
+    }
+
+    private func updatePieChartDisplayItem() {
+        pieChartDisplayItem.removeAll()
+        for categoryReport in categoryReports {
+            pieChartDisplayItem.append(getPieChartDisplayItem(for: categoryReport))
+        }
+
+    }
+
+    private func getModelCellCategory(for categorySummary: CategorySummary) -> ModelCellCategory {
+        let category = categorySummary.category
         let countExpenses = String(category.expense.count)
 
         let modelCategory: ModelCellCategory = ModelCellCategory(
@@ -246,30 +294,64 @@ extension AnalyticsViewModel: AnalyticsViewModelProtocol {
             nameIcon: category.nameIcon,
             name: category.name,
             countExpenses: countExpenses,
-            amount: String(Int(categoryReport.amount)),
-            percentageOfTotal: String(Int(categoryReport.percent))
+            amount: String(Int(categorySummary.amount)),
+            percentageOfTotal: String(Int(categorySummary.percent))
         )
         return modelCategory
     }
 
-    public func updateCategorySortOrder() {
+    private func updateModelCellCategory() {
         switch categorySortOrder {
-        case .totalAscending: categorySortOrder = .totalDescending
-        case .totalDescending: categorySortOrder = .totalAscending
+        case .totalDescending:
+            modelCellCategory = categoryReports[selectedIndex].summaries.map { getModelCellCategory(for: $0) }
+        case .totalAscending:
+            modelCellCategory = categoryReports[selectedIndex].summaries.map { getModelCellCategory(for: $0) }.reversed()
         }
+    }
+
+    private func updateTitleTimePeriod() {
+        titleTimePeriod = titleDateInterval[selectedIndex]
+    }
+}
+
+// MARK: AnalyticsViewModelProtocol
+
+extension AnalyticsViewModel: AnalyticsViewModelProtocol {
+
+    public func viewDidLoad() {
+        updateListDateInterval()
+        updateTitleDateInterval()
+        updateAllCategories()
+        updatePieChartDisplayItem()
+        updateModelCellCategory()
+    }
+
+    // MARK: - Inputs
+
+    public func updateTypeTimePeriod(_ type: TimePeriod) {
+        typeTimePeriod = type
+    }
+
+    public func updateSelectedIndex(_ index: Int) {
+        selectedIndex = index
+    }
+
+    public func updateCategorySortOrder() {
+        categorySortOrder.toggle()
         for i in categoryReports.indices {
             categoryReports[i] = getSortedPeriodCategoryReport(of: categoryReports[i])
         }
-        view?.updateSorted()
     }
 
-    public func updateTypeTimePeriod(period: TimePeriod) {
-        typeTimePeriod = period
-        updateListDateInterval()
-        updateCategories()
-        updateTitleDateInterval()
-        view?.updateCollectionExpenses()
-    }
+
+
+
+
+
+
+
+
+
 
     //MARK: TEST CORE DATA
 

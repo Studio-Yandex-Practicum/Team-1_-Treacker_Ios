@@ -13,7 +13,7 @@ struct PeriodCategoryReport {
     let totalAmount: Double
 }
 
-struct CategorySummary {
+public struct CategorySummary {
     let category: ExpenseCategory
     let amount: Double
     var percent: Double
