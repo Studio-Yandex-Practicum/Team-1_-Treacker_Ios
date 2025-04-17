@@ -40,6 +40,11 @@ public final class Router: RouterProtocol {
     public func routeToMainFlow() {
         let viewModel = AnalyticsViewModel(serviceExpense: coreDataAssembly.expenseService, serviceCategory: coreDataAssembly.categoryService)
         let mainVC = AnalyticsViewController(viewModel: viewModel)
+
+        viewModel.onOpenCategorySelection = { [weak self] in
+            self?.presentCategorySelection(from: mainVC)
+        }
+
         setRootViewController(UINavigationController(rootViewController: mainVC))
     }
 
@@ -90,6 +95,19 @@ public final class Router: RouterProtocol {
             .store(in: &cancellables)
 
         from.navigationController?.pushViewController(recVC, animated: true)
+    }
+
+    public func presentCategorySelection(from: UIViewController) {
+        let categoryVC = CategorySelectionViewController()
+        categoryVC.modalPresentationStyle = .pageSheet
+
+        if let sheet = categoryVC.sheetPresentationController {
+            sheet.detents = [.large()]
+            sheet.prefersGrabberVisible = false
+            sheet.prefersScrollingExpandsWhenScrolledToEdge = false
+        }
+
+        from.present(categoryVC, animated: true)
     }
 
     private func setRootViewController(_ viewController: UIViewController) {

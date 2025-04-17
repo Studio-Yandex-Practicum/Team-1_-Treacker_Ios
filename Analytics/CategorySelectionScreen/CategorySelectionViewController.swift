@@ -64,20 +64,22 @@ public final class CategorySelectionViewController: UIViewController {
 extension CategorySelectionViewController {
     private func setupLayout() {
         view.backgroundColor = .secondaryBg
-        headerStack.setupView(view)
-        applyButton.setupView(view)
+        navigationController?.isNavigationBarHidden = true
+        view.setupView(headerStack)
+        view.setupView(applyButton)
 
         NSLayoutConstraint.activate([
             closeButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height24.rawValue),
             closeButton.widthAnchor.constraint(equalToConstant: UIConstants.Widths.width24.rawValue),
 
             headerStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: UIConstants.Constants.large24.rawValue),
-            headerStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: UIConstants.Constants.large20.rawValue),
-            headerStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: -UIConstants.Constants.large20.rawValue),
+            headerStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
+            headerStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
 
             applyButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
             applyButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
             applyButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -UIConstants.Constants.small4.rawValue),
+            applyButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height54.rawValue)
         ])
     }
 }

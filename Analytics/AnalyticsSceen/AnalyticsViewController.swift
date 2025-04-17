@@ -198,6 +198,7 @@ public final class AnalyticsViewController: UIViewController {
 
     @objc private func didCategory() {
         // TODO: Добавить экран выбора категорий для сортировки
+        viewModel.didTapOpenCategorySelection()
     }
 
     @objc private func didSettings() {

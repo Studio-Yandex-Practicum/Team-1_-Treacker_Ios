@@ -31,6 +31,7 @@ public protocol AnalyticsViewModelProtocol {
     func updateSelectedIndex(_ index: Int)
     func updateCategorySortOrder()
     func updateSelectedCategories(_ categories: [ExpenseCategory])
+    func didTapOpenCategorySelection()
 }
 
 public final class AnalyticsViewModel {
@@ -41,6 +42,9 @@ public final class AnalyticsViewModel {
     public var onModelCellCategory: (() -> Void)?
     public var onPieChartDisplayItem: ((Int) -> Void)?
     public var onTitleTimePeriod: ((String) -> Void)?
+
+    // Router
+    public var onOpenCategorySelection: (() -> Void)?
 
     // MARK: - State
 
@@ -364,16 +368,11 @@ extension AnalyticsViewModel: AnalyticsViewModelProtocol {
         selectedCategories = categories
     }
 
+    public func didTapOpenCategorySelection() {
+        onOpenCategorySelection?()
+    }
 
-
-
-
-
-
-
-
-
-    //MARK: TEST CORE DATA
+    // MARK: TEST CORE DATA
 
     public func test() {
         let testCategories: [ExpenseCategory] = [
@@ -436,5 +435,4 @@ extension AnalyticsViewModel: AnalyticsViewModelProtocol {
         }
 
     }
-
 }
