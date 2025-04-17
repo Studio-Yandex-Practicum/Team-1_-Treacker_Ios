@@ -49,6 +49,7 @@ public enum UIConstants {
         case height1 = 1.0
         case height24 = 24.0
         case height40 = 40.0
+        case height52 = 52.0
         case height54 = 54.0
         case height60 = 60.0
         case height160 = 160.0

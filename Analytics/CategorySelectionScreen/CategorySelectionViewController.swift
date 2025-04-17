@@ -34,7 +34,21 @@ public final class CategorySelectionViewController: UIViewController {
         return stack
     }()
 
-    // TODO: Add Collection
+    // MARK: CollectionCategories
+
+    private lazy var categoriesCollection: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 12
+        let screenWidth = UIScreen.main.bounds.width
+        let itemWidth = screenWidth - 40
+        layout.itemSize = CGSize(width: itemWidth, height: UIConstants.Heights.height52.rawValue)
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.register(CellSelectionCategories.self)
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        return collectionView
+    }()
 
     // MARK: ApplyButton
 
@@ -59,6 +73,26 @@ public final class CategorySelectionViewController: UIViewController {
     }
 }
 
+// MARK: Extension - UICollectionViewDataSource
+
+extension CategorySelectionViewController: UICollectionViewDataSource {
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        10
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell: CellSelectionCategories = collectionView.dequeueReusableCell(indexPath: indexPath)
+        cell.configureCell()
+        return cell
+    }
+    
+}
+
+// MARK: Extension - UICollectionViewDelegate
+
+extension CategorySelectionViewController: UICollectionViewDelegate {
+}
+
 // MARK: Extension - Setup Layout
 
 extension CategorySelectionViewController {
@@ -67,6 +101,7 @@ extension CategorySelectionViewController {
         navigationController?.isNavigationBarHidden = true
         view.setupView(headerStack)
         view.setupView(applyButton)
+        view.setupView(categoriesCollection)
 
         NSLayoutConstraint.activate([
             closeButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height24.rawValue),
@@ -79,7 +114,12 @@ extension CategorySelectionViewController {
             applyButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
             applyButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
             applyButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -UIConstants.Constants.small4.rawValue),
-            applyButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height54.rawValue)
+            applyButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height54.rawValue),
+
+            categoriesCollection.topAnchor.constraint(equalTo: headerStack.bottomAnchor, constant: UIConstants.Constants.large20.rawValue),
+            categoriesCollection.bottomAnchor.constraint(equalTo: applyButton.topAnchor, constant: -UIConstants.Constants.large20.rawValue),
+            categoriesCollection.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            categoriesCollection.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
     }
 }
