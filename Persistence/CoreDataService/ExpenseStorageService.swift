@@ -8,8 +8,6 @@
 import CoreData
 import Core
 
-
-
 final class ExpenseStorageService: ExpenseStorageServiceProtocol {
 
     private let coreDataManager: CoreDataManagerProtocol

@@ -73,6 +73,7 @@ public enum GlobalConstants: String {
 
     // Analytics
 
+
     case analyticsTitle = "Аналитика"
     case analyticsTitleExpense = "Категории расходов"
     case analyticsTimePeriodDay = "День"
@@ -83,4 +84,7 @@ public enum GlobalConstants: String {
 
     case analyticsCellCategoryOperation = "операция"
     case analyticsCellCategoryPercent = "%"
+
+    case selectCategoryTitle = "Выберите категорию"
+    case selectCategoryApply = "Выбрать"
 }
