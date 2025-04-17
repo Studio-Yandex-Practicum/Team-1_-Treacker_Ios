@@ -16,11 +16,13 @@ public enum UIConstants {
     }
 
     public enum Multiplier: CGFloat {
+        case value08 = 0.8
         case value1 = 1.0
     }
 
     public enum Constants: CGFloat {
         case zero = 0.0
+        case small2 = 2.0
         case small8 = 8.0
         case medium12 = 12.0
         case medium16 = 16.0
@@ -30,6 +32,8 @@ public enum UIConstants {
         case large26 = 26.0
         case large40 = 40.0
         case large52 = 52.0
+        case large55 = 55.0
+        case large60 = 60.0
     }
 
     public enum Spacing: CGFloat {
@@ -46,10 +50,16 @@ public enum UIConstants {
         case height40 = 40.0
         case height54 = 54.0
         case height60 = 60.0
+        case height160 = 160.0
     }
 
     public enum Widths: CGFloat {
         case zero = 0.0
         case width24 = 24.0
+        case width100 = 100.0
+    }
+
+    public enum Padding: CGFloat {
+        case small4 = 4.0
     }
 }

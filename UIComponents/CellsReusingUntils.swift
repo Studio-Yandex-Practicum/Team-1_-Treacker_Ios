@@ -7,23 +7,23 @@
 
 import UIKit
 
-protocol ReuseIdentifying {
+public protocol ReuseIdentifying {
     static var defaultReuseIdentifier: String { get }
 }
 
-extension ReuseIdentifying where Self: UITableViewCell {
+public extension ReuseIdentifying where Self: UITableViewCell {
     static var defaultReuseIdentifier: String {
         NSStringFromClass(self).components(separatedBy: ".").last ?? NSStringFromClass(self)
     }
 }
 
-extension ReuseIdentifying where Self: UICollectionViewCell {
+public extension ReuseIdentifying where Self: UICollectionViewCell {
     static var defaultReuseIdentifier: String {
         NSStringFromClass(self).components(separatedBy: ".").last ?? NSStringFromClass(self)
     }
 }
 
-extension UITableView {
+public extension UITableView {
     func register<T: UITableViewCell>(_: T.Type) where T: ReuseIdentifying {
         register(T.self, forCellReuseIdentifier: T.defaultReuseIdentifier)
     }
@@ -37,7 +37,7 @@ extension UITableView {
     }
 }
 
-extension UICollectionView {
+public extension UICollectionView {
     func register<T: UICollectionViewCell>(_: T.Type) where T: ReuseIdentifying {
         register(T.self, forCellWithReuseIdentifier: T.defaultReuseIdentifier)
     }

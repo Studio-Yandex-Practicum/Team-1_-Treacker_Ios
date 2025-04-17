@@ -8,11 +8,7 @@
 import CoreData
 import Core
 
-public protocol ExpenseStorageServiceProtocol {
-    func fetchExpenses(from startDate: Date, to endDate: Date?, categories: [String]?) -> [Category]
-    func addExpense(_ expense: Expense, toCategory categoryId: UUID)
-    func deleteExpense(_ expenseId: UUID)
-}
+
 
 final class ExpenseStorageService: ExpenseStorageServiceProtocol {
 
@@ -22,23 +18,24 @@ final class ExpenseStorageService: ExpenseStorageServiceProtocol {
         self.coreDataManager = coreDataManager
     }
 
-    func fetchExpenses(from startDate: Date, to endDate: Date?, categories: [String]?) -> [Category] {
+    func fetchExpenses(from startDate: Date, to endDate: Date?, categories: [String]?) -> [ExpenseCategory] {
         let startOfDay = startDate.startOfDay
         let endOdDay: Date = endDate?.endOfDay ?? startDate.endOfDay
-
-//        let categories: [String]? = categories?.count == 0 ? nil : categories
 
         var predicates: [NSPredicate] = []
 
         let datePredicate = NSPredicate(format: "date >= %@ AND date <= %@", startOfDay as NSDate, endOdDay as NSDate)
         predicates.append(datePredicate)
+        
+        if let categories, !categories.isEmpty {
+            let categoryPredicate = NSPredicate(format: "categoryName IN %@", categories)
+            predicates.append(categoryPredicate)
+        }
 
         let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         let sortDescriptor = NSSortDescriptor(key: "date", ascending: false)
 
-        let results: [ExpenseCD] = coreDataManager.fetch(predicate: compoundPredicate, sortDescriptors: [sortDescriptor])
-
-        Logger.shared.log(.info, message: "✅ 💾 Расходы успешно загружены из Core Data)")
+        let results: [ExpenseCD] = coreDataManager.fetch(predicate: compoundPredicate, sortDescriptors: nil)
 
         return convertToCategories(from: results)
     }
@@ -65,8 +62,6 @@ final class ExpenseStorageService: ExpenseStorageServiceProtocol {
 
             expenseCD.amount = amountCD
         }
-
-        Logger.shared.log(.info, message: "✅ 💾 Расходы успешно сохранен в Core Data)")
     }
 
     func deleteExpense(_ expenseId: UUID) {
@@ -79,20 +74,20 @@ final class ExpenseStorageService: ExpenseStorageServiceProtocol {
         }
 
         coreDataManager.delete(expenseToDelete)
-        Logger.shared.log(.info, message: "✅ 🗑️ 💾 Расход с id \(expenseId) успешно удалён")
     }
 
-    private func convertToCategories(from cdExpenses: [ExpenseCD]) -> [Category] {
+    private func convertToCategories(from cdExpenses: [ExpenseCD]) -> [ExpenseCategory] {
         let grouped = Dictionary(grouping: cdExpenses, by: { $0.category })
 
-        var result: [Category] = []
+        var result: [ExpenseCategory] = []
 
         for (categoryCDOptional, expensesCD) in grouped {
             guard let categoryCD = categoryCDOptional,
                   let categoryId = categoryCD.id,
                   let name = categoryCD.name,
-                  let iconName = categoryCD.iconName,
-                  let colorName = categoryCD.colorName
+                  let colorBgName = categoryCD.colorBgName,
+                  let colorPrimaryName = categoryCD.colorPrimaryName,
+                  let nameIcon = categoryCD.nameIcon
             else {
                 continue
             }
@@ -116,11 +111,12 @@ final class ExpenseStorageService: ExpenseStorageServiceProtocol {
                 )
             }
 
-            let category = Category(
+            let category = ExpenseCategory(
                 id: categoryId,
                 name: name,
-                colorName: colorName,
-                iconName: iconName,
+                colorBgName: colorBgName,
+                colorPrimaryName: colorPrimaryName,
+                nameIcon: nameIcon,
                 expense: expenses
             )
 

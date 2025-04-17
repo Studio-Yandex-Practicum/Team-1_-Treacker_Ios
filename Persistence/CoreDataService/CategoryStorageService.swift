@@ -8,12 +8,6 @@
 import CoreData
 import Core
 
-public protocol CategoryStorageServiceProtocol {
-    func fetchCategories() -> [Category]
-    func addCategory(_ category: Category)
-    func deleteCategory(_ categoryId: UUID)
-}
-
 final class CategoryStorageService: CategoryStorageServiceProtocol {
     
     private let coreDataManager: CoreDataManagerProtocol
@@ -22,18 +16,16 @@ final class CategoryStorageService: CategoryStorageServiceProtocol {
         self.coreDataManager = coreDataManager
     }
 
-    func fetchCategories() -> [Category] {
+    func fetchCategories() -> [ExpenseCategory] {
 
         let sortDescriptor = NSSortDescriptor(key: "name", ascending: false)
 
         let results: [CategoryCD] = coreDataManager.fetch(predicate: nil, sortDescriptors: [sortDescriptor])
 
-        Logger.shared.log(.info, message: "✅ 💾 Категории успешно загружены из Core Data)")
-
         return convertCategories(from: results)
     }
 
-    func addCategory(_ category: Category) {
+    func addCategory(_ category: ExpenseCategory) {
         let predicate = NSPredicate(format: "name == %@", category.name)
         let categories: [CategoryCD] = coreDataManager.fetch(predicate: predicate, sortDescriptors: nil)
 
@@ -45,12 +37,11 @@ final class CategoryStorageService: CategoryStorageServiceProtocol {
         coreDataManager.save { (categoryCD: CategoryCD, context) in
             categoryCD.id = category.id
             categoryCD.name = category.name
-            categoryCD.colorName = category.colorName
-            categoryCD.iconName = category.iconName
+            categoryCD.colorBgName = category.colorBgName
+            categoryCD.colorPrimaryName = category.colorPrimaryName
+            categoryCD.nameIcon = category.nameIcon
             categoryCD.expense = []
         }
-
-        Logger.shared.log(.info, message: "✅ 💾 Категория успешно сохранена в Core Data)")
     }
 
     func deleteCategory(_ categoryId: UUID) {
@@ -63,26 +54,27 @@ final class CategoryStorageService: CategoryStorageServiceProtocol {
         }
 
         coreDataManager.delete(expenseToDelete)
-        Logger.shared.log(.info, message: "✅ 🗑️ 💾 Категория с id \(categoryId) успешно удалён")
     }
 
-    private func convertCategories(from: [CategoryCD]) -> [Category] {
-        var categories: [Category] = []
+    private func convertCategories(from: [CategoryCD]) -> [ExpenseCategory] {
+        var categories: [ExpenseCategory] = []
 
         for categoryCD in from {
             guard let categoryId = categoryCD.id,
                   let name = categoryCD.name,
-                  let iconName = categoryCD.iconName,
-                  let colorName = categoryCD.colorName
+                  let colorBgName = categoryCD.colorBgName,
+                  let colorPrimaryName = categoryCD.colorPrimaryName,
+                  let nameIcon = categoryCD.nameIcon
             else {
                 continue
             }
 
-            let category = Category(
+            let category = ExpenseCategory(
                 id: categoryId,
                 name: name,
-                colorName: colorName,
-                iconName: iconName,
+                colorBgName: colorBgName,
+                colorPrimaryName: colorPrimaryName,
+                nameIcon: nameIcon,
                 expense: []
             )
 

@@ -118,6 +118,8 @@ targets:
           - Supporting SpendWise/Resouces/Info.plist
     dependencies:
       - target: Core
+      - target: UIComponents
+      - target: Persistence
     bundleId: KV.Lyashenko.SpendWise.Analytics
     deploymentTarget: "18.0"
     settings:
@@ -185,6 +187,7 @@ targets:
       - target: Core
       - target: Expenses
       - target: Auth
+      - target: Analytics
     bundleId: KV.Lyashenko.SpendWise.Router
     deploymentTarget: "18.0"
     settings:
