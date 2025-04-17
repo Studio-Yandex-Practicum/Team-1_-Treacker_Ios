@@ -39,7 +39,10 @@ public final class Router: RouterProtocol {
     }
 
     public func routeToMainFlow() {
-        let viewModel = AnalyticsViewModel(serviceExpense: coreDataAssembly.expenseService, serviceCategory: coreDataAssembly.categoryService)
+        let viewModel = AnalyticsViewModel(
+            serviceExpense: coreDataAssembly.expenseService,
+            serviceCategory: coreDataAssembly.categoryService
+        )
         let mainVC = AnalyticsViewController(viewModel: viewModel)
         setRootViewController(UINavigationController(rootViewController: mainVC))
     }

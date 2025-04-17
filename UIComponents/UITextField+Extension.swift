@@ -104,6 +104,12 @@ public final class CustomTextField: UITextField {
             textContentType = .none
         case .amount(let currencySymbol):
             keyboardType = .decimalPad
+            textContentType = .none
+            autocapitalizationType = .none
+            autocorrectionType = .no
+            spellCheckingType = .no
+            smartQuotesType = .no
+            smartDashesType = .no
             floatingLabel.text = "\(placeholderText), \(currencySymbol)"
         case .password:
             keyboardType = .default

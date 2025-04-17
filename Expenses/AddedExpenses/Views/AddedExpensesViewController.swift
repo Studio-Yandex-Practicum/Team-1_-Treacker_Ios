@@ -14,6 +14,8 @@ public final class AddedExpensesViewController: UIViewController {
     // MARK: - Properties
 
     private let viewModel: AddedExpensesViewModelProtocol
+    private let scrollView = UIScrollView()
+    private let contentView = UIView()
 
     private lazy var titleLabel: UILabel = .init(
         text: GlobalConstants.addExpense.rawValue,
@@ -73,11 +75,18 @@ public final class AddedExpensesViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .secondaryBg
+        setupScrollView()
         setupUI()
         setupActions()
         bindViewModel()
         viewModel.loadCategories()
         enableKeyboardDismissOnTap()
+        setupKeyboardObservers()
+        setupNotificationActions()
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }
 
@@ -90,6 +99,8 @@ extension AddedExpensesViewController {
             titleLabel, closeButton
         ])
         hStack.axis = .horizontal
+        hStack.alignment = .center
+        hStack.contentMode = .scaleAspectFit
 
         let stack = UIStackView(arrangedSubviews: [
             hStack,
@@ -104,18 +115,31 @@ extension AddedExpensesViewController {
         stack.setCustomSpacing(UIConstants.Spacing.zero.rawValue, after: collectionView)
         stack.setCustomSpacing(UIConstants.Spacing.small4.rawValue, after: pageControl)
         stack.setCustomSpacing(UIConstants.Spacing.medium12.rawValue, after: dateTextField)
-        view.setupView(stack)
-        view.setupView(addButton)
+        contentView.setupView(stack)
+        contentView.setupView(addButton)
 
         NSLayoutConstraint.activate([
+            closeButton.widthAnchor.constraint(equalToConstant: 25),
             dateTextField.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height60.rawValue),
             collectionView.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height200.rawValue),
-            stack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: UIConstants.Constants.large20.rawValue),
-            stack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
-            stack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
-            addButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
-            addButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
-            addButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            stack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: UIConstants.Constants.large20.rawValue),
+            stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
+            stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
+            addButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
+            addButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
+            addButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            addButton.topAnchor.constraint(greaterThanOrEqualTo: stack.bottomAnchor, constant: UIConstants.Spacing.medium16.rawValue)
+        ])
+    }
+
+    private func setupScrollView() {
+        view.setupView(scrollView)
+        scrollView.setupView(contentView)
+        scrollView.constraintEdgesWithSafeArea(to: view)
+        contentView.constraintEdges(to: scrollView)
+
+        NSLayoutConstraint.activate([
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
         ])
     }
 }
@@ -202,6 +226,41 @@ private extension AddedExpensesViewController {
             }
         }
         return section
+    }
+}
+
+// MARK: - Keyboard Observers
+
+private extension AddedExpensesViewController {
+
+    private func setupKeyboardObservers() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+    }
+
+    @objc private func keyboardWillShow(notification: NSNotification) {
+        guard let userInfo = notification.userInfo,
+                let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
+
+        let keyboardHeight = keyboardFrame.height
+        scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight, right: 0)
+        scrollView.scrollIndicatorInsets = scrollView.contentInset
+    }
+
+    @objc private func keyboardWillHide(notification: NSNotification) {
+        scrollView.contentInset = .zero
+        scrollView.scrollIndicatorInsets = .zero
     }
 }
 
@@ -292,5 +351,38 @@ extension AddedExpensesViewController: UICollectionViewDataSource {
             backgrounColor: UIColor(named: category.colorBgName) ?? .systemGray
         )
         return cell
+    }
+}
+
+// MARK: - UITextViewDelegate
+
+extension AddedExpensesViewController: UITextFieldDelegate {
+
+    private func setupNotificationActions() {
+        amountTextField.delegate = self
+        noteTextField.delegate = self
+    }
+
+    public func textFieldDidBeginEditing(_ textField: UITextField) {
+        let rect = textField.convert(textField.bounds, to: scrollView)
+        scrollView.scrollRectToVisible(rect, animated: true)
+    }
+
+    public func textField(
+        _ textField: UITextField,
+        shouldChangeCharactersIn range: NSRange,
+        replacementString string: String
+    ) -> Bool {
+        let allowedCharacters = CharacterSet(charactersIn: "0123456789.,")
+        let characterSet = CharacterSet(charactersIn: string)
+
+        if let text = textField.text, string.contains(".") || string.contains(",") {
+            let decimalSeparators = [".", ","]
+            if decimalSeparators.contains(where: { text.contains($0) }) {
+                return false
+            }
+        }
+
+        return allowedCharacters.isSuperset(of: characterSet)
     }
 }
