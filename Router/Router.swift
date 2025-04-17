@@ -33,8 +33,7 @@ public final class Router: RouterProtocol {
         if AuthService.shared.isAuthorized {
             routeToMainFlow()
         } else {
-            //routeToAuthFlow()
-            routeToAddedExpensesFlow()
+            routeToAuthFlow()
         }
     }
 

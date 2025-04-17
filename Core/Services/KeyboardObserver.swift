@@ -9,8 +9,12 @@ import UIKit
 
 public final class KeyboardObserver {
 
+    // MARK: - Private Properties
+
     private weak var scrollView: UIScrollView?
     private var onKeyboardChange: ((CGFloat, TimeInterval, UIView.AnimationOptions) -> Void)?
+
+    // MARK: - Init
 
     public init(
         scrollView: UIScrollView? = nil,
@@ -24,6 +28,8 @@ public final class KeyboardObserver {
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
+
+    // MARK: - Private Methods
 
     private func registerForKeyboardNotifications() {
         NotificationCenter.default.addObserver(
@@ -40,6 +46,8 @@ public final class KeyboardObserver {
             object: nil
         )
     }
+
+    // MARK: - Actions
 
     @objc private func keyboardWillShow(notification: Notification) {
         guard

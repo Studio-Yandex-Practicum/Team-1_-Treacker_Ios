@@ -136,6 +136,7 @@ extension AddedExpensesViewController {
 
     private func setupScrollView() {
         view.setupView(scrollView)
+        scrollView.showsVerticalScrollIndicator = false
         scrollView.setupView(contentView)
         scrollView.constraintEdgesWithSafeArea(to: view)
         contentView.constraintEdges(to: scrollView)
@@ -340,16 +341,18 @@ extension AddedExpensesViewController: UITextFieldDelegate {
         shouldChangeCharactersIn range: NSRange,
         replacementString string: String
     ) -> Bool {
-        let allowedCharacters = CharacterSet(charactersIn: "0123456789.,")
-        let characterSet = CharacterSet(charactersIn: string)
+        if textField === amountTextField {
+            let allowedCharacters = CharacterSet(charactersIn: "0123456789.,")
+            let characterSet = CharacterSet(charactersIn: string)
 
-        if let text = textField.text, string.contains(".") || string.contains(",") {
-            let decimalSeparators = [".", ","]
-            if decimalSeparators.contains(where: { text.contains($0) }) {
-                return false
+            if let text = textField.text, string.contains(".") || string.contains(",") {
+                let decimalSeparators = [".", ","]
+                if decimalSeparators.contains(where: { text.contains($0) }) {
+                    return false
+                }
             }
+            return allowedCharacters.isSuperset(of: characterSet)
         }
-
-        return allowedCharacters.isSuperset(of: characterSet)
+        return true
     }
 }
