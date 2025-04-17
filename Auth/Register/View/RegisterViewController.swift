@@ -17,18 +17,18 @@ public final class RegisterViewController: UIViewController {
     private let viewModel: RegisterViewModel
     private var cancellable = Set<AnyCancellable>()
 
-    private lazy var titleLabel = makeLabel(
+    private lazy var titleLabel: UILabel = .init(
         text: GlobalConstants.register.rawValue,
         font: .h1,
         color: .primaryText,
         alignment: .left
     )
 
-    private lazy var emailField = CustomTextField(placeholder: GlobalConstants.email.rawValue)
+    private lazy var emailField = CustomTextField(placeholder: GlobalConstants.email.rawValue, type: .email)
 
     private lazy var passwordField =  CustomTextField(
         placeholder: GlobalConstants.pass.rawValue,
-        isPassword: true
+        type: .password
     )
 
     private lazy var registerButton = UIButton.makeButton(
@@ -55,6 +55,7 @@ public final class RegisterViewController: UIViewController {
         setupUI()
         setupNavbarItem()
         bindViewModel()
+        enableKeyboardDismissOnTap()
     }
 }
 
@@ -74,27 +75,10 @@ private extension RegisterViewController {
         view.setupView(vStack)
 
         NSLayoutConstraint.activate([
-            registerButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height54.rawValue),
             vStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             vStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
             vStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue)
         ])
-    }
-
-    private func makeLabel(
-        text: String,
-        font: UIFont,
-        color: UIColor,
-        alignment: NSTextAlignment = .natural,
-        numberOfLines: Int = 1
-    ) -> UILabel {
-        let label = UILabel()
-        label.text = text
-        label.font = font
-        label.textColor = color
-        label.textAlignment = alignment
-        label.numberOfLines = numberOfLines
-        return label
     }
 
     private func setupNavbarItem() {

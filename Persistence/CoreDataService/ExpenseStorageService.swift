@@ -24,7 +24,7 @@ final class ExpenseStorageService: ExpenseStorageServiceProtocol {
 
         let datePredicate = NSPredicate(format: "date >= %@ AND date <= %@", startOfDay as NSDate, endOdDay as NSDate)
         predicates.append(datePredicate)
-        
+
         if let categories, !categories.isEmpty {
             let categoryPredicate = NSPredicate(format: "categoryName IN %@", categories)
             predicates.append(categoryPredicate)

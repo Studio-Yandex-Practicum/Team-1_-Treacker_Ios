@@ -38,7 +38,10 @@ public final class Router: RouterProtocol {
     }
 
     public func routeToMainFlow() {
-        let viewModel = AnalyticsViewModel(serviceExpense: coreDataAssembly.expenseService, serviceCategory: coreDataAssembly.categoryService)
+        let viewModel = AnalyticsViewModel(
+            serviceExpense: coreDataAssembly.expenseService,
+            serviceCategory: coreDataAssembly.categoryService
+        )
         let mainVC = AnalyticsViewController(viewModel: viewModel)
         setRootViewController(UINavigationController(rootViewController: mainVC))
     }
@@ -90,6 +93,12 @@ public final class Router: RouterProtocol {
             .store(in: &cancellables)
 
         from.navigationController?.pushViewController(recVC, animated: true)
+    }
+
+    public func routeToAddedExpensesFlow() {
+        let viewModel = AddedExpensesViewModel()
+        let addedExpensesVC = AddedExpensesViewController(viewModel: viewModel)
+        setRootViewController(UINavigationController(rootViewController: addedExpensesVC))
     }
 
     private func setRootViewController(_ viewController: UIViewController) {

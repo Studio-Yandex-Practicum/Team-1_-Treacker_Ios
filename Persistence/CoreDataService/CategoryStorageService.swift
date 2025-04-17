@@ -9,7 +9,7 @@ import CoreData
 import Core
 
 final class CategoryStorageService: CategoryStorageServiceProtocol {
-    
+
     private let coreDataManager: CoreDataManagerProtocol
 
     init(coreDataManager: CoreDataManagerProtocol) {

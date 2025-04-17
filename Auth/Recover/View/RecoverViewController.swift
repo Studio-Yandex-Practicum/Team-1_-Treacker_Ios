@@ -17,21 +17,21 @@ public final class RecoverViewController: UIViewController {
     private let viewModel: RecoverViewModel
     private var cancellable = Set<AnyCancellable>()
 
-    private lazy var titleLabel = makeLabel(
+    private lazy var titleLabel: UILabel = .init(
         text: GlobalConstants.recPass.rawValue,
         font: .h1,
         color: .primaryText,
         alignment: .left
     )
 
-    private lazy var subtitleLabel = makeLabel(
+    private lazy var subtitleLabel: UILabel = .init(
         text: GlobalConstants.recInfoSubtitle.rawValue,
         font: .h5,
         color: .secondaryText,
         alignment: .left
     )
 
-    private lazy var emailField = CustomTextField(placeholder: GlobalConstants.email.rawValue)
+    private lazy var emailField = CustomTextField(placeholder: GlobalConstants.email.rawValue, type: .email)
 
     private lazy var confirmButton = UIButton.makeButton(
         title: .confirm,
@@ -57,6 +57,7 @@ public final class RecoverViewController: UIViewController {
         setupUI()
         setupNavbarItem()
         bindViewModel()
+        enableKeyboardDismissOnTap()
     }
 }
 
@@ -80,29 +81,12 @@ private extension RecoverViewController {
         view.setupView(vStack)
 
         NSLayoutConstraint.activate([
-            confirmButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height54.rawValue),
             vStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             vStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
             vStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue)
         ])
     }
-
-    private func makeLabel(
-        text: String,
-        font: UIFont,
-        color: UIColor,
-        alignment: NSTextAlignment = .natural,
-        numberOfLines: Int = 1
-    ) -> UILabel {
-        let label = UILabel()
-        label.text = text
-        label.font = font
-        label.textColor = color
-        label.textAlignment = alignment
-        label.numberOfLines = numberOfLines
-        return label
-    }
-
+    
     private func setupNavbarItem() {
         navigationItem.hidesBackButton = true
         navigationItem.leftBarButtonItem = .customBackButton(
