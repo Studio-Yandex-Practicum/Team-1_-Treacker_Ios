@@ -11,7 +11,7 @@ import UIComponents
 
 public final class AddedExpensesViewController: UIViewController {
 
-    // MARK: - Properties
+    // MARK: - Private Properties
 
     private let viewModel: AddedExpensesViewModelProtocol
     private let scrollView = UIScrollView()
@@ -25,6 +25,15 @@ public final class AddedExpensesViewController: UIViewController {
         color: .primaryText,
         alignment: .left
     )
+
+    private lazy var closeButton: UIButton = {
+        let button = UIButton(type: .system)
+        let image = UIImage(named: AppIcon.close.rawValue)?.withRenderingMode(.alwaysTemplate)
+        button.setImage(image, for: .normal)
+        button.tintColor = .primaryText
+        button.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
+        return button
+    }()
 
     private lazy var amountTextField = CustomTextField(
         placeholder: GlobalConstants.sum.rawValue,
@@ -54,16 +63,11 @@ public final class AddedExpensesViewController: UIViewController {
         return control
     }()
 
-    private lazy var addButton: UIButton = .makeButton(title: .add, target: self, action: #selector(addTapped))
-
-    private lazy var closeButton: UIButton = {
-        let button = UIButton(type: .system)
-        let image = UIImage(named: AppIcon.close.rawValue)?.withRenderingMode(.alwaysTemplate)
-        button.setImage(image, for: .normal)
-        button.tintColor = .primaryText
-        button.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
-        return button
-    }()
+    private lazy var addButton: UIButton = .makeButton(
+        title: .add,
+        target: self,
+        action: #selector(addTapped)
+    )
 
     // MARK: - Lifecycle
 
@@ -121,7 +125,7 @@ extension AddedExpensesViewController {
         contentView.setupView(addButton)
 
         NSLayoutConstraint.activate([
-            closeButton.widthAnchor.constraint(equalToConstant: 25),
+            closeButton.widthAnchor.constraint(equalToConstant: UIConstants.Widths.width25.rawValue),
             dateTextField.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height60.rawValue),
             collectionView.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height200.rawValue),
             stack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: UIConstants.Constants.large20.rawValue),
