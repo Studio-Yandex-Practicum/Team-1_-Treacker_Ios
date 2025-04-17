@@ -332,10 +332,10 @@ extension AnalyticsViewController {
             categoryStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
             categoryStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
 
-            tableExpenses.topAnchor.constraint(equalTo: categoryStack.bottomAnchor, constant:UIConstants.Constants.small8.rawValue),
+            tableExpenses.topAnchor.constraint(equalTo: categoryStack.bottomAnchor, constant: UIConstants.Constants.small8.rawValue),
             tableExpenses.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableExpenses.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableExpenses.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tableExpenses.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
 }
