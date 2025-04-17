@@ -17,6 +17,8 @@ public final class AddedExpensesViewController: UIViewController {
     private let scrollView = UIScrollView()
     private let contentView = UIView()
 
+    private var keyboardObserver: KeyboardObserver?
+
     private lazy var titleLabel: UILabel = .init(
         text: GlobalConstants.addExpense.rawValue,
         font: .h1,
@@ -24,7 +26,11 @@ public final class AddedExpensesViewController: UIViewController {
         alignment: .left
     )
 
-    private lazy var amountTextField = CustomTextField(placeholder: GlobalConstants.sum.rawValue, type: .amount(currencySymbol: "₽"))
+    private lazy var amountTextField = CustomTextField(
+        placeholder: GlobalConstants.sum.rawValue,
+        type: .amount(currencySymbol: "₽")
+    )
+
     private lazy var noteTextField = CustomTextField(placeholder: GlobalConstants.note.rawValue)
 
     private lazy var dateTextField: DatePickerTextField = {
@@ -44,7 +50,6 @@ public final class AddedExpensesViewController: UIViewController {
         control.numberOfPages = 0
         control.pageIndicatorTintColor = .lightGray
         control.currentPageIndicatorTintColor = .cAccent
-        control.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
         control.isUserInteractionEnabled = false
         return control
     }()
@@ -78,15 +83,12 @@ public final class AddedExpensesViewController: UIViewController {
         setupScrollView()
         setupUI()
         setupActions()
+        setupTextFieldDelegate()
         bindViewModel()
         viewModel.loadCategories()
         enableKeyboardDismissOnTap()
-        setupKeyboardObservers()
-        setupNotificationActions()
-    }
 
-    deinit {
-        NotificationCenter.default.removeObserver(self)
+        keyboardObserver = KeyboardObserver(scrollView: scrollView)
     }
 }
 
@@ -229,41 +231,6 @@ private extension AddedExpensesViewController {
     }
 }
 
-// MARK: - Keyboard Observers
-
-private extension AddedExpensesViewController {
-
-    private func setupKeyboardObservers() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(keyboardWillShow),
-            name: UIResponder.keyboardWillShowNotification,
-            object: nil
-        )
-
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(keyboardWillHide),
-            name: UIResponder.keyboardWillHideNotification,
-            object: nil
-        )
-    }
-
-    @objc private func keyboardWillShow(notification: NSNotification) {
-        guard let userInfo = notification.userInfo,
-                let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
-
-        let keyboardHeight = keyboardFrame.height
-        scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight, right: 0)
-        scrollView.scrollIndicatorInsets = scrollView.contentInset
-    }
-
-    @objc private func keyboardWillHide(notification: NSNotification) {
-        scrollView.contentInset = .zero
-        scrollView.scrollIndicatorInsets = .zero
-    }
-}
-
 // MARK: - Bindings
 
 private extension AddedExpensesViewController {
@@ -358,7 +325,7 @@ extension AddedExpensesViewController: UICollectionViewDataSource {
 
 extension AddedExpensesViewController: UITextFieldDelegate {
 
-    private func setupNotificationActions() {
+    private func setupTextFieldDelegate() {
         amountTextField.delegate = self
         noteTextField.delegate = self
     }
