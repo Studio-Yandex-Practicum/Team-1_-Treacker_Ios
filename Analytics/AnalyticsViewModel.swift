@@ -164,9 +164,9 @@ public final class AnalyticsViewModel {
             totalAmount += categorySummary.amount
             summaries.append(categorySummary)
         }
-        for i in summaries.indices {
-            let percent = summaries[i].amount / totalAmount * 100
-            summaries[i].percent = percent
+        for index in summaries.indices {
+            let percent = summaries[index].amount / totalAmount * 100
+            summaries[index].percent = percent
         }
         let periodCategoryReport = PeriodCategoryReport(summaries: summaries, totalAmount: totalAmount)
         return periodCategoryReport
@@ -201,20 +201,29 @@ public final class AnalyticsViewModel {
         let startComponents = calendar.dateComponents([.day, .month, .year], from: startDate)
         let endComponents = calendar.dateComponents([.day, .month, .year], from: endDate)
 
-        if startComponents == endComponents {
+        guard let startDay = startComponents.day,
+              let startMonth = startComponents.month,
+              let startYear = startComponents.year,
+              let endDay = endComponents.day,
+              let endMonth = endComponents.month,
+              let endYear = endComponents.year else {
+            return ""
+        }
+
+        if startDay == endDay, startMonth == endMonth, startYear == endYear {
             dateFormatter.dateFormat = "d MMMM yyyy"
             return dateFormatter.string(from: startDate)
         }
 
-        if startComponents.month == endComponents.month, startComponents.year == endComponents.year {
-            return "\(startComponents.day!) – \(endComponents.day!) \(monthName(startDate)) \(startComponents.year!)"
+        if startMonth == endMonth, startYear == endYear {
+            return "\(startDay) – \(endDay) \(monthName(startDate)) \(startYear)"
         }
 
-        if startComponents.year == endComponents.year {
-            return "\(startComponents.day!) \(monthName(startDate)) – \(endComponents.day!) \(monthName(endDate)) \(startComponents.year!)"
+        if startYear == endYear {
+            return "\(startDay) \(monthName(startDate)) – \(endDay) \(monthName(endDate)) \(startYear)"
         }
 
-        return "\(startComponents.day!) \(monthName(startDate)) \(startComponents.year!) – \(endComponents.day!) \(monthName(endDate)) \(endComponents.year!)"
+        return "\(startDay) \(monthName(startDate)) \(startYear) – \(endDay) \(monthName(endDate)) \(endYear)"
     }
 
     private func addNewDateInterval() {
