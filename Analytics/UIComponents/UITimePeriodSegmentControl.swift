@@ -24,7 +24,7 @@ final class UITimePeriodSegmentControl: UIView {
     private var segments: [TimePeriod]
     private var padding: CGFloat = 0
     private var isRenderingCurrentIndexView: Bool = false
-    private var didTapSegment: ((TimePeriod) -> ())
+    private var didTapSegment: ((TimePeriod) -> Void)
 
     private lazy var sizeSegment: CGSize = {
         let width = (self.frame.width - (padding + padding)) / CGFloat(segments.count)
@@ -57,7 +57,7 @@ final class UITimePeriodSegmentControl: UIView {
 
     // MARK: - Initializers
 
-    init(didTapSegment: @escaping ((TimePeriod) -> ())) {
+    init(didTapSegment: @escaping ((TimePeriod) -> Void)) {
         self.didTapSegment = didTapSegment
         self.selectedTimePeriod = .day
         self.segments = [.day, .week, .month, .year, .custom]

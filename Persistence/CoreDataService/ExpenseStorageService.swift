@@ -8,8 +8,6 @@
 import CoreData
 import Core
 
-
-
 final class ExpenseStorageService: ExpenseStorageServiceProtocol {
 
     private let coreDataManager: CoreDataManagerProtocol
@@ -35,7 +33,7 @@ final class ExpenseStorageService: ExpenseStorageServiceProtocol {
         let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         let sortDescriptor = NSSortDescriptor(key: "date", ascending: false)
 
-        let results: [ExpenseCD] = coreDataManager.fetch(predicate: compoundPredicate, sortDescriptors: nil)
+        let results: [ExpenseCD] = coreDataManager.fetch(predicate: compoundPredicate, sortDescriptors: [sortDescriptor])
 
         return convertToCategories(from: results)
     }

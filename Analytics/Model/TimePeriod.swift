@@ -69,14 +69,14 @@ public enum TimePeriod {
             return []
         }
 
-        for i in (1...2).reversed() {
-            if let pastDate = calendar.date(byAdding: component, value: -1 * i, to: referenceDate) {
+        for intervalCoefficient in (1...2).reversed() {
+            if let pastDate = calendar.date(byAdding: component, value: -1 * intervalCoefficient, to: referenceDate) {
                 intervals.append(getDateInterval(for: pastDate, using: calendar))
             }
         }
         intervals.append(currentInterval)
-        for i in 1...2 {
-            if let pastDate = calendar.date(byAdding: component, value: i, to: referenceDate) {
+        for intervalCoefficient in 1...2 {
+            if let pastDate = calendar.date(byAdding: component, value: intervalCoefficient, to: referenceDate) {
                 intervals.append(getDateInterval(for: pastDate, using: calendar))
             }
         }
@@ -115,21 +115,41 @@ public enum TimePeriod {
         switch self {
         case .day:
             return DateInterval(start: referenceDate, end: referenceDate)
+
         case .week:
-            startDate = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: referenceDate))!
-            endDate = calendar.date(byAdding: .day, value: 6, to: startDate)!
+            guard let start = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: referenceDate)),
+                  let end = calendar.date(byAdding: .day, value: 6, to: start) else {
+                return DateInterval(start: referenceDate, end: referenceDate)
+            }
+            startDate = start
+            endDate = end
+
         case .month:
-            startDate = calendar.date(from: calendar.dateComponents([.year, .month], from: referenceDate))!
+            guard let start = calendar.date(from: calendar.dateComponents([.year, .month], from: referenceDate)) else {
+                return DateInterval(start: referenceDate, end: referenceDate)
+            }
             var components = DateComponents()
             components.month = 1
             components.day = -1
-            endDate = calendar.date(byAdding: components, to: startDate)!
+            guard let end = calendar.date(byAdding: components, to: start) else {
+                return DateInterval(start: referenceDate, end: referenceDate)
+            }
+            startDate = start
+            endDate = end
+
         case .year:
-            startDate = calendar.date(from: calendar.dateComponents([.year], from: referenceDate))!
-            var endOfYearComponents = DateComponents()
-            endOfYearComponents.year = 1
-            endOfYearComponents.day = -1
-            endDate = calendar.date(byAdding: endOfYearComponents, to: startDate)!
+            guard let start = calendar.date(from: calendar.dateComponents([.year], from: referenceDate)) else {
+                return DateInterval(start: referenceDate, end: referenceDate)
+            }
+            var components = DateComponents()
+            components.year = 1
+            components.day = -1
+            guard let end = calendar.date(byAdding: components, to: start) else {
+                return DateInterval(start: referenceDate, end: referenceDate)
+            }
+            startDate = start
+            endDate = end
+
         case .custom:
             startDate = referenceDate
             endDate = referenceDate
@@ -138,4 +158,3 @@ public enum TimePeriod {
         return DateInterval(start: startDate, end: endDate)
     }
 }
-

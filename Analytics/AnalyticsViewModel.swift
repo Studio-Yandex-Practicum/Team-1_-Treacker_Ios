@@ -347,20 +347,10 @@ extension AnalyticsViewModel: AnalyticsViewModelProtocol {
 
     public func updateCategorySortOrder() {
         categorySortOrder.toggle()
-        for i in categoryReports.indices {
-            categoryReports[i] = getSortedPeriodCategoryReport(of: categoryReports[i])
+        for index in categoryReports.indices {
+            categoryReports[index] = getSortedPeriodCategoryReport(of: categoryReports[index])
         }
     }
-
-
-
-
-
-
-
-
-
-
 
     //MARK: TEST CORE DATA
 
@@ -398,30 +388,31 @@ extension AnalyticsViewModel: AnalyticsViewModelProtocol {
 
         let categories = serviceCategory.fetchCategories()
 
-            guard !categories.isEmpty else {
-                Logger.shared.log(.error, message: "❌ Нет доступных категорий для тестовых расходов")
-                return
-            }
+        guard !categories.isEmpty else {
+            Logger.shared.log(.error, message: "❌ Нет доступных категорий для тестовых расходов")
+            return
+        }
 
         for _ in 0..<100 {
-                let category = categories.randomElement()!
+            guard let note =  ["Кофе", "Метро", "Фильм", "Шаурма", "Такси", "Пицца", "Проезд", "Чай", "Ланч", "Попкорн"].randomElement(),
+                  let category = categories.randomElement() else { return }
 
-                let randomTimeInterval = Double.random(in: -10*86400...10*86400)
-                let randomDate = Date().addingTimeInterval(randomTimeInterval)
+            let randomTimeInterval = Double.random(in: -10*86400...10*86400)
+            let randomDate = Date().addingTimeInterval(randomTimeInterval)
 
-                let expense = Expense(
-                    id: UUID(),
-                    data: randomDate,
-                    note: ["Кофе", "Метро", "Фильм", "Шаурма", "Такси", "Пицца", "Проезд", "Чай", "Ланч", "Попкорн"].randomElement()!,
-                    amount: Amount(
-                        rub: Double.random(in: 100...500),
-                        usd: 0,
-                        eur: 0
-                    )
+            let expense = Expense(
+                id: UUID(),
+                data: randomDate,
+                note: note,
+                amount: Amount(
+                    rub: Double.random(in: 100...500),
+                    usd: 0,
+                    eur: 0
                 )
+            )
 
-                serviceExpense.addExpense(expense, toCategory: category.id)
-            }
+            serviceExpense.addExpense(expense, toCategory: category.id)
+        }
 
     }
 
