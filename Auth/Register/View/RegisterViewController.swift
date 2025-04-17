@@ -28,7 +28,7 @@ public final class RegisterViewController: UIViewController {
 
     private lazy var passwordField =  CustomTextField(
         placeholder: GlobalConstants.pass.rawValue,
-        isPassword: true
+        type: .password
     )
 
     private lazy var registerButton = UIButton.makeButton(

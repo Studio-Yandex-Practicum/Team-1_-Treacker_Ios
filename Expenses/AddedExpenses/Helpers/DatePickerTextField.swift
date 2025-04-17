@@ -24,12 +24,16 @@ public final class DatePickerTextField: UITextField {
         let picker = UIDatePicker()
         picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .wheels
+        picker.sizeToFit()
+        picker.backgroundColor = .secondaryBg
         picker.locale = Locale(identifier: "ru_RU")
         return picker
     }()
 
     private lazy var toolbar: UIToolbar = {
         let bar = UIToolbar()
+        bar.barTintColor = .icDarkBlueBg
+        bar.translatesAutoresizingMaskIntoConstraints = false
         bar.sizeToFit()
         bar.setItems([
             UIBarButtonItem(
@@ -89,6 +93,15 @@ public final class DatePickerTextField: UITextField {
     // MARK: - Setup
 
     private func setup() {
+        let containerHeight: CGFloat = UIConstants.Heights.height320.rawValue
+        let toolbarHeight: CGFloat = UIConstants.Heights.height44.rawValue
+        let container = UIView(frame: CGRect(
+            x: UIConstants.Constants.zero.rawValue,
+            y: UIConstants.Constants.zero.rawValue,
+            width: UIScreen.main.bounds.width,
+            height: containerHeight)
+        )
+        container.backgroundColor = .secondaryBg
         font = .h4
         textColor = .primaryText
         tintColor = .clear
@@ -96,8 +109,22 @@ public final class DatePickerTextField: UITextField {
         layer.cornerRadius = UIConstants.CornerRadius.medium16.rawValue
         textAlignment = .left
 
-        inputView = datePicker
-        inputAccessoryView = toolbar
+        container.setupView(toolbar)
+        container.setupView(datePicker)
+
+        NSLayoutConstraint.activate([
+            toolbar.topAnchor.constraint(equalTo: container.topAnchor),
+            toolbar.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            toolbar.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            toolbar.heightAnchor.constraint(equalToConstant: toolbarHeight),
+
+            datePicker.topAnchor.constraint(equalTo: toolbar.bottomAnchor),
+            datePicker.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            datePicker.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            datePicker.bottomAnchor.constraint(equalTo: container.bottomAnchor)
+        ])
+
+        inputView = container
 
         setupRightIcon()
         setupGesture()
@@ -155,7 +182,7 @@ public final class DatePickerTextField: UITextField {
     @objc private func doneTapped() {
         resignFirstResponder()
         let date = datePicker.date
-        text = FormattedDate.formattedDate(date)
+        text = date.formattedRelativeOrFull()
         onDateSelected?(date)
     }
 
@@ -163,6 +190,6 @@ public final class DatePickerTextField: UITextField {
 
     public func setDate(_ date: Date) {
         datePicker.date = date
-        text = FormattedDate.formattedDate(date)
+        text = date.formattedRelativeOrFull()
     }
 }

@@ -41,7 +41,7 @@ public final class AuthViewController: UIViewController {
     }()
 
     private lazy var passwordField: CustomTextField = {
-        let field = CustomTextField(placeholder: GlobalConstants.pass.rawValue, isPassword: true)
+        let field = CustomTextField(placeholder: GlobalConstants.pass.rawValue, type: .password)
         field.textContentType = .password
         field.accessibilityIdentifier = "auth_password_field"
         return field

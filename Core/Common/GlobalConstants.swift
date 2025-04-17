@@ -76,4 +76,10 @@ public enum GlobalConstants: String {
     case sendMessage = "Письмо отправлено"
     case checkMail = "Проверьте почту для сброса пароля"
     case alertPlaceholder = "Будем честны, будут деньги - будет фича!"
+
+    // Calendar
+
+    case yesterday = "Вчера"
+    case today = "Сегодня"
+    case tomorrow = "Завтра"
 }
