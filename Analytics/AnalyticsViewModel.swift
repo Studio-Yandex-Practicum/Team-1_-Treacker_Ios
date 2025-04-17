@@ -30,6 +30,7 @@ public protocol AnalyticsViewModelProtocol {
     func updateTypeTimePeriod(_ type: TimePeriod)
     func updateSelectedIndex(_ index: Int)
     func updateCategorySortOrder()
+    func updateSelectedCategories(_ categories: [ExpenseCategory])
 }
 
 public final class AnalyticsViewModel {
@@ -77,14 +78,21 @@ public final class AnalyticsViewModel {
             updateTitleDateInterval()
             updateAllCategories()
             updatePieChartDisplayItem()
-            updatePieChartDisplayItem()
+
             selectedIndex = currentIndex
         }
     }
     private var selectedCategories: [ExpenseCategory] = [] {
         didSet { selectedCategoriesString = selectedCategories.map { $0.name } }
     }
-    private var selectedCategoriesString: [String] = []
+    private var selectedCategoriesString: [String] = [] {
+        didSet {
+            updateAllCategories()
+            updatePieChartDisplayItem()
+            updateModelCellCategory()
+            onSelectedIndex?(selectedIndex)
+        }
+    }
 
     private var categorySortOrder: CategorySortOrder = .totalDescending {
         didSet { sortedCategorySummary() }
@@ -343,6 +351,9 @@ extension AnalyticsViewModel: AnalyticsViewModelProtocol {
         }
     }
 
+    public func updateSelectedCategories(_ categories: [ExpenseCategory]) {
+        selectedCategories = categories
+    }
 
 
 
