@@ -13,5 +13,8 @@ public protocol RouterProtocol {
     func routeBasedOnAuth()
     func routeToRegisterFlow(from vc: UIViewController)
     func routeToRecoverFlow(from vc: UIViewController)
-    func presentCategorySelection(from: UIViewController)
-}
+    func presentCategorySelection(
+        from: UIViewController,
+        selectedCategories: [ExpenseCategory],
+        onApply: @escaping ([ExpenseCategory]) -> Void
+    )}

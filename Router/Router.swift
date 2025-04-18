@@ -41,8 +41,14 @@ public final class Router: RouterProtocol {
         let viewModel = AnalyticsViewModel(serviceExpense: coreDataAssembly.expenseService, serviceCategory: coreDataAssembly.categoryService)
         let mainVC = AnalyticsViewController(viewModel: viewModel)
 
-        viewModel.onOpenCategorySelection = { [weak self] in
-            self?.presentCategorySelection(from: mainVC)
+        viewModel.onOpenCategorySelection = { [weak self] categories in
+            self?.presentCategorySelection(
+                from: mainVC,
+                selectedCategories: categories,
+                onApply: { categories in
+                    viewModel.updateSelectedCategories(categories)
+                }
+            )
         }
 
         setRootViewController(UINavigationController(rootViewController: mainVC))
@@ -97,17 +103,24 @@ public final class Router: RouterProtocol {
         from.navigationController?.pushViewController(recVC, animated: true)
     }
 
-    public func presentCategorySelection(from: UIViewController) {
-        let categoryVC = CategorySelectionViewController()
-        categoryVC.modalPresentationStyle = .pageSheet
+    public func presentCategorySelection(
+        from: UIViewController,
+        selectedCategories: [ExpenseCategory],
+        onApply: @escaping ([ExpenseCategory]) -> Void
+    ) {
+        let viewModel = CategorySelectionViewModel(
+            serviceCategory: coreDataAssembly.categoryService,
+            selectedCategories: selectedCategories, onApply: onApply)
+        let categorySVC = CategorySelectionViewController(viewModel: viewModel)
+        categorySVC.modalPresentationStyle = .pageSheet
 
-        if let sheet = categoryVC.sheetPresentationController {
+        if let sheet = categorySVC.sheetPresentationController {
             sheet.detents = [.large()]
             sheet.prefersGrabberVisible = false
             sheet.prefersScrollingExpandsWhenScrolledToEdge = false
         }
 
-        from.present(categoryVC, animated: true)
+        from.present(categorySVC, animated: true)
     }
 
     private func setRootViewController(_ viewController: UIViewController) {
