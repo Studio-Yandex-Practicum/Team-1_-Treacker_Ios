@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct ExpenseCategory {
+public struct ExpenseCategory: Hashable {
     public let id: UUID
     public let name: String
     public let colorBgName: String
@@ -22,5 +22,13 @@ public struct ExpenseCategory {
         self.colorPrimaryName = colorPrimaryName
         self.nameIcon = nameIcon
         self.expense = expense
+    }
+
+    public static func == (lhs: ExpenseCategory, rhs: ExpenseCategory) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }
