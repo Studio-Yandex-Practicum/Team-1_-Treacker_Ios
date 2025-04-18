@@ -10,6 +10,10 @@ import Core
 
 public final class CategorySelectionViewController: UIViewController {
 
+    // MARK: Private Properties
+
+    private var viewModel: CategorySelectionViewModelProtocol
+
     // MARK: UIComponents: Header
 
     private lazy var titleLabel: UILabel = {
@@ -23,6 +27,7 @@ public final class CategorySelectionViewController: UIViewController {
     private lazy var closeButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: AppIcon.close.rawValue), for: .normal)
+        button.addTarget(self, action: #selector(didClose), for: .touchUpInside)
         button.tintColor = .primaryText
         return button
     }()
@@ -44,7 +49,7 @@ public final class CategorySelectionViewController: UIViewController {
         let itemWidth = screenWidth - 40
         layout.itemSize = CGSize(width: itemWidth, height: UIConstants.Heights.height52.rawValue)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.register(CellSelectionCategories.self)
+        collectionView.register(CellSelectionCategoriesView.self)
         collectionView.dataSource = self
         collectionView.delegate = self
         return collectionView
@@ -63,13 +68,41 @@ public final class CategorySelectionViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
+        bind()
+        viewModel.viewDidLoad()
         setupLayout()
+        applyButton.isEnabled = true
+    }
+
+    // MARK: - Initializers
+
+    public init(viewModel: CategorySelectionViewModelProtocol) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     // MARK: - Actions
 
     @objc private func didApply() {
-        // TODO: Добавить переход на экран создания расхода
+        viewModel.apply()
+        dismiss(animated: true)
+    }
+
+    @objc private func didClose() {
+        dismiss(animated: true)
+    }
+
+    // MARK: Private Method
+
+    private func bind() {
+        viewModel.onCategorySelectionStates = { [weak self] in
+            self?.categoriesCollection.reloadData()
+        }
     }
 }
 
@@ -77,12 +110,12 @@ public final class CategorySelectionViewController: UIViewController {
 
 extension CategorySelectionViewController: UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        10
+        viewModel.categorySelectionStates.count
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell: CellSelectionCategories = collectionView.dequeueReusableCell(indexPath: indexPath)
-        cell.configureCell()
+        let cell: CellSelectionCategoriesView = collectionView.dequeueReusableCell(indexPath: indexPath)
+        cell.updateViewModel(viewModel.categorySelectionStates[indexPath.row])
         return cell
     }
     
@@ -91,6 +124,10 @@ extension CategorySelectionViewController: UICollectionViewDataSource {
 // MARK: Extension - UICollectionViewDelegate
 
 extension CategorySelectionViewController: UICollectionViewDelegate {
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let viewModel = viewModel.categorySelectionStates[indexPath.row]
+        self.viewModel.toggleCategorySelection(id: viewModel.id)
+    }
 }
 
 // MARK: Extension - Setup Layout

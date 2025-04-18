@@ -1,5 +1,5 @@
 //
-//  CellSelectionCategories.swift
+//  CellSelectionCategoriesView.swift
 //  Analytics
 //
 //  Created by Глеб Хамин on 17.04.2025.
@@ -9,9 +9,25 @@ import UIKit
 import Core
 import UIComponents
 
-final class CellSelectionCategories: UICollectionViewCell, ReuseIdentifying {
+final class CellSelectionCategoriesView: UICollectionViewCell, ReuseIdentifying {
 
-    // MARK: - Private Propertues
+    // MARK: - Private Properties
+
+    private var viewModel: CellSelectionCategoriesViewModel? {
+        didSet {
+            viewModel?.onCategory = { [weak self] category in
+                guard let self else { return }
+                iconView.image = UIImage(named: category.nameIcon)
+                iconView.backgroundColor = .from(colorName: category.colorBgName)
+                iconView.tintColor = .from(colorName: category.colorPrimaryName)
+                labelNameCategory.text = category.name
+            }
+            viewModel?.onSelected = { [weak self] status in
+                guard let self else { return }
+                activeCheckBox.isHidden = !status
+            }
+        }
+    }
 
     // MARK: - UI Components
 
@@ -70,22 +86,10 @@ final class CellSelectionCategories: UICollectionViewCell, ReuseIdentifying {
 
     // MARK: - Public Functions
 
-//    func configureCell(category: ExpenseCategory) {
-//        iconView.image = UIImage(named: category.nameIcon)
-//        iconView.backgroundColor = .from(colorName: category.colorBgName)
-//        iconView.tintColor = .from(colorName: category.colorPrimaryName)
-//        labelNameCategory.text = category.name
-//    }
-
-    func configureCell() {
-        iconView.image = UIImage(named: "icon-cinema")
-        iconView.backgroundColor = UIColor(named: "ic-green-bg")
-        iconView.tintColor = UIColor(named: "ic-green-primary")
-        labelNameCategory.text = "Тест"
-        guard let status = [true, false].randomElement() else { return }
-        activeCheckBox.isHidden = status
+    func updateViewModel(_ viewModel: CellSelectionCategoriesViewModel) {
+        self.viewModel = viewModel
     }
-
+    
     // MARK: - Private Method
 
     private func getCheckBox() -> UIImageView {
@@ -100,7 +104,7 @@ final class CellSelectionCategories: UICollectionViewCell, ReuseIdentifying {
 
 // MARK: - Extension: Setup Layout
 
-extension CellSelectionCategories {
+extension CellSelectionCategoriesView {
     private func setupLayout() {
         self.setupView(stackContent)
         self.setupView(activeCheckBox)
