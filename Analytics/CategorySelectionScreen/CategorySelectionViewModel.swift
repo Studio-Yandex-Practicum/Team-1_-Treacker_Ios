@@ -16,8 +16,6 @@ public protocol CategorySelectionViewModelProtocol {
     var onCategorySelectionStates: (() -> Void)? { get set }
     // State
     var categorySelectionStates: [CellSelectionCategoriesViewModel] { get }
-    // Inputs
-
 }
 
 public final class CategorySelectionViewModel {
