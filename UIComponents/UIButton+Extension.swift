@@ -55,6 +55,7 @@ public extension UIButton {
         let normalColor = UIColor.cAccent
         let disabledColor = normalColor.withAlphaComponent(0.5)
 
+        button.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height54.rawValue).isActive = true
         button.setBackgroundImage(
             UIImage.resizableImage(withColor: normalColor, cornerRadius: UIConstants.CornerRadius.medium16.rawValue),
             for: .normal

@@ -9,12 +9,19 @@ import UIKit
 import Core
 import Combine
 
+public enum CustomTextFieldType {
+    case email
+    case normal
+    case amount(currencySymbol: String)
+    case password
+}
+
 public final class CustomTextField: UITextField {
 
     // MARK: - Private properties
 
     private let placeholderText: String
-    private let isPassword: Bool
+    private let fieldType: CustomTextFieldType
 
     private lazy var floatingLabelTopConstraint = NSLayoutConstraint(
         item: floatingLabel,
@@ -52,23 +59,12 @@ public final class CustomTextField: UITextField {
 
     // MARK: - Lifecycle
 
-    public init(placeholder: String, isPassword: Bool = false) {
+    public init(placeholder: String, type: CustomTextFieldType = .normal) {
         self.placeholderText = placeholder
-        self.isPassword = isPassword
+        self.fieldType = type
         super.init(frame: .zero)
 
-        if isPassword {
-            self.textContentType = .password
-            self.isSecureTextEntry = true
-            self.keyboardType = .default
-        } else {
-            self.textContentType = .emailAddress
-            self.keyboardType = .emailAddress
-            self.autocapitalizationType = .none
-            self.autocorrectionType = .no
-        }
-
-        self.tintColor = .primaryText
+        configureFieldType()
         setupView()
 
         self.addTarget(self, action: #selector(textFieldEditingChanged), for: .editingChanged)
@@ -93,23 +89,52 @@ public final class CustomTextField: UITextField {
 
     // MARK: - Private methods
 
+    private func configureFieldType() {
+        switch fieldType {
+        case .email:
+            keyboardType = .emailAddress
+            textContentType = .emailAddress
+            autocapitalizationType = .none
+            autocorrectionType = .no
+            spellCheckingType = .no
+            smartQuotesType = .no
+            smartDashesType = .no
+        case .normal:
+            keyboardType = .default
+            textContentType = .none
+        case .amount(let currencySymbol):
+            keyboardType = .decimalPad
+            textContentType = .none
+            autocapitalizationType = .none
+            autocorrectionType = .no
+            spellCheckingType = .no
+            smartQuotesType = .no
+            smartDashesType = .no
+            floatingLabel.text = "\(placeholderText), \(currencySymbol)"
+        case .password:
+            keyboardType = .default
+            textContentType = .password
+            isSecureTextEntry = true
+        }
+    }
+
     private func setupView() {
         layer.cornerRadius = UIConstants.CornerRadius.medium16.rawValue
         layer.masksToBounds = true
         backgroundColor = .primaryBg
-        isSecureTextEntry = isPassword
+        tintColor = .primaryText
         font = .h4
 
         setupView(floatingLabel)
 
-        if isPassword {
+        if case .password = fieldType {
             setupEyeIcon()
         }
 
         NSLayoutConstraint.activate([
             floatingLabel.leadingAnchor.constraint(
                 equalTo: self.leadingAnchor,
-                constant: UIConstants.Constants.large20.rawValue
+                constant: UIConstants.Constants.medium16.rawValue
             ),
             floatingLabelTopConstraint
         ])

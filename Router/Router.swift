@@ -38,7 +38,10 @@ public final class Router: RouterProtocol {
     }
 
     public func routeToMainFlow() {
-        let viewModel = AnalyticsViewModel(serviceExpense: coreDataAssembly.expenseService, serviceCategory: coreDataAssembly.categoryService)
+        let viewModel = AnalyticsViewModel(
+            serviceExpense: coreDataAssembly.expenseService,
+            serviceCategory: coreDataAssembly.categoryService
+        )
         let mainVC = AnalyticsViewController(viewModel: viewModel)
 
         viewModel.onOpenCategorySelection = { [weak self] categories in
@@ -103,7 +106,13 @@ public final class Router: RouterProtocol {
         from.navigationController?.pushViewController(recVC, animated: true)
     }
 
-    public func presentCategorySelection(
+    public func routeToAddedExpensesFlow() {
+        let viewModel = AddedExpensesViewModel()
+        let addedExpensesVC = AddedExpensesViewController(viewModel: viewModel)
+        setRootViewController(UINavigationController(rootViewController: addedExpensesVC))
+	}  
+  
+	publc func presentCategorySelection(
         from: UIViewController,
         selectedCategories: [ExpenseCategory],
         onApply: @escaping ([ExpenseCategory]) -> Void

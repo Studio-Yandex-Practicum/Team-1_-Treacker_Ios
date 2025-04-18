@@ -19,33 +19,22 @@ public final class AuthViewController: UIViewController {
     private var cancellable = Set<AnyCancellable>()
     private lazy var formStackView = UIStackView()
 
-    private lazy var titleLabel = makeLabel(
+    private lazy var titleLabel: UILabel = .init(
         text: GlobalConstants.greeting.rawValue,
         font: .h1,
         color: .primaryText,
         alignment: .left
     )
 
-    private lazy var subtitleLabel = makeLabel(
+    private lazy var subtitleLabel: UILabel = .init(
         text: GlobalConstants.authInfoSubtitle.rawValue,
         font: .h5,
         color: .secondaryText,
         alignment: .left
     )
 
-    private lazy var emailField: CustomTextField = {
-        let field = CustomTextField(placeholder: GlobalConstants.email.rawValue)
-        field.textContentType = .username
-        field.accessibilityIdentifier = "auth_email_field"
-        return field
-    }()
-
-    private lazy var passwordField: CustomTextField = {
-        let field = CustomTextField(placeholder: GlobalConstants.pass.rawValue, isPassword: true)
-        field.textContentType = .password
-        field.accessibilityIdentifier = "auth_password_field"
-        return field
-    }()
+    private lazy var emailField: CustomTextField = CustomTextField(placeholder: GlobalConstants.email.rawValue, type: .email)
+    private lazy var passwordField = CustomTextField(placeholder: GlobalConstants.pass.rawValue, type: .password)
 
     private lazy var emailHint = makeHintLabel(text: GlobalConstants.emailHint.rawValue)
     private lazy var passHint = makeHintLabel(text: GlobalConstants.passHint.rawValue)
@@ -61,8 +50,8 @@ public final class AuthViewController: UIViewController {
         action: #selector(didTapLogin)
     )
 
-    private lazy var orLabel = makeLabel(
-        text: GlobalConstants.or.rawValue,
+    private lazy var orLabel: UILabel = .init(
+        text: GlobalConstants.orLabel.rawValue,
         font: .h5,
         color: .secondaryText,
         alignment: .center
@@ -152,7 +141,6 @@ private extension AuthViewController {
         NSLayoutConstraint.activate([
             emailField.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height60.rawValue),
             passwordField.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height60.rawValue),
-            loginButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height54.rawValue),
             googleButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height40.rawValue),
             appleButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height40.rawValue),
             notAccauntButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
@@ -206,30 +194,15 @@ private extension AuthViewController {
     }
 
     private func makeHintLabel(text: String) -> UILabel {
-        let label = makeLabel(
+        let label: UILabel = .init(
             text: text,
             font: .h5,
             color: .hintText
         )
+
         label.alpha = 0
         label.setContentHuggingPriority(.required, for: .vertical)
         label.setContentCompressionResistancePriority(.required, for: .vertical)
-        return label
-    }
-
-    private func makeLabel(
-        text: String,
-        font: UIFont,
-        color: UIColor,
-        alignment: NSTextAlignment = .natural,
-        numberOfLines: Int = 1
-    ) -> UILabel {
-        let label = UILabel()
-        label.text = text
-        label.font = font
-        label.textColor = color
-        label.textAlignment = alignment
-        label.numberOfLines = numberOfLines
         return label
     }
 
@@ -374,7 +347,14 @@ private extension AuthViewController {
         viewModel.didTapGoogleLogin(handler: handler)
     }
 
-    @objc private func didTapApple() {}
+    @objc private func didTapApple() {
+        AlertService.present(
+            on: self,
+            title: .oups,
+            message: GlobalConstants.alertPlaceholder.rawValue,
+            actions: [.init(title: GlobalConstants.okButton.rawValue)]
+        )
+    }
 
     @objc private func didNotAccaunt() {
         viewModel.didTapRegister()
