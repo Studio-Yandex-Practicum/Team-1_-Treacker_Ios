@@ -44,7 +44,7 @@ public final class AnalyticsViewModel {
     public var onTitleTimePeriod: ((String) -> Void)?
 
     // Router
-    public var onOpenCategorySelection: (() -> Void)?
+    public var onOpenCategorySelection: (([ExpenseCategory]) -> Void)?
 
     // MARK: - State
 
@@ -302,7 +302,6 @@ public final class AnalyticsViewModel {
         for categoryReport in categoryReports {
             pieChartDisplayItem.append(getPieChartDisplayItem(for: categoryReport))
         }
-
     }
 
     private func getModelCellCategory(for categorySummary: CategorySummary) -> ModelCellCategory {
@@ -369,7 +368,7 @@ extension AnalyticsViewModel: AnalyticsViewModelProtocol {
     }
 
     public func didTapOpenCategorySelection() {
-        onOpenCategorySelection?()
+        onOpenCategorySelection?(selectedCategories)
     }
 
     // MARK: TEST CORE DATA
@@ -433,6 +432,5 @@ extension AnalyticsViewModel: AnalyticsViewModelProtocol {
 
             serviceExpense.addExpense(expense, toCategory: category.id)
         }
-
     }
 }
