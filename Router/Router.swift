@@ -142,8 +142,8 @@ public final class Router: RouterProtocol {
         categorySVC.modalPresentationStyle = .pageSheet
 
         if let sheet = categorySVC.sheetPresentationController {
-            sheet.detents = [.medium()]
-            sheet.prefersGrabberVisible = false
+            sheet.detents = [.large()]
+            sheet.prefersGrabberVisible = true
             sheet.prefersScrollingExpandsWhenScrolledToEdge = false
         }
 

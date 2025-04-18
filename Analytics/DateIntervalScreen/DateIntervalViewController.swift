@@ -87,7 +87,21 @@ extension DateIntervalViewController {
     private func setupLayout() {
         view.backgroundColor = .secondaryBg
         navigationController?.isNavigationBarHidden = true
+        view.setupView(closeButton)
+        view.setupView(applyButton)
 
+        NSLayoutConstraint.activate([
+            closeButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height24.rawValue),
+            closeButton.widthAnchor.constraint(equalToConstant: UIConstants.Widths.width24.rawValue),
+
+            closeButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: UIConstants.Constants.large24.rawValue),
+            closeButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
+
+            applyButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
+            applyButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
+            applyButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -UIConstants.Constants.small4.rawValue),
+            applyButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height54.rawValue)
+        ])
     }
 }
 
