@@ -28,7 +28,12 @@
             </dict>
         </dict>
         <key>UILaunchStoryboardName</key>
-        <string>LaunchScreen</string>
+        <string>LaunchScreen</string>девайсе) 
+
+        <key>CFBundleDisplayName</key>
+        <string>SpendWise</string>
+        <key>CFBundleName</key>
+        <string>SpendWise</string>
 
         <key>CFBundleURLTypes</key>
             <array>
