@@ -12,7 +12,7 @@ public final class DateIntervalViewController: UIViewController {
 
     // MARK: Private Properties
 
-    private var viewModel: CategorySelectionViewModelProtocol
+    private var viewModel: DateIntervalViewModelProtocol
 
     // MARK: UIComponents: Header
 
@@ -45,7 +45,7 @@ public final class DateIntervalViewController: UIViewController {
 
     // MARK: - Initializers
 
-    public init(viewModel: CategorySelectionViewModelProtocol) {
+    public init(viewModel: DateIntervalViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }

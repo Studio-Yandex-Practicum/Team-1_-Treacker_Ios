@@ -54,6 +54,10 @@ public final class Router: RouterProtocol {
             )
         }
 
+        viewModel.onOpenDateInterval = { [weak self] in
+            self?.presentDateIntervalViewController(from: mainVC)
+        }
+
         setRootViewController(UINavigationController(rootViewController: mainVC))
     }
 
@@ -130,6 +134,20 @@ public final class Router: RouterProtocol {
         }
 
         from.present(categorySVC, animated: true)
+    }
+
+    public func presentDateIntervalViewController(from viewController: UIViewController) {
+        let viewModel = DateIntervalViewModel()
+        let categorySVC = DateIntervalViewController(viewModel: viewModel)
+        categorySVC.modalPresentationStyle = .pageSheet
+
+        if let sheet = categorySVC.sheetPresentationController {
+            sheet.detents = [.medium()]
+            sheet.prefersGrabberVisible = false
+            sheet.prefersScrollingExpandsWhenScrolledToEdge = false
+        }
+
+        viewController.present(categorySVC, animated: true)
     }
 
     private func setRootViewController(_ viewController: UIViewController) {

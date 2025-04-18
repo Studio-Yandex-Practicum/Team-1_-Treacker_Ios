@@ -45,6 +45,7 @@ public final class AnalyticsViewModel {
 
     // Router
     public var onOpenCategorySelection: (([ExpenseCategory]) -> Void)?
+    public var onOpenDateInterval: (() -> Void)?
 
     // MARK: - State
 
@@ -83,7 +84,8 @@ public final class AnalyticsViewModel {
             updateAllCategories()
             updatePieChartDisplayItem()
 
-            selectedIndex = currentIndex
+            // TODO: - Решить вопрос с селектором, когда придут данные
+//            selectedIndex = currentIndex
         }
     }
     private var selectedCategories: [ExpenseCategory] = [] {
@@ -123,6 +125,8 @@ public final class AnalyticsViewModel {
         if typeTimePeriod != .custom {
             listDateInterval = typeTimePeriod.getListDateIntervals(for: today, using: calendar)
         } else {
+            onOpenDateInterval?()
+            // TODO: Получить данные о выбранном интервале
             listDateInterval = []
         }
     }
