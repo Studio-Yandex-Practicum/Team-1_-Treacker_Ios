@@ -31,9 +31,9 @@ public final class Router: RouterProtocol {
 
     public func routeBasedOnAuth() {
         if AuthService.shared.isAuthorized {
-            routeToMainFlow()
-        } else {
             routeToAuthFlow()
+        } else {
+            routeToMainFlow()
         }
     }
 
@@ -112,7 +112,7 @@ public final class Router: RouterProtocol {
         setRootViewController(UINavigationController(rootViewController: addedExpensesVC))
 	}  
   
-	publc func presentCategorySelection(
+	public func presentCategorySelection(
         from: UIViewController,
         selectedCategories: [ExpenseCategory],
         onApply: @escaping ([ExpenseCategory]) -> Void
