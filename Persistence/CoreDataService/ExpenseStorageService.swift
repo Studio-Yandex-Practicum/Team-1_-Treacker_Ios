@@ -26,7 +26,7 @@ final class ExpenseStorageService: ExpenseStorageServiceProtocol {
         predicates.append(datePredicate)
 
         if let categories, !categories.isEmpty {
-            let categoryPredicate = NSPredicate(format: "categoryName IN %@", categories)
+            let categoryPredicate = NSPredicate(format: "category.name IN %@", categories)
             predicates.append(categoryPredicate)
         }
 

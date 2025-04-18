@@ -19,7 +19,7 @@ extension UIColor {
 
         case cAccent = "CAccent"
         case cCalendar = "Calendar"
-        case cGray = "CGray"
+        case cGray = "CGrey"
 
         case primaryBg = "Primary-bg"
         case secondaryBg = "Secondary-bg"

@@ -30,6 +30,8 @@ public protocol AnalyticsViewModelProtocol {
     func updateTypeTimePeriod(_ type: TimePeriod)
     func updateSelectedIndex(_ index: Int)
     func updateCategorySortOrder()
+    func updateSelectedCategories(_ categories: [ExpenseCategory])
+    func didTapOpenCategorySelection()
 }
 
 public final class AnalyticsViewModel {
@@ -40,6 +42,9 @@ public final class AnalyticsViewModel {
     public var onModelCellCategory: (() -> Void)?
     public var onPieChartDisplayItem: ((Int) -> Void)?
     public var onTitleTimePeriod: ((String) -> Void)?
+
+    // Router
+    public var onOpenCategorySelection: (([ExpenseCategory]) -> Void)?
 
     // MARK: - State
 
@@ -77,14 +82,21 @@ public final class AnalyticsViewModel {
             updateTitleDateInterval()
             updateAllCategories()
             updatePieChartDisplayItem()
-            updatePieChartDisplayItem()
+
             selectedIndex = currentIndex
         }
     }
     private var selectedCategories: [ExpenseCategory] = [] {
         didSet { selectedCategoriesString = selectedCategories.map { $0.name } }
     }
-    private var selectedCategoriesString: [String] = []
+    private var selectedCategoriesString: [String] = [] {
+        didSet {
+            updateAllCategories()
+            updatePieChartDisplayItem()
+            updateModelCellCategory()
+            onSelectedIndex?(selectedIndex)
+        }
+    }
 
     private var categorySortOrder: CategorySortOrder = .totalDescending {
         didSet { sortedCategorySummary() }
@@ -290,7 +302,6 @@ public final class AnalyticsViewModel {
         for categoryReport in categoryReports {
             pieChartDisplayItem.append(getPieChartDisplayItem(for: categoryReport))
         }
-
     }
 
     private func getModelCellCategory(for categorySummary: CategorySummary) -> ModelCellCategory {
@@ -352,7 +363,15 @@ extension AnalyticsViewModel: AnalyticsViewModelProtocol {
         }
     }
 
-    //MARK: TEST CORE DATA
+    public func updateSelectedCategories(_ categories: [ExpenseCategory]) {
+        selectedCategories = categories
+    }
+
+    public func didTapOpenCategorySelection() {
+        onOpenCategorySelection?(selectedCategories)
+    }
+
+    // MARK: TEST CORE DATA
 
     public func test() {
         let testCategories: [ExpenseCategory] = [
@@ -413,7 +432,5 @@ extension AnalyticsViewModel: AnalyticsViewModelProtocol {
 
             serviceExpense.addExpense(expense, toCategory: category.id)
         }
-
     }
-
 }
