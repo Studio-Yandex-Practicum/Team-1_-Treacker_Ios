@@ -33,7 +33,8 @@ public final class Router: RouterProtocol {
         if AuthService.shared.isAuthorized {
             routeToMainFlow()
         } else {
-            routeToAuthFlow()
+            //routeToAuthFlow()
+            routeToCreateCtegoryFlow()
         }
     }
 
@@ -99,6 +100,12 @@ public final class Router: RouterProtocol {
         let viewModel = AddedExpensesViewModel()
         let addedExpensesVC = AddedExpensesViewController(viewModel: viewModel)
         setRootViewController(UINavigationController(rootViewController: addedExpensesVC))
+    }
+
+    public func routeToCreateCtegoryFlow() {
+        let viewModel = CreateCategoryViewModel()
+        let createCategoryVC = CreateCategoryViewController(viewModel: viewModel)
+        setRootViewController(createCategoryVC)
     }
 
     private func setRootViewController(_ viewController: UIViewController) {

@@ -11,7 +11,7 @@ import UIComponents
 
 public final class CreateCategoryViewController: UIViewController {
 
-    private let viewModel: AddedExpensesViewModelProtocol
+    private let viewModel: CreateCategoryViewModelProtocol
 
     private lazy var titleLabel: UILabel = .init(
         text: GlobalConstants.creatingCategory.rawValue,
@@ -37,7 +37,7 @@ public final class CreateCategoryViewController: UIViewController {
         action: #selector(createTapped)
     )
 
-    public init(viewModel: AddedExpensesViewModelProtocol) {
+    public init(viewModel: CreateCategoryViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -49,7 +49,9 @@ public final class CreateCategoryViewController: UIViewController {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .secondaryBg
         setupUI()
+        enableKeyboardDismissOnTap()
     }
 
 }
@@ -79,14 +81,13 @@ extension CreateCategoryViewController {
         NSLayoutConstraint.activate([
             closeButton.widthAnchor.constraint(equalToConstant: UIConstants.Widths.width25.rawValue),
             categoryTextField.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height60.rawValue),
-            collectionView.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height200.rawValue),
-            stack.topAnchor.constraint(equalTo: view.topAnchor, constant: UIConstants.Constants.large20.rawValue),
+            collectionView.heightAnchor.constraint(equalToConstant: calculationOfCollectionHeight()),
+            stack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: UIConstants.Constants.large20.rawValue),
             stack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
             stack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
             createButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
             createButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
-            createButton.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            createButton.topAnchor.constraint(greaterThanOrEqualTo: stack.bottomAnchor, constant: UIConstants.Spacing.medium16.rawValue)
+            createButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
 }
@@ -95,83 +96,63 @@ extension CreateCategoryViewController {
 
 private extension CreateCategoryViewController {
 
+    private func calculationInterItemSpacing() -> CGFloat {
+        let screenWidth = UIScreen.main.bounds.width
+        let columns: CGFloat = 6
+        let interItemSpacing = (((screenWidth - (UIConstants.Constants.large20.rawValue * 2)) - 44 * columns) / 5)
+        return interItemSpacing
+    }
+
+    private func calculationOfCollectionHeight() -> CGFloat {
+        let hight = (44 * 4) + ((calculationInterItemSpacing() / 1.48) * 2) + 32
+        return hight
+    }
+
     private func makeCollectionView() -> UICollectionView {
-        let layout = UICollectionViewCompositionalLayout(section: makeSection())
+        let layout = UICollectionViewCompositionalLayout { [weak self] section, _ in
+            self?.makeSection(for: section)
+        }
 
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.isPagingEnabled = false
-        collectionView.alwaysBounceVertical = false
-        collectionView.alwaysBounceHorizontal = false
-        collectionView.isScrollEnabled = true
-        collectionView.showsHorizontalScrollIndicator = false
-        collectionView.showsVerticalScrollIndicator = false
-        collectionView.backgroundColor = .secondaryBg
-        collectionView.register(CreateCategoryCell.self)
+        collectionView.register(CategoryCollectionCell.self)
         collectionView.delegate = self
         collectionView.dataSource = self
+        collectionView.isScrollEnabled = false
         return collectionView
     }
 
-    private func calculateItemWidth(screenWidth: CGFloat, screenScale: CGFloat) -> CGFloat {
-        let spacing: CGFloat = UIConstants.Spacing.small8.rawValue
-        let itemsPerRow: CGFloat = UIConstants.Constants.small5.rawValue
-        let totalSpacing = spacing * (itemsPerRow - 1)
-        let availableWidth = screenWidth - 32 - totalSpacing
-        let rawItemWidth = availableWidth / itemsPerRow
-        return floor(rawItemWidth * screenScale) / screenScale
-    }
-
-    private func makeSection() -> NSCollectionLayoutSection {
-        let screenWidth = UIScreen.main.bounds.width
-        let screenScale = UIScreen.main.scale
-
-        let itemWidth = calculateItemWidth(screenWidth: screenWidth, screenScale: screenScale)
-        let cellHeight: CGFloat = UIConstants.Heights.height70.rawValue
+    private func makeSection(for section: Int) -> NSCollectionLayoutSection {
 
         let itemSize = NSCollectionLayoutSize(
-            widthDimension: .absolute(itemWidth),
-            heightDimension: .absolute(cellHeight)
+            widthDimension: .absolute(44),
+            heightDimension: .absolute(44)
         )
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
-        let horizontalGroupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .absolute(cellHeight)
-        )
-        let horizontalGroup = NSCollectionLayoutGroup.horizontal(
-            layoutSize: horizontalGroupSize,
+        let group = NSCollectionLayoutGroup.horizontal(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .estimated(44)
+            ),
             subitems: [item]
         )
+        group.interItemSpacing = .fixed(calculationInterItemSpacing())
 
-        let verticalGroupHeight = (cellHeight * 2) + UIConstants.Heights.height20.rawValue
-        let verticalGroupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .absolute(verticalGroupHeight)
-        )
-        let verticalGroup = NSCollectionLayoutGroup.vertical(
-            layoutSize: verticalGroupSize,
-            subitems: [horizontalGroup, horizontalGroup]
-        )
-        verticalGroup.interItemSpacing = .fixed(UIConstants.Spacing.large20.rawValue)
+        let sectionLayout = NSCollectionLayoutSection(group: group)
 
-        let section = NSCollectionLayoutSection(group: verticalGroup)
-        section.orthogonalScrollingBehavior = .groupPaging
-        section.contentInsets = NSDirectionalEdgeInsets(
-            top: UIConstants.Insets.large20.rawValue,
-            leading: UIConstants.Insets.medium16.rawValue,
-            bottom: UIConstants.Insets.zero.rawValue,
-            trailing: UIConstants.Insets.medium16.rawValue
-        )
-
-//        section.visibleItemsInvalidationHandler = { [weak self] (_, contentOffset, environment) in
-//            guard let self else { return }
-//            let pageWidth = environment.container.contentSize.width
-//            let currentPage = Int(round(contentOffset.x / pageWidth))
-//            DispatchQueue.main.async {
-//                self.pageControl.currentPage = currentPage
-//            }
-//        }
-        return section
+        switch section {
+        case 0:
+            sectionLayout.contentInsets = NSDirectionalEdgeInsets(
+                top: 0,
+                leading: 0,
+                bottom: 32,
+                trailing: 0
+            )
+        default:
+            break
+        }
+        sectionLayout.interGroupSpacing = calculationInterItemSpacing() / 1.48
+        return sectionLayout
     }
 }
 
@@ -196,25 +177,45 @@ extension CreateCategoryViewController: UICollectionViewDelegate {
 
 extension CreateCategoryViewController: UICollectionViewDataSource {
 
+    public func numberOfSections(in collectionView: UICollectionView) -> Int {
+        2
+    }
+
     public func collectionView(
         _ collectionView: UICollectionView,
         numberOfItemsInSection section: Int
     ) -> Int {
-        viewModel.categoriesCount
+        switch section {
+        case 0: return 12
+        case 1: return 12
+        default: return 0
+        }
     }
 
     public func collectionView(
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
-        let category = viewModel.category(at: indexPath.item)
-        let cell: CreateCategoryCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+        let cell: CategoryCollectionCell = collectionView.dequeueReusableCell(indexPath: indexPath)
 
-        cell.configure(
-            image: UIImage(named: category.nameIcon),
-            iconColor: UIColor(named: category.colorPrimaryName) ?? .systemGray,
-            backgrounColor: UIColor(named: category.colorBgName) ?? .systemGray
-        )
+        switch indexPath.section {
+        case 0:
+            cell.configure(
+                style: .iconOnly,
+                image: UIImage(named: "icon-bus"),
+                iconColor: UIColor(named: "ic-orange-primary") ?? .systemGray,
+                backgroundColor: UIColor(named: "ic-orange-bg") ?? .systemGray
+            )
+        case 1:
+            cell.configure(
+                style: .colorBoxWithBorder(borderColor: UIColor(named: "ic-orange-primary") ?? .systemGray),
+                image: UIImage(named: "icon-bus"),
+                iconColor: UIColor(named: "ic-orange-primary") ?? .systemGray,
+                backgroundColor: UIColor(named: "ic-orange-bg") ?? .systemGray
+            )
+        default:
+            break
+        }
         return cell
     }
 }

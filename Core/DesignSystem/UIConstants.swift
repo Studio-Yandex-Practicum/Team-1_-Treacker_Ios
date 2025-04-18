@@ -29,6 +29,7 @@ public enum UIConstants {
     public enum Constants: CGFloat {
         case zero = 0.0
         case small2 = 2.0
+        case small4 = 4.0
         case small5 = 5.0
         case small8 = 8.0
         case medium12 = 12.0
@@ -67,6 +68,7 @@ public enum UIConstants {
         case height100 = 100.0
         case height160 = 160.0
         case height200 = 200.0
+        case height300 = 300.0
         case height320 = 320.0
     }
 

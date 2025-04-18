@@ -8,8 +8,9 @@
 import Foundation
 import Core
 
-public protocol CreateCategoryViewModelProtocol {}
+public protocol CreateCategoryViewModelProtocol: AnyObject {}
 
-public final class CreateCategoryViewModel {
+public final class CreateCategoryViewModel: CreateCategoryViewModelProtocol {
 
+    public init() {}
 }
