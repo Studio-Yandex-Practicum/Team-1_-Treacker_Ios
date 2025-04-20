@@ -195,6 +195,7 @@ targets:
       - target: Expenses
       - target: Auth
       - target: Analytics
+      - target: Fastis
     bundleId: KV.Lyashenko.SpendWise.Router
     deploymentTarget: "18.0"
     settings:
@@ -228,8 +229,8 @@ targets:
     dependencies:
       - target: Core
       - target: UIComponents
-      - target: JTAppleCalendar
-      - target: PrettyCards
+      - package: JTAppleCalendar
+      - package: PrettyCards
     bundleId: KV.Lyashenko.SpendWise.Fastis
     deploymentTarget: "18.0"
     settings:
