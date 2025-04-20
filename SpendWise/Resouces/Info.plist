@@ -30,6 +30,11 @@
         <key>UILaunchStoryboardName</key>
         <string>LaunchScreen</string>
 
+        <key>CFBundleDisplayName</key>
+        <string>SpendWise</string>
+        <key>CFBundleName</key>
+        <string>SpendWise</string>
+
         <key>CFBundleURLTypes</key>
             <array>
                 <dict>
@@ -41,4 +46,3 @@
             </array>
     </dict>
 </plist>
-
