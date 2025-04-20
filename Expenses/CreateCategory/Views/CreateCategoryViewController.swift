@@ -201,17 +201,17 @@ extension CreateCategoryViewController: UICollectionViewDataSource {
         switch indexPath.section {
         case 0:
             cell.configure(
-                style: .iconOnly,
+                style: .colorBoxWithBorder(borderColor: .accentText),
                 image: UIImage(named: "icon-bus"),
-                iconColor: UIColor(named: "ic-orange-primary") ?? .systemGray,
-                backgroundColor: UIColor(named: "ic-orange-bg") ?? .systemGray
+                iconColor: .secondaryText,
+                backgroundColor: .icGrayBg
             )
         case 1:
             cell.configure(
-                style: .colorBoxWithBorder(borderColor: UIColor(named: "ic-orange-primary") ?? .systemGray),
+                style: .colorBoxWithBorder(borderColor: .icGreenNew),
                 image: UIImage(named: "icon-bus"),
-                iconColor: UIColor(named: "ic-orange-primary") ?? .systemGray,
-                backgroundColor: UIColor(named: "ic-orange-bg") ?? .systemGray
+                iconColor: .icGreenNew,
+                backgroundColor: .icGreenNewBg
             )
         default:
             break

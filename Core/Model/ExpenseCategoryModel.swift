@@ -15,7 +15,14 @@ public struct ExpenseCategory {
     public let nameIcon: String
     public let expense: [Expense]
 
-    public init(id: UUID, name: String, colorBgName: String, colorPrimaryName: String, nameIcon: String, expense: [Expense]) {
+    public init(
+        id: UUID,
+        name: String,
+        colorBgName: String,
+        colorPrimaryName: String,
+        nameIcon: String,
+        expense: [Expense]
+    ) {
         self.id = id
         self.name = name
         self.colorBgName = colorBgName
