@@ -20,6 +20,13 @@ packages:
   GoogleSignIn:
     url: https://github.com/google/GoogleSignIn-iOS
     from: 8.0.0
+  JTAppleCalendar:
+    url: https://github.com/patchthecode/JTAppleCalendar
+    from: 8.0.5
+  PrettyCards:
+    url: https://github.com/simla-tech/PrettyCards
+    from: 1.0.7
+
 
 targets:
   SpendWise:
@@ -188,6 +195,7 @@ targets:
       - target: Expenses
       - target: Auth
       - target: Analytics
+      - target: Fastis
     bundleId: KV.Lyashenko.SpendWise.Router
     deploymentTarget: "18.0"
     settings:
@@ -209,4 +217,23 @@ targets:
     settings:
         base:
           PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Networking'
+          INFOPLIST_FILE: SpendWise/Resouces/Info.plist
+
+  Fastis:
+    type: framework
+    platform: iOS
+    sources:
+      - path: Fastis
+        excludes:
+          - Supporting SpendWise/Resouces/Info.plist
+    dependencies:
+      - target: Core
+      - target: UIComponents
+      - package: JTAppleCalendar
+      - package: PrettyCards
+    bundleId: KV.Lyashenko.SpendWise.Fastis
+    deploymentTarget: "18.0"
+    settings:
+        base:
+          PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Analytics'
           INFOPLIST_FILE: SpendWise/Resouces/Info.plist

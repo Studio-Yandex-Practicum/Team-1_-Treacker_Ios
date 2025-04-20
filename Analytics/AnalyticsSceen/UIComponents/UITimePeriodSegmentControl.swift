@@ -10,6 +10,11 @@ import Core
 
 final class UITimePeriodSegmentControl: UIView {
 
+    enum ChangeSource {
+        case userSelected
+        case programmatic
+    }
+
     // MARK: - Private Properties
 
     private var selectedTimePeriod: TimePeriod {
@@ -18,13 +23,19 @@ final class UITimePeriodSegmentControl: UIView {
         }
         didSet {
             handleNewValue(selectedNew: selectedTimePeriod)
-            didTapSegment(selectedTimePeriod)
+            switch statusUpdate {
+            case .userSelected:
+                didTapSegment(selectedTimePeriod)
+            case .programmatic:
+                return
+            }
         }
     }
     private var segments: [TimePeriod]
     private var padding: CGFloat = 0
     private var isRenderingCurrentIndexView: Bool = false
     private var didTapSegment: ((TimePeriod) -> Void)
+    private var statusUpdate: ChangeSource = .userSelected
 
     private lazy var sizeSegment: CGSize = {
         let width = (self.frame.width - (padding + padding)) / CGFloat(segments.count)
@@ -87,6 +98,14 @@ final class UITimePeriodSegmentControl: UIView {
                y: self.padding,
                width: self.sizeSegment.width,
                height: self.sizeSegment.height)
+    }
+
+    // MARK: - Internal Methods
+
+    func updateSelectedTimePeriod(to type: TimePeriod) {
+        statusUpdate = .programmatic
+        selectedTimePeriod = type
+        statusUpdate = .userSelected
     }
 
     // MARK: - Actions

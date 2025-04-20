@@ -17,4 +17,5 @@ public protocol RouterProtocol {
         from: UIViewController,
         selectedCategories: [ExpenseCategory],
         onApply: @escaping ([ExpenseCategory]) -> Void
-    )}
+    )
+}

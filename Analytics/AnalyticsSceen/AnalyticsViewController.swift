@@ -188,6 +188,15 @@ public final class AnalyticsViewController: UIViewController {
         viewModel.onTitleTimePeriod = { [weak self] title in
             self?.labelTimePeriod.text = title
         }
+        viewModel.onTypeTimePeriod = { [weak self] type in
+            switch type {
+            case .day, .week, .month, .year:
+                self?.pageControl.isHidden = false
+                self?.timePeriod.updateSelectedTimePeriod(to: type)
+            case .custom:
+                self?.pageControl.isHidden = true
+            }
+        }
     }
 
     // MARK: - Actions
@@ -216,8 +225,10 @@ public final class AnalyticsViewController: UIViewController {
 
     private func didTapSegment(period: TimePeriod) {
         viewModel.updateTypeTimePeriod(period)
-        // TODO: Реализовать отображение календаря с выбором дат и поведение экрана
     }
+
+    
+
 
     private func getButtonInNavigationBar(iconName: String) -> UIButton {
         let button = UIButton()

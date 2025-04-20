@@ -72,6 +72,7 @@ public final class CategorySelectionViewController: UIViewController {
         viewModel.viewDidLoad()
         setupLayout()
         applyButton.isEnabled = true
+        applyButton.backgroundColor = .cAccent
     }
 
     // MARK: - Initializers
