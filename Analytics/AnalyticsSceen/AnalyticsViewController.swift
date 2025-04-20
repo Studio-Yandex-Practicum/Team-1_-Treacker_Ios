@@ -8,7 +8,6 @@
 import UIKit
 import UIComponents
 import Core
-import Fastis
 
 public final class AnalyticsViewController: UIViewController {
 
@@ -189,6 +188,15 @@ public final class AnalyticsViewController: UIViewController {
         viewModel.onTitleTimePeriod = { [weak self] title in
             self?.labelTimePeriod.text = title
         }
+        viewModel.onTypeTimePeriod = { [weak self] type in
+            switch type {
+            case .day, .week, .month, .year:
+                self?.pageControl.isHidden = false
+                self?.timePeriod.updateSelectedTimePeriod(to: type)
+            case .custom:
+                self?.pageControl.isHidden = true
+            }
+        }
     }
 
     // MARK: - Actions
@@ -216,30 +224,10 @@ public final class AnalyticsViewController: UIViewController {
     // MARK: - Private Methods
 
     private func didTapSegment(period: TimePeriod) {
-        if period != .custom {
-                    viewModel.updateTypeTimePeriod(period)
-                } else {
-                    presentDateRangePicker()
-                }
-        // TODO: Реализовать отображение календаря с выбором дат и поведение экрана
+        viewModel.updateTypeTimePeriod(period)
     }
 
-    func presentDateRangePicker() {
-//            var customConfig = FastisConfig.default
-            let dateRangePicker = FastisController(mode: .range)
-
-            dateRangePicker.dismissHandler = { [weak self] action in
-                switch action {
-                case .done(let range):
-                    if let range = range {
-                        print("Выбран диапазон: \(range)")
-                    }
-                case .cancel:
-                    print("Выбор отменен")
-                }
-            }
-            dateRangePicker.present(above: self)
-        }
+    
 
 
     private func getButtonInNavigationBar(iconName: String) -> UIButton {

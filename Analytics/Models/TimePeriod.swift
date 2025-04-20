@@ -8,9 +8,14 @@
 import Foundation
 import Core
 
-struct DateInterval {
+public struct DateInterval {
     let start: Date
     let end: Date
+
+    public init(start: Date, end: Date) {
+        self.start = start
+        self.end = end
+    }
 }
 
 public enum Direction {

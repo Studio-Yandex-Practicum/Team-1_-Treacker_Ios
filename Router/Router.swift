@@ -11,6 +11,7 @@ import Auth
 import Expenses
 import Combine
 import Analytics
+import Fastis
 
 public final class Router: RouterProtocol {
     public static var shared: Router!
@@ -55,7 +56,9 @@ public final class Router: RouterProtocol {
         }
 
         viewModel.onOpenDateInterval = { [weak self] in
-            self?.presentDateIntervalViewController(from: mainVC)
+            self?.presentDateIntervalViewController(from: mainVC, onApply: { dateInterval in
+                viewModel.updateCustomDateInterval(to: dateInterval)
+            })
         }
 
         setRootViewController(UINavigationController(rootViewController: mainVC))
@@ -136,18 +139,22 @@ public final class Router: RouterProtocol {
         from.present(categorySVC, animated: true)
     }
 
-    public func presentDateIntervalViewController(from viewController: UIViewController) {
-        let viewModel = DateIntervalViewModel()
-        let categorySVC = DateIntervalViewController(viewModel: viewModel)
-        categorySVC.modalPresentationStyle = .pageSheet
+    public func presentDateIntervalViewController(from viewController: UIViewController, onApply: @escaping (Analytics.DateInterval?) -> Void) {
+        let dateRangePicker = FastisController(mode: .range)
 
-        if let sheet = categorySVC.sheetPresentationController {
-            sheet.detents = [.large()]
-            sheet.prefersGrabberVisible = true
-            sheet.prefersScrollingExpandsWhenScrolledToEdge = false
+        dateRangePicker.dismissHandler = { [weak self] action in
+            switch action {
+            case .done(let range):
+                if let range = range {
+                    onApply(Analytics.DateInterval(start: range.start, end: range.end))
+                    print("Выбран диапазон: \(range)")
+                }
+            case .cancel:
+                onApply(nil)
+                print("Выбор отменен")
+            }
         }
-
-        viewController.present(categorySVC, animated: true)
+        dateRangePicker.present(above: viewController)
     }
 
     private func setRootViewController(_ viewController: UIViewController) {
@@ -156,4 +163,5 @@ public final class Router: RouterProtocol {
             window.rootViewController = viewController
         }
     }
+
 }

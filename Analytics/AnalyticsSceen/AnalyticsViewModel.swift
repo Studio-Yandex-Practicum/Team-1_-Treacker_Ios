@@ -18,6 +18,7 @@ public protocol AnalyticsViewModelProtocol {
     var onModelCellCategory: (() -> Void)? { get set }
     var onPieChartDisplayItem: ((Int) -> Void)? { get set }
     var onTitleTimePeriod: ((String) -> Void)? { get set }
+    var onTypeTimePeriod: ((TimePeriod) -> Void)? { get set }
 
     // State
     var currentIndex: Int { get }
@@ -42,6 +43,7 @@ public final class AnalyticsViewModel {
     public var onModelCellCategory: (() -> Void)?
     public var onPieChartDisplayItem: ((Int) -> Void)?
     public var onTitleTimePeriod: ((String) -> Void)?
+    public var onTypeTimePeriod: ((TimePeriod) -> Void)?
 
     // Router
     public var onOpenCategorySelection: (([ExpenseCategory]) -> Void)?
@@ -50,11 +52,10 @@ public final class AnalyticsViewModel {
     // MARK: - State
 
     public let currentIndex = 2
+    private(set) public var oldSelectedIndex: Int = 2
     private(set) public lazy var selectedIndex = { currentIndex }() {
         didSet {
-            addNewDateInterval()
-            updateModelCellCategory()
-            updateTitleTimePeriod()
+            updateTableCategories()
             onSelectedIndex?(selectedIndex)
         }
     }
@@ -77,15 +78,17 @@ public final class AnalyticsViewModel {
     private var today: Date = Date()
     private let dateFormatter = DateFormatter()
 
+    private var oldTypeTimePeriod: TimePeriod = .day
     private var typeTimePeriod: TimePeriod = .day {
         didSet {
-            updateListDateInterval()
-            updateTitleDateInterval()
-            updateAllCategories()
-            updatePieChartDisplayItem()
-
-            // TODO: - Решить вопрос с селектором, когда придут данные
-//            selectedIndex = currentIndex
+            switch typeTimePeriod {
+            case .day, .week, .month, .year:
+                oldTypeTimePeriod = typeTimePeriod
+                updateChart()
+            case .custom:
+                selectCustomTimePeriod()
+            }
+            onTypeTimePeriod?(typeTimePeriod)
         }
     }
     private var selectedCategories: [ExpenseCategory] = [] {
@@ -122,12 +125,11 @@ public final class AnalyticsViewModel {
     // MARK: - Private Methods
 
     private func updateListDateInterval() {
-        if typeTimePeriod != .custom {
+        switch typeTimePeriod {
+        case .day, .week, .month, .year:
             listDateInterval = typeTimePeriod.getListDateIntervals(for: today, using: calendar)
-        } else {
-            onOpenDateInterval?()
-            // TODO: Получить данные о выбранном интервале
-            listDateInterval = []
+        case .custom:
+            return
         }
     }
 
@@ -147,6 +149,7 @@ public final class AnalyticsViewModel {
 
     private func updateAllCategories() {
         categoryReports.removeAll()
+
         for dateInterval in listDateInterval {
             updateCategories(newDateInterval: dateInterval)
         }
@@ -243,9 +246,10 @@ public final class AnalyticsViewModel {
     }
 
     private func addNewDateInterval() {
-        guard let direction = checkSelectedIndex(selectedIndex),
-        let date = getReferenceDate(for: direction),
-        let newDateInterval = typeTimePeriod.getAdjacentInterval(to: date, direction: direction, using: calendar) else {
+        guard typeTimePeriod != .custom,
+              let direction = checkSelectedIndex(selectedIndex),
+              let date = getReferenceDate(for: direction),
+              let newDateInterval = typeTimePeriod.getAdjacentInterval(to: date, direction: direction, using: calendar) else {
             return
         }
 
@@ -258,7 +262,6 @@ public final class AnalyticsViewModel {
 
         updateCategories(direction: direction, newDateInterval: newDateInterval)
         updateTitleDateInterval(direction: direction)
-        updateModelCellCategory()
         updatePieChartDisplayItem()
         if direction == .before {
             selectedIndex = 1
@@ -336,6 +339,24 @@ public final class AnalyticsViewModel {
     private func updateTitleTimePeriod() {
         titleTimePeriod = titleDateInterval[selectedIndex]
     }
+
+    private func updateChart() {
+        updateListDateInterval()
+        updateTitleDateInterval()
+        updateAllCategories()
+        updatePieChartDisplayItem()
+        selectedIndex = typeTimePeriod == .custom ? 0 : currentIndex
+    }
+
+    private func updateTableCategories() {
+        addNewDateInterval()
+        updateModelCellCategory()
+        updateTitleTimePeriod()
+    }
+
+    private func selectCustomTimePeriod() {
+        onOpenDateInterval?()
+    }
 }
 
 // MARK: AnalyticsViewModelProtocol
@@ -343,11 +364,8 @@ public final class AnalyticsViewModel {
 extension AnalyticsViewModel: AnalyticsViewModelProtocol {
 
     public func viewDidLoad() {
-        updateListDateInterval()
-        updateTitleDateInterval()
-        updateAllCategories()
-        updatePieChartDisplayItem()
-        updateModelCellCategory()
+        updateChart()
+        updateTableCategories()
     }
 
     // MARK: - Inputs
@@ -373,6 +391,17 @@ extension AnalyticsViewModel: AnalyticsViewModelProtocol {
 
     public func didTapOpenCategorySelection() {
         onOpenCategorySelection?(selectedCategories)
+    }
+    public func updateCustomDateInterval(to dateInterval: DateInterval?) {
+        switch dateInterval {
+        case .some(let range):
+            listDateInterval = [range]
+            updateChart()
+        case .none:
+            if listDateInterval.count != 1 {
+                updateTypeTimePeriod(oldTypeTimePeriod)
+            }
+        }
     }
 
     // MARK: TEST CORE DATA
