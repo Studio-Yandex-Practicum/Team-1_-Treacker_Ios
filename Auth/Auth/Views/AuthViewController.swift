@@ -125,7 +125,7 @@ private extension AuthViewController {
         ])
         stack.axis = .vertical
         stack.spacing = UIConstants.Spacing.medium16.rawValue
-        
+
         stack.setCustomSpacing(UIConstants.Spacing.small8.rawValue, after: titleLabel)
         stack.setCustomSpacing(UIConstants.Spacing.large24.rawValue, after: forgetPassButton)
         stack.setCustomSpacing(UIConstants.Spacing.large24.rawValue, after: loginButton)
@@ -307,56 +307,41 @@ private extension AuthViewController {
         }
     }
 
-    private func updateHintVisibility(emailVisible: Bool, passwordVisible: Bool) {
-        if let emailHintContainer = emailHintContainer {
-            let indexAfterEmailField = formStackView.arrangedSubviews.firstIndex(of: emailField).map { $0 + 1 }
+    private func updateHintVisibility(
+        isVisible: Bool,
+        label: UILabel,
+        container: UIView?,
+        anchorView: UIView
+    ) {
+        guard let container else { return }
 
-            if emailVisible && !formStackView.arrangedSubviews.contains(emailHintContainer) {
-                if let index = indexAfterEmailField {
-                    formStackView.insertArrangedSubview(emailHintContainer, at: index)
-                } else {
-                    formStackView.addArrangedSubview(emailHintContainer)
-                }
-                emailHintContainer.isHidden = false
-                emailHint.alpha = 0
-                UIView.animate(withDuration: 0.3) {
-                    self.emailHint.alpha = 1
-                    self.formStackView.layoutIfNeeded()
-                }
-            } else if !emailVisible && formStackView.arrangedSubviews.contains(emailHintContainer) {
-                UIView.animate(withDuration: 0.25, animations: {
-                    self.emailHint.alpha = 0
-                    self.formStackView.layoutIfNeeded()
-                }, completion: { _ in
-                    self.formStackView.removeArrangedSubview(emailHintContainer)
-                    emailHintContainer.removeFromSuperview()
-                })
+        let indexAfterAnchor = formStackView.arrangedSubviews.firstIndex(of: anchorView).map { $0 + 1 }
+
+        if isVisible && !formStackView.arrangedSubviews.contains(container) {
+            if let index = indexAfterAnchor {
+                formStackView.insertArrangedSubview(container, at: index)
+            } else {
+                formStackView.addArrangedSubview(container)
             }
-        }
 
-        if let passHintContainer = passHintContainer {
-            let indexAfterPasswordField = formStackView.arrangedSubviews.firstIndex(of: passwordField).map { $0 + 1 }
+            container.isHidden = false
+            label.alpha = 0
+            self.view.layoutIfNeeded()
 
-            if passwordVisible && !formStackView.arrangedSubviews.contains(passHintContainer) {
-                if let index = indexAfterPasswordField {
-                    formStackView.insertArrangedSubview(passHintContainer, at: index)
-                } else {
-                    formStackView.addArrangedSubview(passHintContainer)
-                }
-                passHintContainer.isHidden = false
-                passHint.alpha = 0
-                UIView.animate(withDuration: 0.3) {
-                    self.passHint.alpha = 1
-                    self.formStackView.layoutIfNeeded()
-                }
-            } else if !passwordVisible && formStackView.arrangedSubviews.contains(passHintContainer) {
-                UIView.animate(withDuration: 0.25, animations: {
-                    self.passHint.alpha = 0
-                    self.formStackView.layoutIfNeeded()
-                }, completion: { _ in
-                    self.formStackView.removeArrangedSubview(passHintContainer)
-                    passHintContainer.removeFromSuperview()
-                })
+            UIView.animate(withDuration: 0.3) {
+                label.alpha = 1
+                self.formStackView.layoutIfNeeded()
+            }
+
+        } else if !isVisible && formStackView.arrangedSubviews.contains(container) {
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+            formStackView.removeArrangedSubview(container)
+            container.removeFromSuperview()
+            CATransaction.commit()
+
+            UIView.animate(withDuration: 0.25) {
+                self.formStackView.layoutIfNeeded()
             }
         }
     }
@@ -409,7 +394,7 @@ private extension AuthViewController {
     @objc private func didTapLogin() {
         viewModel.login()
     }
-    
+
     @objc private func didTapGoogle() {
         let handler = GoogleSignInHandler(presentingVC: self)
         viewModel.didTapGoogleLogin(handler: handler)
@@ -505,8 +490,17 @@ private extension AuthViewController {
                 let showPasswordHint = viewModel.passwordErrorVisible
 
                 updateHintVisibility(
-                    emailVisible: showEmailHint,
-                    passwordVisible: showPasswordHint
+                    isVisible: showEmailHint,
+                    label: emailHint,
+                    container: emailHintContainer,
+                    anchorView: emailField
+                )
+
+                updateHintVisibility(
+                    isVisible: showPasswordHint,
+                    label: passHint,
+                    container: passHintContainer,
+                    anchorView: passwordField
                 )
 
                 if showEmailHint && !isEmailValid {
