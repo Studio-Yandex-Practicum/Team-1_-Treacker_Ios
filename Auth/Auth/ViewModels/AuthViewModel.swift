@@ -68,6 +68,7 @@ private extension AuthViewModel {
 
     private func bindValidation() {
         Publishers.CombineLatest($email, $password)
+            .debounce(for: 0.2, scheduler: RunLoop.main)
             .map { email, password -> AuthState in
                 let isEmailValid = email.isValidEmail
                 let isPasswordValid = password.count >= 7

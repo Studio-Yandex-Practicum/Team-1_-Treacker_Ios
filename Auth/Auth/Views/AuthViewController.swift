@@ -39,6 +39,9 @@ public final class AuthViewController: UIViewController {
     private lazy var emailHint = makeHintLabel(text: GlobalConstants.emailHint.rawValue)
     private lazy var passHint = makeHintLabel(text: GlobalConstants.passHint.rawValue)
 
+    private var emailHintContainer: UIView?
+    private var passHintContainer: UIView?
+
     private lazy var forgetPassButton = makeLinkButton(
         title: GlobalConstants.forgetPass,
         action: #selector(didTapForgetPass)
@@ -92,6 +95,9 @@ public final class AuthViewController: UIViewController {
         emailHint.alpha = 0
         passHint.alpha = 0
         setupUI()
+        UIView.performWithoutAnimation {
+            self.view.layoutIfNeeded()
+        }
         enableKeyboardDismissOnTap()
         bindViewModel()
     }
@@ -119,24 +125,34 @@ private extension AuthViewController {
         ])
         stack.axis = .vertical
         stack.spacing = UIConstants.Spacing.medium16.rawValue
-
+        
         stack.setCustomSpacing(UIConstants.Spacing.small8.rawValue, after: titleLabel)
         stack.setCustomSpacing(UIConstants.Spacing.large24.rawValue, after: forgetPassButton)
         stack.setCustomSpacing(UIConstants.Spacing.large24.rawValue, after: loginButton)
-
         return stack
     }
 
     private func setupUI() {
-        let emailHintContainer = containerFor(label: emailHint)
-        let passHintContainer = containerFor(label: passHint)
+        let emailContainer = containerFor(label: emailHint)
+        let passContainer = containerFor(label: passHint)
+
+        self.emailHintContainer = emailContainer
+        self.passHintContainer = passContainer
+
+        emailContainer.isHidden = true
+        passContainer.isHidden = true
 
         formStackView = createMainStackView(
-            emailHintContainer: emailHintContainer,
-            passHintContainer: passHintContainer
+            emailHintContainer: emailContainer,
+            passHintContainer: passContainer
         )
         view.setupView(formStackView)
         view.setupView(notAccauntButton)
+
+        formStackView.setCustomSpacing(UIConstants.Spacing.medium12.rawValue, after: emailField)
+        formStackView.setCustomSpacing(UIConstants.Spacing.medium12.rawValue, after: passwordField)
+
+        guard let emailHintContainer, let passHintContainer else { return }
 
         NSLayoutConstraint.activate([
             emailField.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height60.rawValue),
@@ -292,36 +308,88 @@ private extension AuthViewController {
     }
 
     private func updateHintVisibility(emailVisible: Bool, passwordVisible: Bool) {
-        if let emailHintContainer = emailHint.superview {
-            animateHintVisibility(
-                label: emailHint,
-                hintContainer: emailHintContainer,
-                isVisible: emailVisible,
-                spacingAfter: emailVisible ?
-                UIConstants.Spacing.small4.rawValue :
-                    UIConstants.Spacing.medium12.rawValue,
-                after: emailField
-            )
-            formStackView.setCustomSpacing(
-                UIConstants.Constants.medium12.rawValue,
-                after: emailHintContainer
-            )
+        if let emailHintContainer = emailHintContainer {
+            let indexAfterEmailField = formStackView.arrangedSubviews.firstIndex(of: emailField).map { $0 + 1 }
+
+            if emailVisible && !formStackView.arrangedSubviews.contains(emailHintContainer) {
+                if let index = indexAfterEmailField {
+                    formStackView.insertArrangedSubview(emailHintContainer, at: index)
+                } else {
+                    formStackView.addArrangedSubview(emailHintContainer)
+                }
+                emailHintContainer.isHidden = false
+                emailHint.alpha = 0
+                UIView.animate(withDuration: 0.3) {
+                    self.emailHint.alpha = 1
+                    self.formStackView.layoutIfNeeded()
+                }
+            } else if !emailVisible && formStackView.arrangedSubviews.contains(emailHintContainer) {
+                UIView.animate(withDuration: 0.25, animations: {
+                    self.emailHint.alpha = 0
+                    self.formStackView.layoutIfNeeded()
+                }, completion: { _ in
+                    self.formStackView.removeArrangedSubview(emailHintContainer)
+                    emailHintContainer.removeFromSuperview()
+                })
+            }
         }
 
-        if let passHintContainer = passHint.superview {
-            animateHintVisibility(
-                label: passHint,
-                hintContainer: passHintContainer,
-                isVisible: passwordVisible,
-                spacingAfter: passwordVisible ?
-                UIConstants.Spacing.small4.rawValue :
-                    UIConstants.Spacing.medium12.rawValue,
-                after: passwordField
-            )
-            formStackView.setCustomSpacing(
-                UIConstants.Constants.medium12.rawValue,
-                after: passHintContainer
-            )
+        if let passHintContainer = passHintContainer {
+            let indexAfterPasswordField = formStackView.arrangedSubviews.firstIndex(of: passwordField).map { $0 + 1 }
+
+            if passwordVisible && !formStackView.arrangedSubviews.contains(passHintContainer) {
+                if let index = indexAfterPasswordField {
+                    formStackView.insertArrangedSubview(passHintContainer, at: index)
+                } else {
+                    formStackView.addArrangedSubview(passHintContainer)
+                }
+                passHintContainer.isHidden = false
+                passHint.alpha = 0
+                UIView.animate(withDuration: 0.3) {
+                    self.passHint.alpha = 1
+                    self.formStackView.layoutIfNeeded()
+                }
+            } else if !passwordVisible && formStackView.arrangedSubviews.contains(passHintContainer) {
+                UIView.animate(withDuration: 0.25, animations: {
+                    self.passHint.alpha = 0
+                    self.formStackView.layoutIfNeeded()
+                }, completion: { _ in
+                    self.formStackView.removeArrangedSubview(passHintContainer)
+                    passHintContainer.removeFromSuperview()
+                })
+            }
+        }
+    }
+
+    private func updateHint(
+        label: UILabel,
+        container: UIView?,
+        visible: Bool,
+        spacingAfter: CGFloat,
+        after view: UIView
+    ) {
+        guard let container else { return }
+
+        if visible {
+            container.isHidden = false
+            label.alpha = 0
+
+            let animator = UIViewPropertyAnimator(duration: 0.3, dampingRatio: 0.85) {
+                label.alpha = 1
+                self.formStackView.setCustomSpacing(spacingAfter, after: view)
+                self.view.layoutIfNeeded()
+            }
+            animator.startAnimation()
+        } else {
+            let animator = UIViewPropertyAnimator(duration: 0.3, curve: .easeInOut) {
+                label.alpha = 0
+                self.formStackView.setCustomSpacing(spacingAfter, after: view)
+                self.view.layoutIfNeeded()
+            }
+            animator.addCompletion { _ in
+                container.isHidden = true
+            }
+            animator.startAnimation()
         }
     }
 
@@ -369,7 +437,6 @@ private extension AuthViewController {
         bindTextFields()
         bindAuthEvents()
         bindValidationErrors()
-        bindHintVisibility()
         bindFormState()
     }
 
@@ -428,56 +495,29 @@ private extension AuthViewController {
 
     private func bindValidationErrors() {
         viewModel.$state
-            .compactMap { state -> Bool? in
-                guard case let .idle(_, isEmailValid, _) = state else { return nil }
-                return isEmailValid
-            }
-            .removeDuplicates()
-            .dropFirst()
-            .filter { !$0 }
-            .sink { [weak self] _ in
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state in
                 guard let self else { return }
-                self.generateErrorFeedback()
-                self.emailField.shake()
-            }
-            .store(in: &cancellable)
 
-        viewModel.$state
-            .compactMap { state -> Bool? in
-                guard case let .idle(_, _, isPasswordValid) = state else { return nil }
-                return isPasswordValid
-            }
-            .removeDuplicates()
-            .dropFirst()
-            .filter { !$0 }
-            .sink { [weak self] _ in
-                guard let self else { return }
-                self.generateErrorFeedback()
-                self.passwordField.shake()
-            }
-            .store(in: &cancellable)
-    }
+                guard case let .idle(_, isEmailValid, isPasswordValid) = state else { return }
 
-    private func bindHintVisibility() {
-        viewModel.$emailErrorVisible
-            .removeDuplicates()
-            .sink { [weak self] isVisible in
-                guard let self else { return }
-                self.updateHintVisibility(
-                    emailVisible: isVisible,
-                    passwordVisible: self.viewModel.passwordErrorVisible
+                let showEmailHint = viewModel.emailErrorVisible
+                let showPasswordHint = viewModel.passwordErrorVisible
+
+                updateHintVisibility(
+                    emailVisible: showEmailHint,
+                    passwordVisible: showPasswordHint
                 )
-            }
-            .store(in: &cancellable)
 
-        viewModel.$passwordErrorVisible
-            .removeDuplicates()
-            .sink { [weak self] isVisible in
-                guard let self else { return }
-                self.updateHintVisibility(
-                    emailVisible: self.viewModel.emailErrorVisible,
-                    passwordVisible: isVisible
-                )
+                if showEmailHint && !isEmailValid {
+                    generateErrorFeedback()
+                    emailField.shake()
+                }
+
+                if showPasswordHint && !isPasswordValid {
+                    generateErrorFeedback()
+                    passwordField.shake()
+                }
             }
             .store(in: &cancellable)
     }
