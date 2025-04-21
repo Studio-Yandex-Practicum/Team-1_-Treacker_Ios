@@ -7,18 +7,41 @@
 
 import Foundation
 
-public struct CategoryColorNames {
+public enum CategoryColorName: CaseIterable {
+    case orange, green, pink, violet, blue, purple
+    case yellow, red, brightBlue, darkGreen, darkBlue, brightGreen
 
-    static let background: [String] = [
-        "ic-orange-new-bg", "ic-green-new-bg", "ic-pink-new-bg",
-        "ic-violet-new-bg", "ic-blue-new-bg", "ic-purple-new-bg",
-        "ic-yellow-new-bg", "ic-red-new-bg", "ic-bright-blue-new-bg",
-        "ic-dark-green-new-bg", "ic-dark-blue-new-bg", "ic-bright-green-new-bg"
-    ]
-    static let accent: [String] = [
-        "ic-orange-new", "ic-green-new", "ic-pink-new",
-        "ic-violet-new", "ic-blue-new", "ic-purple-new",
-        "ic-yellow-new", "ic-red-new", "ic-bright-blue-new",
-        "ic-dark-green-new", "ic-dark-blue-new", "ic-bright-green-new"
-    ]
+    public var background: String {
+        switch self {
+        case .orange: return "ic-orange-new-bg"
+        case .green: return "ic-green-new-bg"
+        case .pink: return "ic-pink-new-bg"
+        case .violet: return "ic-violet-new-bg"
+        case .blue: return "ic-blue-new-bg"
+        case .purple: return "ic-purple-new-bg"
+        case .yellow: return "ic-yellow-new-bg"
+        case .red: return "ic-red-new-bg"
+        case .brightBlue: return "ic-bright-blue-new-bg"
+        case .darkGreen: return "ic-dark-green-new-bg"
+        case .darkBlue: return "ic-dark-blue-new-bg"
+        case .brightGreen: return "ic-bright-green-new-bg"
+        }
+    }
+
+    public var accent: String {
+        switch self {
+        case .orange: return "ic-orange-new"
+        case .green: return "ic-green-new"
+        case .pink: return "ic-pink-new"
+        case .violet: return "ic-violet-new"
+        case .blue: return "ic-blue-new"
+        case .purple: return "ic-purple-new"
+        case .yellow: return "ic-yellow-new"
+        case .red: return "ic-red-new"
+        case .brightBlue: return "ic-bright-blue-new"
+        case .darkGreen: return "ic-dark-green-new"
+        case .darkBlue: return "ic-dark-blue-new"
+        case .brightGreen: return "ic-bright-green-new"
+        }
+    }
 }

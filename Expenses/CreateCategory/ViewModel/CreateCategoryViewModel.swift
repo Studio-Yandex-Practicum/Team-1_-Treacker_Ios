@@ -70,8 +70,7 @@ public final class CreateCategoryViewModel: CreateCategoryViewModelProtocol {
         AppIcon.beauty.rawValue
     ]
 
-    private let bgColorNames = CategoryColorNames.background
-    private let accentColorNames = CategoryColorNames.accent
+    private let allColors = CategoryColorName.allCases
 
     private let iconDefaultBg = "ic-gray-bg"
     private let iconTintColor = "Secondary-text"
@@ -149,12 +148,12 @@ public final class CreateCategoryViewModel: CreateCategoryViewModelProtocol {
     }
 
     private func rebuildColorCellVMs() {
-        colorCellVMs = bgColorNames.enumerated().map { idx, bgName in
+        colorCellVMs = allColors.enumerated().map { index, color in
             CategoryCellViewModel(
                 nameIcon: nil,
-                colorBgName: bgName,
-                colorPrimaryName: accentColorNames[idx],
-                isSelected: idx == selectedColorIndex
+                colorBgName: color.background,
+                colorPrimaryName: color.accent,
+                isSelected: index == selectedColorIndex
             )
         }
     }
