@@ -9,7 +9,7 @@ import UIKit
 import UIComponents
 import Core
 
-final class ExpenseCell: UITableViewCell, ReuseIdentifying {
+final class ExpenseCellView: UITableViewCell, ReuseIdentifying {
 
     // MARK: Private Properties
 
@@ -56,6 +56,7 @@ final class ExpenseCell: UITableViewCell, ReuseIdentifying {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         backgroundColor = .secondaryBg
+        selectionStyle = .none
         setupLayout()
     }
 
@@ -82,9 +83,8 @@ final class ExpenseCell: UITableViewCell, ReuseIdentifying {
 
 // MARK: - Extension: Setup Layout
 
-extension ExpenseCell {
+extension ExpenseCellView {
     private func setupLayout() {
-        selectionStyle = .none
         contentView.setupView(titleStack)
         contentView.setupView(separatorView)
         titleStack.constraintEdges(to: contentView)

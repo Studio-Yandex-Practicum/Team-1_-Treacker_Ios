@@ -75,7 +75,8 @@ public final class CategoryExpensesViewController: UIViewController {
 
     private lazy var tableExpenses: UITableView = {
         let table = UITableView()
-        table.register(ExpenseCell.self)
+        table.register(ExpenseCellView.self)
+        table.separatorStyle = .none
         table.dataSource = self
         table.delegate = self
         return table
@@ -132,12 +133,16 @@ public final class CategoryExpensesViewController: UIViewController {
 // MARK: Extension - UICollectionViewDataSource
 
 extension CategoryExpensesViewController: UITableViewDataSource {
+    public func numberOfSections(in tableView: UITableView) -> Int {
+        3
+    }
+
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        10
+        5
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: ExpenseCell = tableView.dequeueReusableCell()
+        let cell: ExpenseCellView = tableView.dequeueReusableCell()
 
         return cell
     }
@@ -147,7 +152,20 @@ extension CategoryExpensesViewController: UITableViewDataSource {
 
 extension CategoryExpensesViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UIConstants.Heights.height60.rawValue
+        UIConstants.Heights.height60.rawValue
+    }
+
+    public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = ExpenseHeaderView()
+        return headerView
+    }
+
+    public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        UIConstants.Constants.large21.rawValue
+    }
+
+    public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        UIConstants.Constants.large20.rawValue
     }
 }
 
