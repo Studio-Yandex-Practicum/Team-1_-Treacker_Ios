@@ -10,7 +10,7 @@ import Core
 
 extension UIColor {
 
-    enum ColorSet: String {
+    public enum ColorSet: String {
         case accentText = "Accent-text"
         case hintText = "Hint-text"
         case primaryText = "Primary-text"
@@ -93,7 +93,7 @@ extension UIColor {
     public static var secondaryBg: UIColor { color(named: .secondaryBg) }
 
     // MARK: - Colors-icons
-    
+
     public static var icBlueBg: UIColor { color(named: .icBlueBg) }
     public static var icBluePrimary: UIColor { color(named: .icBluePrimary) }
     public static var icDarkBlueBg: UIColor { color(named: .icDarkBlueBg) }
