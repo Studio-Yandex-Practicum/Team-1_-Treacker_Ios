@@ -61,10 +61,11 @@ public final class Router: RouterProtocol {
             })
         }
 
-        viewModel.onOpenCategoryExpenses = { [weak self] dateInterval, category in
+        viewModel.onOpenCategoryExpenses = { [weak self] dateInterval, categoryReport, category in
             self?.presentCategoryExpenses(
                 from: mainVC,
                 dateInterval: dateInterval,
+                categoryReport: categoryReport,
                 selectedCategory: category
             )
         }
@@ -166,11 +167,13 @@ public final class Router: RouterProtocol {
     public func presentCategoryExpenses(
         from viewController: UIViewController,
         dateInterval: Analytics.DateInterval,
+        categoryReport: PeriodCategoryReport,
         selectedCategory: ExpenseCategory
     ) {
         let viewModel = CategoryExpensesViewModel(
             serviceExpense: coreDataAssembly.expenseService,
             dateInterval: dateInterval,
+            categoryReport: categoryReport,
             selectedCategory: selectedCategory
         )
         let view = CategoryExpensesViewController(viewModel: viewModel)

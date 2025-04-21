@@ -27,6 +27,7 @@ public final class CategoryExpensesViewModel {
 
     private var serviceExpense: ExpenseStorageServiceProtocol
     private var dateInterval: Analytics.DateInterval
+    private var categoryReport: PeriodCategoryReport
     private var selectedCategory: ExpenseCategory
 
     // MARK: - Initializers
@@ -34,13 +35,13 @@ public final class CategoryExpensesViewModel {
     public init(
         serviceExpense: ExpenseStorageServiceProtocol,
         dateInterval: Analytics.DateInterval,
+        categoryReport: PeriodCategoryReport,
         selectedCategory: ExpenseCategory
     ) {
         self.serviceExpense = serviceExpense
         self.dateInterval = dateInterval
+        self.categoryReport = categoryReport
         self.selectedCategory = selectedCategory
-        print(dateInterval)
-        print(selectedCategory)
     }
 
     @available(*, unavailable)

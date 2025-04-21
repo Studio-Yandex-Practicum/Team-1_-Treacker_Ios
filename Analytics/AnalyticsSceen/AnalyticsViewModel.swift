@@ -49,7 +49,7 @@ public final class AnalyticsViewModel {
     // Router
     public var onOpenCategorySelection: (([ExpenseCategory]) -> Void)?
     public var onOpenDateInterval: (() -> Void)?
-    public var onOpenCategoryExpenses: ((DateInterval, ExpenseCategory) -> Void)?
+    public var onOpenCategoryExpenses: ((DateInterval, PeriodCategoryReport, ExpenseCategory) -> Void)?
 
     // MARK: - State
 
@@ -139,11 +139,11 @@ public final class AnalyticsViewModel {
         let fetchedCategories = serviceExpense.fetchExpenses(from: newDateInterval.start, to: newDateInterval.end, categories: selectedCategoriesString)
         switch direction {
         case .before:
-            var report = getPeriodCategoryReport(for: fetchedCategories)
+            var report = PeriodCategoryReport.getPeriodCategoryReport(for: fetchedCategories)
             report = getSortedPeriodCategoryReport(of: report)
             categoryReports.insert(report, at: 0)
         case .after:
-            var report = getPeriodCategoryReport(for: fetchedCategories)
+            var report = PeriodCategoryReport.getPeriodCategoryReport(for: fetchedCategories)
             report = getSortedPeriodCategoryReport(of: report)
             categoryReports.append(report)
         }
@@ -175,28 +175,6 @@ public final class AnalyticsViewModel {
                 titleDateInterval.append(formatDateRange(from: interval.start, to: interval.end))
             }
         }
-    }
-
-    private func getPeriodCategoryReport(for listCategories: [ExpenseCategory]) -> PeriodCategoryReport {
-        var totalAmount: Double = 0.0
-        var summaries: [CategorySummary] = []
-        for category in listCategories {
-            let categorySummary = getCategorySummary(for: category)
-            totalAmount += categorySummary.amount
-            summaries.append(categorySummary)
-        }
-        for index in summaries.indices {
-            let percent = summaries[index].amount / totalAmount * 100
-            summaries[index].percent = percent
-        }
-        let periodCategoryReport = PeriodCategoryReport(summaries: summaries, totalAmount: totalAmount)
-        return periodCategoryReport
-    }
-
-    private func getCategorySummary(for category: ExpenseCategory) -> CategorySummary {
-        let amount = category.expense.reduce(0) { $0 + $1.amount.rub}
-        let categorySummary = CategorySummary(category: category, amount: amount, percent: 0.0)
-        return categorySummary
     }
 
     private func getSortedPeriodCategoryReport(of categoryReport: PeriodCategoryReport, sorted: CategorySortOrder = .totalDescending) -> PeriodCategoryReport {
@@ -397,8 +375,9 @@ extension AnalyticsViewModel: AnalyticsViewModelProtocol {
 
     public func didTapOpenCategoryExpenses(index: Int) {
         let dateInterval = listDateInterval[selectedIndex]
+        let categoryReport = categoryReports[selectedIndex]
         let category = categoryReports[selectedIndex].summaries[index].category
-        onOpenCategoryExpenses?(dateInterval, category)
+        onOpenCategoryExpenses?(dateInterval, categoryReport, category)
     }
 
     public func updateCustomDateInterval(to dateInterval: DateInterval?) {
