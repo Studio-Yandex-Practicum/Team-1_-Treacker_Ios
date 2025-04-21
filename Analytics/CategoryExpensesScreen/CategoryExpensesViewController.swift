@@ -58,7 +58,12 @@ public final class CategoryExpensesViewController: UIViewController {
         let stack = UIStackView(arrangedSubviews: [titleAmountLabel, titlePercentLabel])
         stack.axis = .horizontal
         stack.alignment = .fill
-        stack.layoutMargins = UIEdgeInsets(top: 0, left: UIConstants.Constants.medium12.rawValue, bottom: 0, right: UIConstants.Constants.medium12.rawValue)
+        stack.layoutMargins = UIEdgeInsets(
+            top: UIConstants.Constants.large21.rawValue,
+            left: UIConstants.Constants.medium12.rawValue,
+            bottom: UIConstants.Constants.large21.rawValue,
+            right: UIConstants.Constants.medium12.rawValue
+        )
         stack.isLayoutMarginsRelativeArrangement = true
         stack.layer.cornerRadius = UIConstants.CornerRadius.medium16.rawValue
         stack.layer.masksToBounds = true
@@ -78,7 +83,7 @@ public final class CategoryExpensesViewController: UIViewController {
     // MARK: addExpenseButton
 
     private lazy var addExpenseButton = UIButton.makeButton(
-        title: GlobalConstants.selectCategoryApply,
+        title: GlobalConstants.categoryExpensesAddExpenses,
         target: self,
         action: #selector(didAddExpense)
     )
@@ -166,7 +171,6 @@ extension CategoryExpensesViewController {
             titleStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: UIConstants.Constants.large60.rawValue),
             titleStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
             titleStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
-            titleStack.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height57.rawValue),
 
             addExpenseButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
             addExpenseButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),

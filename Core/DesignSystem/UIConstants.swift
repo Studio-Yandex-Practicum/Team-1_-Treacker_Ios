@@ -36,6 +36,7 @@ public enum UIConstants {
         case medium16 = 16.0
         case medium19 = 19.0
         case large20 = 20.0
+        case large21 = 21.0
         case large24 = 24.0
         case large26 = 26.0
         case large40 = 40.0

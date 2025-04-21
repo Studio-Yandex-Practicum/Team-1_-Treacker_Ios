@@ -62,7 +62,7 @@ public final class Router: RouterProtocol {
         }
 
         viewModel.onOpenCategoryExpenses = { [weak self] in
-            self?.presentCategoryExpenses()
+            self?.presentCategoryExpenses(from: mainVC)
         }
 
         setRootViewController(UINavigationController(rootViewController: mainVC))
@@ -159,11 +159,12 @@ public final class Router: RouterProtocol {
         dateRangePicker.present(above: viewController)
     }
 
-    public func presentCategoryExpenses() {
+    public func presentCategoryExpenses(from viewController: UIViewController) {
         let viewModel = CategoryExpensesViewModel()
         let view = CategoryExpensesViewController(viewModel: viewModel)
 
-        setRootViewController(UINavigationController(rootViewController: view))
+        view.modalPresentationStyle = .fullScreen
+        viewController.present(view, animated: true)
     }
 
     private func setRootViewController(_ viewController: UIViewController) {
