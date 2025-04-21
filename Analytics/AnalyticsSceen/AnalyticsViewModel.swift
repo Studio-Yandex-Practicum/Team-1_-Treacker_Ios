@@ -126,6 +126,14 @@ public final class AnalyticsViewModel {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // MARK: - Public Methods
+
+    public func updateDataPersistence() {
+        updateAllCategories()
+        updatePieChartDisplayItem()
+        updateTableCategories()
+    }
+
     // MARK: - Private Methods
 
     private func updateListDateInterval() {

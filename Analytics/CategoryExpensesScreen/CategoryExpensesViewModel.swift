@@ -33,6 +33,10 @@ public final class CategoryExpensesViewModel {
     public var onPercent: ((String) -> Void)?
     public var onCategoryReport: (() -> Void)?
 
+    // Router
+
+    private var onUpdatePersistence: (() -> Void)
+
     // MARK: - State
 
     private(set) public lazy var nameCategory: String  = {
@@ -69,12 +73,14 @@ public final class CategoryExpensesViewModel {
         serviceExpense: ExpenseStorageServiceProtocol,
         dateInterval: Analytics.DateInterval,
         categoryReport: PeriodCategoryReport,
-        selectedCategory: ExpenseCategory
+        selectedCategory: ExpenseCategory,
+        onUpdatePersistence: @escaping (() -> Void)
     ) {
         self.serviceExpense = serviceExpense
         self.dateInterval = dateInterval
         self.categoryReport = categoryReport
         self.selectedCategory = selectedCategory
+        self.onUpdatePersistence = onUpdatePersistence
     }
 
     @available(*, unavailable)
@@ -135,6 +141,7 @@ extension CategoryExpensesViewModel: CategoryExpensesViewModelProtocol {
         let id = expenseCellViewModels[indexDay][indexExpense].expense.id
         serviceExpense.deleteExpense(id)
         updateData()
+        onUpdatePersistence()
     }
 
 }

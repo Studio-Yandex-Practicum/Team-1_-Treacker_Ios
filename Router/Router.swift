@@ -66,7 +66,10 @@ public final class Router: RouterProtocol {
                 from: mainVC,
                 dateInterval: dateInterval,
                 categoryReport: categoryReport,
-                selectedCategory: category
+                selectedCategory: category,
+                onUpdatePersistence: {
+                    viewModel.updateDataPersistence()
+                }
             )
         }
 
@@ -168,14 +171,15 @@ public final class Router: RouterProtocol {
         from viewController: UIViewController,
         dateInterval: Analytics.DateInterval,
         categoryReport: PeriodCategoryReport,
-        selectedCategory: ExpenseCategory
+        selectedCategory: ExpenseCategory,
+        onUpdatePersistence: @escaping (() -> Void)
     ) {
         let viewModel = CategoryExpensesViewModel(
             serviceExpense: coreDataAssembly.expenseService,
             dateInterval: dateInterval,
             categoryReport: categoryReport,
-            selectedCategory: selectedCategory
-        )
+            selectedCategory: selectedCategory,
+            onUpdatePersistence: onUpdatePersistence)
         let view = CategoryExpensesViewController(viewModel: viewModel)
 
         view.modalPresentationStyle = .fullScreen
