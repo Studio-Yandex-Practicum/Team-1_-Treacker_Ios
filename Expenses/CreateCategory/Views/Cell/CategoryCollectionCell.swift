@@ -11,10 +11,12 @@ import Core
 
 public final class CategoryCollectionCell: UICollectionViewCell, ReuseIdentifying {
 
-    private var cellSize = UIConstants.Widths.width44.rawValue
+    // MARK: - Private Properties
 
-    private lazy var iconView = CategoryIconView()
-    private lazy var titleLabel = UILabel()
+    private var cellSize = UIConstants.Widths.width44.rawValue
+    private(set) lazy var iconView = CategoryIconView()
+
+    // MARK: - Init
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -30,22 +32,17 @@ public final class CategoryCollectionCell: UICollectionViewCell, ReuseIdentifyin
         fatalError()
     }
 
+    // MARK: - Setup UI
+
     private func setupUI() {
         contentView.setupView(iconView)
         iconView.constraintCenters(to: contentView)
-        contentView.setupView(titleLabel)
-
-        NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(lessThanOrEqualTo: contentView.topAnchor),
-            titleLabel.bottomAnchor.constraint(
-                equalTo: iconView.topAnchor,
-                constant: UIConstants.Constants.small4.rawValue
-            ),
-            titleLabel.centerXAnchor.constraint(equalTo: iconView.centerXAnchor),
-            titleLabel.widthAnchor.constraint(lessThanOrEqualToConstant: cellSize)
-        ])
-        titleLabel.isHidden = true
     }
+}
+
+// MARK: - Configure
+
+extension CategoryCollectionCell {
 
     func configure(
         style: CategoryCellStyle,
@@ -59,14 +56,5 @@ public final class CategoryCollectionCell: UICollectionViewCell, ReuseIdentifyin
             iconColor: iconColor,
             backgroundColor: backgroundColor
         )
-
-        switch style {
-        case .iconWithText(let title):
-            titleLabel.text = title
-            titleLabel.isHidden = false
-        default:
-            titleLabel.text = nil
-            titleLabel.isHidden = true
-        }
     }
 }

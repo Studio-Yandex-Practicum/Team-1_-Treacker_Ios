@@ -22,4 +22,3 @@ public struct CategoryColorNames {
         "ic-dark-green-new", "ic-dark-blue-new", "ic-bright-green-new"
     ]
 }
-

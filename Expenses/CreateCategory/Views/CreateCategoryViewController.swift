@@ -11,6 +11,8 @@ import UIComponents
 
 public final class CreateCategoryViewController: UIViewController {
 
+    // MARK: - Private Properties
+
     private let viewModel: CreateCategoryViewModelProtocol
 
     private lazy var titleLabel: UILabel = .init(
@@ -37,6 +39,8 @@ public final class CreateCategoryViewController: UIViewController {
         action: #selector(createTapped)
     )
 
+    // MARK: - Lifecycle
+
     public init(viewModel: CreateCategoryViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -52,8 +56,9 @@ public final class CreateCategoryViewController: UIViewController {
         view.backgroundColor = .secondaryBg
         setupUI()
         enableKeyboardDismissOnTap()
+        setupBindings()
+        setupTextViewTarget()
     }
-
 }
 
 // MARK: - Setup UI
@@ -90,6 +95,10 @@ extension CreateCategoryViewController {
             createButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
+
+    private func setupTextViewTarget() {
+        categoryTextField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+    }
 }
 
 // MARK: - Setup Collection View
@@ -123,16 +132,18 @@ private extension CreateCategoryViewController {
 
     private func makeSection(for section: Int) -> NSCollectionLayoutSection {
 
+        let constant = UIConstants.Constants.large44.rawValue
+
         let itemSize = NSCollectionLayoutSize(
-            widthDimension: .absolute(44),
-            heightDimension: .absolute(44)
+            widthDimension: .absolute(constant),
+            heightDimension: .absolute(constant)
         )
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
         let group = NSCollectionLayoutGroup.horizontal(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
-                heightDimension: .estimated(44)
+                heightDimension: .estimated(constant)
             ),
             subitems: [item]
         )
@@ -165,15 +176,46 @@ private extension CreateCategoryViewController {
     }
 
     @objc private func createTapped() {
-        // TODO: вызывать сервис создания, закрыть модуль, показать алерт
+        guard let name = categoryTextField.text, !name.isEmpty else {
+            return
+        }
+        viewModel.createCategory(with: name)
+        // TODO: - Переход на другой экран
+    }
+
+    @objc private func textFieldDidChange() {
+        viewModel.updateCategoryName(categoryTextField.text ?? "")
     }
 }
 
-// MARK: - UICollectionViewDelegate
+// MARK: - Bindings
 
-extension CreateCategoryViewController: UICollectionViewDelegate {
+private extension CreateCategoryViewController {
 
+    private func setupBindings() {
+        viewModel.onIconItemChanged = { [weak self] old, new in
+            guard let self else { return }
+            var indexPaths: [IndexPath] = []
+            if let old = old { indexPaths.append(IndexPath(item: old, section: 0)) }
+            if let new = new { indexPaths.append(IndexPath(item: new, section: 0)) }
+            self.collectionView.reloadItems(at: indexPaths)
+        }
+
+        viewModel.onColorItemChanged = { [weak self] old, new in
+            guard let self else { return }
+            var indexPaths: [IndexPath] = []
+            if let old = old { indexPaths.append(IndexPath(item: old, section: 1)) }
+            if let new = new { indexPaths.append(IndexPath(item: new, section: 1)) }
+            self.collectionView.reloadItems(at: indexPaths)
+        }
+
+        viewModel.onCreateEnabledChanged = { [weak self] enabled in
+            self?.createButton.isEnabled = enabled
+        }
+    }
 }
+
+// MARK: - UICollectionViewDataSource
 
 extension CreateCategoryViewController: UICollectionViewDataSource {
 
@@ -186,8 +228,8 @@ extension CreateCategoryViewController: UICollectionViewDataSource {
         numberOfItemsInSection section: Int
     ) -> Int {
         switch section {
-        case 0: return 12
-        case 1: return 12
+        case 0: return viewModel.iconCellVMs.count
+        case 1: return viewModel.colorCellVMs.count
         default: return 0
         }
     }
@@ -197,25 +239,48 @@ extension CreateCategoryViewController: UICollectionViewDataSource {
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
         let cell: CategoryCollectionCell = collectionView.dequeueReusableCell(indexPath: indexPath)
+        let viewModel = indexPath.section == 0 ? viewModel.iconCellVMs[indexPath.item] : viewModel.colorCellVMs[indexPath.item]
 
+        let bgColor = UIColor.from(colorName: viewModel.colorBgName)
+        let accentColor = UIColor.from(colorName: viewModel.colorPrimaryName)
+
+        let iconImage: UIImage? = indexPath.section == 0
+            ? viewModel.nameIcon.flatMap { UIImage(named: $0) }
+            : nil
+
+        let iconTint: UIColor? = indexPath.section == 0 ? .secondaryText : nil
+
+        cell.configure(
+            style: .colorBoxWithBorder(borderColor: viewModel.isSelected ? accentColor : .clear),
+            image: iconImage,
+            iconColor: iconTint,
+            backgroundColor: bgColor
+        )
+
+        return cell
+    }
+}
+
+// MARK: - UICollectionViewDelegate
+
+extension CreateCategoryViewController: UICollectionViewDelegate {
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
         switch indexPath.section {
         case 0:
-            cell.configure(
-                style: .colorBoxWithBorder(borderColor: .accentText),
-                image: UIImage(named: "icon-bus"),
-                iconColor: .secondaryText,
-                backgroundColor: .icGrayBg
-            )
+            if viewModel.selectedIconIndex == indexPath.item {
+                viewModel.selectIcon(at: -1)
+            } else {
+                viewModel.selectIcon(at: indexPath.item)
+            }
         case 1:
-            cell.configure(
-                style: .colorBoxWithBorder(borderColor: .icGreenNew),
-                image: UIImage(named: "icon-bus"),
-                iconColor: .icGreenNew,
-                backgroundColor: .icGreenNewBg
-            )
+            if viewModel.selectedColorIndex == indexPath.item {
+                viewModel.selectColor(at: -1)
+            } else {
+                viewModel.selectColor(at: indexPath.item)
+            }
         default:
             break
         }
-        return cell
     }
 }

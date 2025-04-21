@@ -103,7 +103,7 @@ public final class Router: RouterProtocol {
     }
 
     public func routeToCreateCtegoryFlow() {
-        let viewModel = CreateCategoryViewModel()
+        let viewModel = CreateCategoryViewModel(categoryService: coreDataAssembly.categoryService, router: self)
         let createCategoryVC = CreateCategoryViewController(viewModel: viewModel)
         setRootViewController(createCategoryVC)
     }

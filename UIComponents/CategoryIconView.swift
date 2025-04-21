@@ -88,7 +88,6 @@ public final class CategoryIconView: UIView {
         case .iconOnly:
             iconImageView.isHidden = false
         case .colorBoxWithBorder(let borderColor):
-            iconImageView.isHidden = true
             backgroundView.layer.borderWidth = 2
             backgroundView.layer.borderColor = borderColor.cgColor
         }
