@@ -292,8 +292,7 @@ extension AnalyticsViewController: UITableViewDataSource {
 
 extension AnalyticsViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // TODO: Добавить передачу данных
-        viewModel.didTapOpenCategoryExpenses()
+        viewModel.didTapOpenCategoryExpenses(index: indexPath.row)
     }
 }
 

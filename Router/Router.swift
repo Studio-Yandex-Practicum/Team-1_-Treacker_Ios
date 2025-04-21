@@ -61,8 +61,12 @@ public final class Router: RouterProtocol {
             })
         }
 
-        viewModel.onOpenCategoryExpenses = { [weak self] in
-            self?.presentCategoryExpenses(from: mainVC)
+        viewModel.onOpenCategoryExpenses = { [weak self] dateInterval, category in
+            self?.presentCategoryExpenses(
+                from: mainVC,
+                dateInterval: dateInterval,
+                selectedCategory: category
+            )
         }
 
         setRootViewController(UINavigationController(rootViewController: mainVC))
@@ -159,8 +163,16 @@ public final class Router: RouterProtocol {
         dateRangePicker.present(above: viewController)
     }
 
-    public func presentCategoryExpenses(from viewController: UIViewController) {
-        let viewModel = CategoryExpensesViewModel()
+    public func presentCategoryExpenses(
+        from viewController: UIViewController,
+        dateInterval: Analytics.DateInterval,
+        selectedCategory: ExpenseCategory
+    ) {
+        let viewModel = CategoryExpensesViewModel(
+            serviceExpense: coreDataAssembly.expenseService,
+            dateInterval: dateInterval,
+            selectedCategory: selectedCategory
+        )
         let view = CategoryExpensesViewController(viewModel: viewModel)
 
         view.modalPresentationStyle = .fullScreen

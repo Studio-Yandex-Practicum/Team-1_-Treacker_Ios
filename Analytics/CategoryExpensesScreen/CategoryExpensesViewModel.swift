@@ -25,10 +25,22 @@ public final class CategoryExpensesViewModel {
 
     // MARK: - Private Properties
 
+    private var serviceExpense: ExpenseStorageServiceProtocol
+    private var dateInterval: Analytics.DateInterval
+    private var selectedCategory: ExpenseCategory
+
     // MARK: - Initializers
 
-    public init() {
-
+    public init(
+        serviceExpense: ExpenseStorageServiceProtocol,
+        dateInterval: Analytics.DateInterval,
+        selectedCategory: ExpenseCategory
+    ) {
+        self.serviceExpense = serviceExpense
+        self.dateInterval = dateInterval
+        self.selectedCategory = selectedCategory
+        print(dateInterval)
+        print(selectedCategory)
     }
 
     @available(*, unavailable)
