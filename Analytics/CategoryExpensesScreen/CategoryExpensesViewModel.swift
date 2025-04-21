@@ -22,6 +22,7 @@ public protocol CategoryExpensesViewModelProtocol {
     var expenseCellViewModels: [[ExpenseCellViewModel]] { get }
     // Inputs
     func updateData()
+    func deleteExpense(indexDay: Int, indexExpense: Int)
 }
 
 public final class CategoryExpensesViewModel {
@@ -54,6 +55,7 @@ public final class CategoryExpensesViewModel {
     private var dateInterval: Analytics.DateInterval
     private var categoryReport: PeriodCategoryReport {
         didSet {
+            updateTitles()
             updateDataTable()
             onCategoryReport?()
         }
@@ -127,6 +129,12 @@ extension CategoryExpensesViewModel: CategoryExpensesViewModelProtocol {
     public func updateData() {
         let expenseCategories = serviceExpense.fetchExpenses(from: dateInterval.start, to: dateInterval.end, categories: nil)
         categoryReport = PeriodCategoryReport.getPeriodCategoryReport(for: expenseCategories)
+    }
+
+    public func deleteExpense(indexDay: Int, indexExpense: Int) {
+        let id = expenseCellViewModels[indexDay][indexExpense].expense.id
+        serviceExpense.deleteExpense(id)
+        updateData()
     }
 
 }

@@ -34,6 +34,8 @@ public protocol AnalyticsViewModelProtocol {
     func updateSelectedCategories(_ categories: [ExpenseCategory])
     func didTapOpenCategorySelection()
     func didTapOpenCategoryExpenses(index: Int)
+
+    func test()
 }
 
 public final class AnalyticsViewModel {
@@ -433,7 +435,7 @@ extension AnalyticsViewModel: AnalyticsViewModelProtocol {
             return
         }
 
-        for _ in 0..<100 {
+        for _ in 0..<1000 {
             guard let note =  ["Кофе", "Метро", "Фильм", "Шаурма", "Такси", "Пицца", "Проезд", "Чай", "Ланч", "Попкорн"].randomElement(),
                   let category = categories.randomElement() else { return }
 

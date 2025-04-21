@@ -177,6 +177,32 @@ extension CategoryExpensesViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         UIConstants.Constants.large20.rawValue
     }
+
+    public func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+
+        let deleteAction = UIContextualAction(style: .destructive, title: GlobalConstants.deleteButton.rawValue) { [weak self] (_, _, completionHandler) in
+            guard let self else { return }
+            AlertService.present(
+                on: self,
+                title: .alertMessage,
+                message: .none,
+                actions: [
+                    AlertAction(title: "Удалить", style: .destructive) {
+                        completionHandler(true)
+                        self.viewModel.deleteExpense(indexDay: indexPath.section, indexExpense: indexPath.row)
+                    },
+                    AlertAction(title: "Отмена", style: .cancel, handler: {
+                        completionHandler(true)
+                    })
+                ]
+            )
+        }
+
+        deleteAction.backgroundColor = .hintText
+        deleteAction.image = UIImage(named: AppIcon.trash.rawValue)
+
+        return UISwipeActionsConfiguration(actions: [deleteAction])
+    }
 }
 
 // MARK: Extension - Setup Layout
