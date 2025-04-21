@@ -56,6 +56,12 @@ public enum GlobalConstants: String {
     case note = "Примечание (необязательно)"
     case add = "Добавить"
 
+    // Creating Category
+
+    case creatingCategory = "Создание категории"
+    case categoryName = "Название категории"
+    case create = "Создать"
+
     // Error
 
     case error = "Ошибка"
@@ -98,7 +104,6 @@ public enum GlobalConstants: String {
     case analyticsTimePeriodMonth = "Месяц"
     case analyticsTimePeriodYear = "Год"
     case analyticsTimePeriodCustom = "Период"
-
     case analyticsCellCategoryOperation = "операция"
     case analyticsCellCategoryPercent = "%"
 

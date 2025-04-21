@@ -34,7 +34,8 @@ public final class Router: RouterProtocol {
         if AuthService.shared.isAuthorized {
             routeToMainFlow()
         } else {
-            routeToAuthFlow()
+            //routeToAuthFlow()
+            routeToCreateCtegoryFlow()
         }
     }
 
@@ -166,6 +167,12 @@ public final class Router: RouterProtocol {
         }
         dateRangePicker.present(above: viewController)
     }
+
+    public func routeToCreateCtegoryFlow() {
+        let viewModel = CreateCategoryViewModel(categoryService: coreDataAssembly.categoryService, router: self)
+        let createCategoryVC = CreateCategoryViewController(viewModel: viewModel)
+        setRootViewController(createCategoryVC)
+	}
 
     public func presentCategoryExpenses(
         from viewController: UIViewController,
