@@ -33,6 +33,7 @@ public protocol AnalyticsViewModelProtocol {
     func updateCategorySortOrder()
     func updateSelectedCategories(_ categories: [ExpenseCategory])
     func didTapOpenCategorySelection()
+    func didTapOpenCategoryExpenses()
 }
 
 public final class AnalyticsViewModel {
@@ -48,6 +49,7 @@ public final class AnalyticsViewModel {
     // Router
     public var onOpenCategorySelection: (([ExpenseCategory]) -> Void)?
     public var onOpenDateInterval: (() -> Void)?
+    public var onOpenCategoryExpenses: (() -> Void)?
 
     // MARK: - State
 
@@ -392,6 +394,11 @@ extension AnalyticsViewModel: AnalyticsViewModelProtocol {
     public func didTapOpenCategorySelection() {
         onOpenCategorySelection?(selectedCategories)
     }
+
+    public func didTapOpenCategoryExpenses() {
+        onOpenCategoryExpenses?()
+    }
+
     public func updateCustomDateInterval(to dateInterval: DateInterval?) {
         switch dateInterval {
         case .some(let range):

@@ -8,7 +8,7 @@
 import UIKit
 import Core
 
-public final class CaategoryExpensesViewController: UIViewController {
+public final class CategoryExpensesViewController: UIViewController {
 
     // MARK: Private Properties
 
@@ -40,8 +40,8 @@ public final class CaategoryExpensesViewController: UIViewController {
         let label = UILabel()
         label.font = .h4
         label.textColor = .secondaryText
-        label.textAlignment = .right
-        label.text = "80%"
+        label.textAlignment = .left
+        label.text = "800 000 р."
         return label
     }()
 
@@ -49,15 +49,17 @@ public final class CaategoryExpensesViewController: UIViewController {
         let label = UILabel()
         label.font = .h4
         label.textColor = .primaryText
-        label.textAlignment = .left
-        label.text = "800 000 р."
+        label.textAlignment = .right
+        label.text = "80%"
         return label
     }()
 
     private lazy var titleStack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [titleAmountLabel, titlePercentLabel])
         stack.axis = .horizontal
-        stack.spacing = .infinity
+        stack.alignment = .fill
+        stack.layoutMargins = UIEdgeInsets(top: 0, left: UIConstants.Constants.medium12.rawValue, bottom: 0, right: UIConstants.Constants.medium12.rawValue)
+        stack.isLayoutMarginsRelativeArrangement = true
         stack.layer.cornerRadius = UIConstants.CornerRadius.medium16.rawValue
         stack.layer.masksToBounds = true
         stack.backgroundColor = .primaryBg
@@ -123,7 +125,7 @@ public final class CaategoryExpensesViewController: UIViewController {
 
 // MARK: Extension - UICollectionViewDataSource
 
-extension CaategoryExpensesViewController: UITableViewDataSource {
+extension CategoryExpensesViewController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         10
     }
@@ -132,19 +134,17 @@ extension CaategoryExpensesViewController: UITableViewDataSource {
         let cell = UITableViewCell()
         return cell
     }
-    
-
 }
 
 // MARK: Extension - UICollectionViewDelegate
 
-extension CaategoryExpensesViewController: UITableViewDelegate {
+extension CategoryExpensesViewController: UITableViewDelegate {
 
 }
 
 // MARK: Extension - Setup Layout
 
-extension CaategoryExpensesViewController {
+extension CategoryExpensesViewController {
     private func setupLayout() {
         view.backgroundColor = .secondaryBg
         navigationController?.isNavigationBarHidden = true
@@ -160,7 +160,7 @@ extension CaategoryExpensesViewController {
             backButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height44.rawValue),
             backButton.widthAnchor.constraint(equalToConstant: UIConstants.Widths.width44.rawValue),
 
-            headerTitleLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            headerTitleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             headerTitleLabel.centerYAnchor.constraint(equalTo: backButton.centerYAnchor),
 
             titleStack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: UIConstants.Constants.large60.rawValue),
@@ -171,6 +171,7 @@ extension CaategoryExpensesViewController {
             addExpenseButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
             addExpenseButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
             addExpenseButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: UIConstants.Constants.small4.rawValue),
+            addExpenseButton.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height54.rawValue),
 
             tableExpenses.topAnchor.constraint(equalTo: titleStack.bottomAnchor, constant: UIConstants.Constants.large20.rawValue),
             tableExpenses.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -179,4 +180,3 @@ extension CaategoryExpensesViewController {
         ])
     }
 }
-

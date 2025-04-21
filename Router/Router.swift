@@ -61,6 +61,10 @@ public final class Router: RouterProtocol {
             })
         }
 
+        viewModel.onOpenCategoryExpenses = { [weak self] in
+            self?.presentCategoryExpenses()
+        }
+
         setRootViewController(UINavigationController(rootViewController: mainVC))
     }
 
@@ -142,19 +146,24 @@ public final class Router: RouterProtocol {
     public func presentDateIntervalViewController(from viewController: UIViewController, onApply: @escaping (Analytics.DateInterval?) -> Void) {
         let dateRangePicker = FastisController(mode: .range)
 
-        dateRangePicker.dismissHandler = { [weak self] action in
+        dateRangePicker.dismissHandler = { action in
             switch action {
             case .done(let range):
                 if let range = range {
                     onApply(Analytics.DateInterval(start: range.start, end: range.end))
-                    print("Выбран диапазон: \(range)")
                 }
             case .cancel:
                 onApply(nil)
-                print("Выбор отменен")
             }
         }
         dateRangePicker.present(above: viewController)
+    }
+
+    public func presentCategoryExpenses() {
+        let viewModel = CategoryExpensesViewModel()
+        let view = CategoryExpensesViewController(viewModel: viewModel)
+
+        setRootViewController(UINavigationController(rootViewController: view))
     }
 
     private func setRootViewController(_ viewController: UIViewController) {

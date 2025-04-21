@@ -227,9 +227,6 @@ public final class AnalyticsViewController: UIViewController {
         viewModel.updateTypeTimePeriod(period)
     }
 
-    
-
-
     private func getButtonInNavigationBar(iconName: String) -> UIButton {
         let button = UIButton()
         button.heightAnchor.constraint(equalToConstant: UIConstants.Constants.large40.rawValue).isActive = true
@@ -294,7 +291,10 @@ extension AnalyticsViewController: UITableViewDataSource {
 }
 
 extension AnalyticsViewController: UITableViewDelegate {
-
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // TODO: Добавить передачу данных
+        viewModel.didTapOpenCategoryExpenses()
+    }
 }
 
 // MARK: Extension - Setu Layout
