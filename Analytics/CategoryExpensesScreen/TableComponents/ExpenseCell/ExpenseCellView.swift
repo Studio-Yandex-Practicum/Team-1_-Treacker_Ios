@@ -13,6 +13,19 @@ final class ExpenseCellView: UITableViewCell, ReuseIdentifying {
 
     // MARK: Private Properties
 
+    private var viewModel: ExpenseCellViewModel? {
+        didSet {
+            viewModel?.onExpense = { [weak self] expense in
+                self?.titleAmountLabel.text = String(Int(expense.amount.rub)) + GlobalConstants.symbolRUB.rawValue
+                self?.titleNoteLabel.text = expense.note == "" ?
+                GlobalConstants.categoryExpensesCellNote.rawValue :
+                expense.note
+            }
+            viewModel?.onIsLastExpense = { [weak self] status in
+                self?.isLastExpense = status
+            }
+        }
+    }
     private var isLastExpense: Bool = false {
         didSet { updateSeparator() }
     }
@@ -24,7 +37,9 @@ final class ExpenseCellView: UITableViewCell, ReuseIdentifying {
         label.font = .h3
         label.textColor = .primaryText
         label.textAlignment = .left
-        label.text = GlobalConstants.categoryExpensesCellNote.rawValue
+        label.text = viewModel?.expense.note == "" ?
+        GlobalConstants.categoryExpensesCellNote.rawValue :
+        viewModel?.expense.note
         return label
     }()
 
@@ -33,7 +48,7 @@ final class ExpenseCellView: UITableViewCell, ReuseIdentifying {
         label.font = .h3
         label.textColor = .primaryText
         label.textAlignment = .right
-        label.text = "8 000 " + GlobalConstants.symbolRUB.rawValue
+        label.text = String(Int(viewModel?.expense.amount.rub ?? 0)) + GlobalConstants.symbolRUB.rawValue
         return label
     }()
 
@@ -69,10 +84,21 @@ final class ExpenseCellView: UITableViewCell, ReuseIdentifying {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20))
+        contentView.frame = contentView.frame.inset(
+            by: UIEdgeInsets(
+                top: 0,
+                left: UIConstants.Constants.large20.rawValue,
+                bottom: 0,
+                right: UIConstants.Constants.large20.rawValue
+            )
+        )
     }
 
     // MARK: - Public Methods
+
+    func updateViewModel(viewModel: ExpenseCellViewModel) {
+        self.viewModel = viewModel
+    }
 
     // MARK: - Private Methods
 

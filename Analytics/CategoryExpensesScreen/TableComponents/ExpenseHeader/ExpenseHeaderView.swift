@@ -10,11 +10,19 @@ import Core
 
 final class ExpenseHeaderView: UIView {
 
-    private let titleLabel: UILabel = {
+    var viewModel: ExpenseHeaderViewModel? {
+        didSet {
+            viewModel?.onTitle = { [weak self] title in
+                self?.titleLabel.text = title
+            }
+        }
+    }
+
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.font = .h4
         label.textColor = .secondaryText
-        label.text = "22 марта, сб"
+        label.text = viewModel?.title ?? ""
         return label
     }()
 
@@ -28,12 +36,16 @@ final class ExpenseHeaderView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    func updateViewModel(viewModel: ExpenseHeaderViewModel) {
+        self.viewModel = viewModel
+    }
+
     private func setupLayout() {
         setupView(titleLabel)
 
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
-            titleLabel.topAnchor.constraint(equalTo: topAnchor),
+            titleLabel.topAnchor.constraint(equalTo: topAnchor)
         ])
     }
 }

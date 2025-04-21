@@ -30,7 +30,7 @@ public final class CategoryExpensesViewController: UIViewController {
         label.font = .h3
         label.textColor = .primaryText
         label.textAlignment = .center
-        label.text = "Автомобили"
+        label.text = viewModel.nameCategory
         return label
     }()
 
@@ -39,18 +39,18 @@ public final class CategoryExpensesViewController: UIViewController {
     private lazy var titleAmountLabel: UILabel = {
         let label = UILabel()
         label.font = .h4
-        label.textColor = .secondaryText
+        label.textColor = .primaryText
         label.textAlignment = .left
-        label.text = "800 000 р."
+        label.text = viewModel.amount
         return label
     }()
 
     private lazy var titlePercentLabel: UILabel = {
         let label = UILabel()
         label.font = .h4
-        label.textColor = .primaryText
+        label.textColor = .secondaryText
         label.textAlignment = .right
-        label.text = "80%"
+        label.text = viewModel.percent
         return label
     }()
 
@@ -127,6 +127,15 @@ public final class CategoryExpensesViewController: UIViewController {
     // MARK: Private Method
 
     private func bind() {
+        viewModel.onAmount = { [weak self] amount in
+            self?.titleAmountLabel.text = amount
+        }
+        viewModel.onPercent = { [weak self] percent in
+            self?.titlePercentLabel.text = percent
+        }
+        viewModel.onCategoryReport = { [weak self] in
+            self?.tableExpenses.reloadData()
+        }
     }
 }
 
@@ -134,16 +143,16 @@ public final class CategoryExpensesViewController: UIViewController {
 
 extension CategoryExpensesViewController: UITableViewDataSource {
     public func numberOfSections(in tableView: UITableView) -> Int {
-        3
+        viewModel.expenseHeaderViewModels.count
     }
 
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        5
+        viewModel.expenseCellViewModels[section].count
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: ExpenseCellView = tableView.dequeueReusableCell()
-
+        cell.updateViewModel(viewModel: viewModel.expenseCellViewModels[indexPath.section][indexPath.row])
         return cell
     }
 }
@@ -157,6 +166,7 @@ extension CategoryExpensesViewController: UITableViewDelegate {
 
     public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = ExpenseHeaderView()
+        headerView.updateViewModel(viewModel: viewModel.expenseHeaderViewModels[section])
         return headerView
     }
 
