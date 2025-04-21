@@ -35,7 +35,7 @@ public final class Router: RouterProtocol {
             routeToMainFlow()
         } else {
             //routeToAuthFlow()
-            routeToCreateCtegoryFlow()
+            routeToAddedExpensesFlow()
         }
     }
 
@@ -115,10 +115,14 @@ public final class Router: RouterProtocol {
     }
 
     public func routeToAddedExpensesFlow() {
-        let viewModel = AddedExpensesViewModel()
+        let viewModel = AddedExpensesViewModel(
+            expenseService: coreDataAssembly.expenseService,
+            categoryService: coreDataAssembly.categoryService,
+            router: self
+        )
         let addedExpensesVC = AddedExpensesViewController(viewModel: viewModel)
         setRootViewController(UINavigationController(rootViewController: addedExpensesVC))
-	}  
+    }
   
 	public func presentCategorySelection(
         from: UIViewController,

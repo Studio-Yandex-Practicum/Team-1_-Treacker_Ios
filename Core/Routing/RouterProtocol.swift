@@ -18,4 +18,5 @@ public protocol RouterProtocol {
         selectedCategories: [ExpenseCategory],
         onApply: @escaping ([ExpenseCategory]) -> Void
     )
+    func routeToCreateCtegoryFlow()
 }

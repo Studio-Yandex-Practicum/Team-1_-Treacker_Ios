@@ -282,13 +282,33 @@ private extension AddedExpensesViewController {
     }
 
     @objc private func addTapped() {
-        // TODO: вызывать сервис сохранения, закрыть модуль, показать алерт
+        guard let rawText = amountTextField.text?.replacingOccurrences(of: ",", with: "."),
+              let amountValue = Double(rawText),
+              let categoryId = viewModel.selectedCategory?.id else {
+            return
+        }
+
+        let amount = Amount(rub: amountValue, usd: 0, eur: 0)
+        let expense = Expense(
+            id: UUID(),
+            data: viewModel.selectDate,
+            note: noteTextField.text,
+            amount: amount
+        )
+
+        viewModel.addExpense(expense, toCategory: categoryId)
+
+        dismiss(animated: true)
     }
 }
 
 // MARK: - UICollectionViewDelegate
 
 extension AddedExpensesViewController: UICollectionViewDelegate {
+
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        viewModel.didSelectCategory(at: indexPath.item)
+    }
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let pageWidth = scrollView.frame.width
