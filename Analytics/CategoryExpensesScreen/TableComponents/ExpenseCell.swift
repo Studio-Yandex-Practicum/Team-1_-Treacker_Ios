@@ -65,7 +65,7 @@ final class ExpenseCell: UITableViewCell, ReuseIdentifying {
     }
 
     // MARK: - View Life Cycle
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20))
@@ -85,7 +85,6 @@ final class ExpenseCell: UITableViewCell, ReuseIdentifying {
 extension ExpenseCell {
     private func setupLayout() {
         selectionStyle = .none
-        contentView.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height60.rawValue).isActive = true
         contentView.setupView(titleStack)
         contentView.setupView(separatorView)
         titleStack.constraintEdges(to: contentView)

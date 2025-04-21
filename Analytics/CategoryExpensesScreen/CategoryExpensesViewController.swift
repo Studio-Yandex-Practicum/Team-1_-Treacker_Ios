@@ -146,7 +146,9 @@ extension CategoryExpensesViewController: UITableViewDataSource {
 // MARK: Extension - UICollectionViewDelegate
 
 extension CategoryExpensesViewController: UITableViewDelegate {
-
+    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UIConstants.Heights.height60.rawValue
+    }
 }
 
 // MARK: Extension - Setup Layout
