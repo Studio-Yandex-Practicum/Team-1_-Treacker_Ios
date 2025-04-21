@@ -134,7 +134,11 @@ public final class CategoryExpensesViewController: UIViewController {
             self?.titlePercentLabel.text = percent
         }
         viewModel.onCategoryReport = { [weak self] in
-            self?.tableExpenses.reloadData()
+            guard let self else { return }
+            UIView.transition(with: self.tableExpenses,
+                              duration: 0.3,
+                              options: .transitionCrossDissolve,
+                              animations: { self.tableExpenses.reloadData() })
         }
     }
 }
