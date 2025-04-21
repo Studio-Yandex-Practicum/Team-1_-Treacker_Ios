@@ -166,12 +166,13 @@ public final class Router: RouterProtocol {
         }
         dateRangePicker.present(above: viewController)
     }
-// TODO: Надо проверить метод
-//    public func routeToCreateCtegoryFlow() {
-//        let viewModel = CreateCategoryViewModel(categoryService: coreDataAssembly.categoryService, router: self)
-//        let createCategoryVC = CreateCategoryViewController(viewModel: viewModel)
-//        setRootViewController(createCategoryVC)
-//	}
+    
+    public func routeToCreateCtegoryFlow(from presenter: UIViewController) {
+            let viewModel = CreateCategoryViewModel(categoryService: coreDataAssembly.categoryService, router: self)
+            let createCategoryVC = CreateCategoryViewController(viewModel: viewModel)
+            createCategoryVC.modalPresentationStyle = .formSheet
+            presenter.present(createCategoryVC, animated: true)
+        }
 
     public func presentCategoryExpenses(
         from viewController: UIViewController,
