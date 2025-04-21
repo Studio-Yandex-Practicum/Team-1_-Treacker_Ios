@@ -10,6 +10,8 @@ import Foundation
 public enum CategoryColorName: CaseIterable {
     case orange, green, pink, violet, blue, purple
     case yellow, red, brightBlue, darkGreen, darkBlue, brightGreen
+    case gray, lightBlue, lightGreen
+    case blueOld, darkBlueOld, grayOld, greenOld, orangeOld, purpleOld, redOld, violetOld, yellowOld
 
     public var background: String {
         switch self {
@@ -25,6 +27,19 @@ public enum CategoryColorName: CaseIterable {
         case .darkGreen: return "ic-dark-green-new-bg"
         case .darkBlue: return "ic-dark-blue-new-bg"
         case .brightGreen: return "ic-bright-green-new-bg"
+        case .gray: return "ic-gray-bg"
+        case .lightBlue: return "ic-light-blue-bg"
+        case .lightGreen: return "ic-light-green-bg"
+
+        case .blueOld: return "ic-blue-bg"
+        case .darkBlueOld: return "ic-dark-blue-bg"
+        case .grayOld: return "ic-gray-bg"
+        case .greenOld: return "ic-green-bg"
+        case .orangeOld: return "ic-orange-bg"
+        case .purpleOld: return "ic-purple-bg"
+        case .redOld: return "ic-red-bg"
+        case .violetOld: return "ic-violet-bg"
+        case .yellowOld: return "ic-yellow-bg"
         }
     }
 
@@ -42,6 +57,19 @@ public enum CategoryColorName: CaseIterable {
         case .darkGreen: return "ic-dark-green-new"
         case .darkBlue: return "ic-dark-blue-new"
         case .brightGreen: return "ic-bright-green-new"
+        case .gray: return "ic-gray-primary"
+        case .lightBlue: return "ic-light-blue-primary"
+        case .lightGreen: return "ic-light-green-primary"
+
+        case .blueOld: return "ic-blue-primary"
+        case .darkBlueOld: return "ic-dark-blue-primary"
+        case .grayOld: return "ic-gray-primary"
+        case .greenOld: return "ic-green-primary"
+        case .orangeOld: return "ic-orange-primary"
+        case .purpleOld: return "ic-purple-primary"
+        case .redOld: return "ic-red-primary"
+        case .violetOld: return "ic-violet-primary"
+        case .yellowOld: return "ic-yellow-primary"
         }
     }
 }

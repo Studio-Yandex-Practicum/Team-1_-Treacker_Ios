@@ -39,6 +39,8 @@ public protocol AddedExpensesViewModelProtocol: AnyObject {
 
 public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
 
+    private weak var coordinator: AddedExpensesCoordinatorDelegate?
+
     // MARK: - Public Property
 
     public var selectedCategory: ExpenseCategory? {
@@ -47,8 +49,6 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
     }
 
     // MARK: - Private Properties
-
-    private let router: RouterProtocol
 
     private let expenseService: ExpenseStorageServiceProtocol
     private let categoryService: CategoryStorageServiceProtocol
@@ -89,11 +89,11 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
     public init(
         expenseService: ExpenseStorageServiceProtocol,
         categoryService: CategoryStorageServiceProtocol,
-        router: RouterProtocol
+        coordinator: AddedExpensesCoordinatorDelegate
     ) {
         self.expenseService = expenseService
         self.categoryService = categoryService
-        self.router = router
+        self.coordinator = coordinator
     }
 
     // MARK: - Inputs
@@ -101,7 +101,7 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
     public func didSelectCategory(at index: Int) {
         let isAddButton = index == categories.count - 1
         if isAddButton {
-            router.routeToCreateCtegoryFlow()
+            coordinator?.didRequestCreateCategory()
         } else {
             selectCategory(at: index)
         }

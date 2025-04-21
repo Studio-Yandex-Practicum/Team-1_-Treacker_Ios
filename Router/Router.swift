@@ -118,7 +118,7 @@ public final class Router: RouterProtocol {
         let viewModel = AddedExpensesViewModel(
             expenseService: coreDataAssembly.expenseService,
             categoryService: coreDataAssembly.categoryService,
-            router: self
+            coordinator: self
         )
         let addedExpensesVC = AddedExpensesViewController(viewModel: viewModel)
         setRootViewController(UINavigationController(rootViewController: addedExpensesVC))
@@ -162,10 +162,11 @@ public final class Router: RouterProtocol {
         dateRangePicker.present(above: viewController)
     }
 
-    public func routeToCreateCtegoryFlow() {
+    public func routeToCreateCtegoryFlow(from presenter: UIViewController) {
         let viewModel = CreateCategoryViewModel(categoryService: coreDataAssembly.categoryService, router: self)
         let createCategoryVC = CreateCategoryViewController(viewModel: viewModel)
-        setRootViewController(createCategoryVC)
+        createCategoryVC.modalPresentationStyle = .formSheet
+        presenter.present(createCategoryVC, animated: true)
     }
 
     private func setRootViewController(_ viewController: UIViewController) {
@@ -175,4 +176,11 @@ public final class Router: RouterProtocol {
         }
     }
 
+}
+
+extension Router: AddedExpensesCoordinatorDelegate {
+    public func didRequestCreateCategory() {
+        guard let topVC = window?.topMostViewController() else { return }
+        routeToCreateCtegoryFlow(from: topVC)
+    }
 }
