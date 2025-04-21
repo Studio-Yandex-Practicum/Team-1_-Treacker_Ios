@@ -75,6 +75,7 @@ public final class CategoryExpensesViewController: UIViewController {
 
     private lazy var tableExpenses: UITableView = {
         let table = UITableView()
+        table.register(ExpenseCell.self)
         table.dataSource = self
         table.delegate = self
         return table
@@ -136,7 +137,8 @@ extension CategoryExpensesViewController: UITableViewDataSource {
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
+        let cell: ExpenseCell = tableView.dequeueReusableCell()
+
         return cell
     }
 }

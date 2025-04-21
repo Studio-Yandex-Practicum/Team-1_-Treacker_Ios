@@ -106,4 +106,5 @@ public enum GlobalConstants: String {
     case selectCategoryApply = "Выбрать"
 
     case categoryExpensesAddExpenses = "Добавить расход"
+    case categoryExpensesCellNote = "Расход"
 }

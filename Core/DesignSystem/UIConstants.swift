@@ -58,6 +58,7 @@ public enum UIConstants {
 
     public enum Heights: CGFloat {
         case height1 = 1.0
+        case height2 = 2.0
         case height20 = 20.0
         case height24 = 24.0
         case height40 = 40.0
