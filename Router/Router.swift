@@ -32,9 +32,9 @@ public final class Router: RouterProtocol {
 
     public func routeBasedOnAuth() {
         if AuthService.shared.isAuthorized {
-            routeToAuthFlow()
-        } else {
             routeToMainFlow()
+        } else {
+            routeToAuthFlow()
         }
     }
 
