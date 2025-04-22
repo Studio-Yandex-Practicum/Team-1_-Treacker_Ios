@@ -137,7 +137,8 @@ public final class Router: RouterProtocol {
             expenseService: coreDataAssembly.expenseService,
             categoryService: coreDataAssembly.categoryService,
             coordinator: self,
-            mode: .create
+            mode: .create,
+            onExpenseCreated: onExpenseCreated
         )
         let addedExpensesVC = AddedExpensesViewController(viewModel: viewModel, mode: .create)
 //        setRootViewController(UINavigationController(rootViewController: addedExpensesVC))
@@ -145,18 +146,18 @@ public final class Router: RouterProtocol {
         presenter.present(addedExpensesVC, animated: true)
     }
 
-    public func routeToEditExpensesFlow(from presenter: UIViewController, expense: Expense, categoryId: UUID) {
-        let categoryIndex = 0 // TODO: - Временно
+    public func routeToEditExpensesFlow(from presenter: UIViewController, expense: Expense, category: ExpenseCategory, onExpenseCreated: @escaping (() -> Void)) {
         let viewModel = AddedExpensesViewModel(
             expenseService: coreDataAssembly.expenseService,
             categoryService: coreDataAssembly.categoryService,
             coordinator: self,
-            mode: .edit(expense: expense, categoryIndex: categoryIndex)
+            mode: .edit(expense: expense, category: category),
+            onExpenseCreated: onExpenseCreated
         )
 
         let addedExpensesVC = AddedExpensesViewController(
             viewModel: viewModel,
-            mode: .edit(expense: expense, categoryIndex: categoryIndex)
+            mode: .edit(expense: expense, category: category)
         )
 
 //        let navController = UINavigationController(rootViewController: addedExpensesVC)
@@ -256,8 +257,8 @@ extension Router: AddedExpensesCoordinatorDelegate {
         routeToAddedExpensesFlow(from: topVC, onExpenseCreated: onExpenseCreated)
     }
 
-    public func didRequestToAddedExpensesFlow(expense: Expense, categoryId: UUID) {
+    public func didRequestToAddedExpensesFlow(expense: Expense, category: ExpenseCategory, onExpenseCreated: @escaping (() -> Void)) {
         guard let topVC = window?.topMostViewController() else { return }
-        routeToEditExpensesFlow(from: topVC, expense: expense, categoryId: categoryId)
+        routeToEditExpensesFlow(from: topVC, expense: expense, category: category, onExpenseCreated: onExpenseCreated)
     }
 }

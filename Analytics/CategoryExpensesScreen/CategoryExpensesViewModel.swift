@@ -153,7 +153,7 @@ extension CategoryExpensesViewModel: CategoryExpensesViewModelProtocol {
 
     public func didTapEditExpense(indexDay: Int, indexExpense: Int) {
         let expense = expenseCellViewModels[indexDay][indexExpense].expense
-        coordinator.didRequestToAddedExpensesFlow(expense: expense, categoryId: selectedCategory.id)
+        coordinator.didRequestToAddedExpensesFlow(expense: expense, category: selectedCategory, onExpenseCreated: updateData)
     }
 
 }

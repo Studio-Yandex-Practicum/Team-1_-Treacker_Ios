@@ -104,7 +104,6 @@ public final class AddedExpensesViewController: UIViewController {
         setupActions()
         setupTextFieldDelegate()
         bindViewModel()
-        viewModel.loadCategories()
         enableKeyboardDismissOnTap()
 
         keyboardObserver = KeyboardObserver(scrollView: scrollView)
@@ -127,7 +126,9 @@ extension AddedExpensesViewController {
         case .create:
             titleLabel.text = GlobalConstants.addExpense.rawValue
             deleteButton.isHidden = true
-        case .edit:
+        case let .edit(expense, _):
+            amountTextField.text = String(Int(expense.amount.rub))
+            noteTextField.text = expense.note
             titleLabel.text = GlobalConstants.editTitle.rawValue
             deleteButton.isHidden = false
         }
@@ -178,6 +179,8 @@ extension AddedExpensesViewController {
             addButton,
             deleteButton
         ])
+        hStack.axis = .vertical
+        hStack.spacing = UIConstants.Constants.small8.rawValue
         view.setupView(hStack)
 
         NSLayoutConstraint.activate([
