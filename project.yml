@@ -197,6 +197,7 @@ targets:
       - target: Auth
       - target: Analytics
       - target: Fastis
+      - target: Settings
     bundleId: KV.Lyashenko.SpendWise.Router
     deploymentTarget: "18.0"
     settings:

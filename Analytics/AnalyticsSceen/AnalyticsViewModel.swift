@@ -33,6 +33,7 @@ public protocol AnalyticsViewModelProtocol {
     func updateCategorySortOrder()
     func updateSelectedCategories(_ categories: [ExpenseCategory])
     func didTapOpenCategorySelection()
+    func didTapOpenSetting()
     func didTapOpenCategoryExpenses(index: Int)
 
     func test()
@@ -52,6 +53,7 @@ public final class AnalyticsViewModel {
     public var onOpenCategorySelection: (([ExpenseCategory]) -> Void)?
     public var onOpenDateInterval: (() -> Void)?
     public var onOpenCategoryExpenses: ((DateInterval, PeriodCategoryReport, ExpenseCategory) -> Void)?
+    public var onOpenSettings: (() -> Void)?
 
     // MARK: - State
 
@@ -400,6 +402,10 @@ extension AnalyticsViewModel: AnalyticsViewModelProtocol {
                 updateTypeTimePeriod(oldTypeTimePeriod)
             }
         }
+    }
+
+    public func didTapOpenSetting() {
+        onOpenSettings?()
     }
 
     // MARK: TEST CORE DATA
