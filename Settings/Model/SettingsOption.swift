@@ -7,7 +7,7 @@
 
 import Core
 
-enum SettingsOption {
+public enum SettingsOption {
     case changeTheme
     case exportExpenses
     case chooseCurrency
