@@ -87,6 +87,21 @@ public final class CustomTextField: UITextField {
         bounds.inset(by: textPadding)
     }
 
+    public func updateFloatingLabel(animated: Bool) {
+        let isActive = isFirstResponder || !(text?.isEmpty ?? true)
+        floatingLabelTopConstraint.constant = isActive ?
+        UIConstants.Constants.medium12.rawValue :
+        UIConstants.Constants.medium19.rawValue
+        floatingLabel.font = isActive ? .hintFont : .h4
+        floatingLabel.textColor = .secondaryText
+
+        if animated {
+            UIView.animate(withDuration: 0.2) { self.layoutIfNeeded() }
+        } else {
+            layoutIfNeeded()
+        }
+    }
+
     // MARK: - Private methods
 
     private func configureFieldType() {
@@ -158,21 +173,6 @@ public final class CustomTextField: UITextField {
 
         rightView = eyeContainer
         rightViewMode = .always
-    }
-
-    private func updateFloatingLabel(animated: Bool) {
-        let isActive = isFirstResponder || !(text?.isEmpty ?? true)
-        floatingLabelTopConstraint.constant = isActive ?
-        UIConstants.Constants.medium12.rawValue :
-        UIConstants.Constants.medium19.rawValue
-        floatingLabel.font = isActive ? .hintFont : .h4
-        floatingLabel.textColor = .secondaryText
-
-        if animated {
-            UIView.animate(withDuration: 0.2) { self.layoutIfNeeded() }
-        } else {
-            layoutIfNeeded()
-        }
     }
 
     // MARK: - Actions

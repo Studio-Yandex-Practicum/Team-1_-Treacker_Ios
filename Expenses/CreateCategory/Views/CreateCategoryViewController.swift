@@ -124,6 +124,7 @@ private extension CreateCategoryViewController {
 
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.register(CategoryCollectionCell.self)
+        collectionView.backgroundColor = .secondaryBg
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.isScrollEnabled = false

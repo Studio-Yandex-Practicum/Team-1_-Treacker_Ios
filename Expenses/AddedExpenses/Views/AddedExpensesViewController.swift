@@ -129,6 +129,8 @@ extension AddedExpensesViewController {
         case let .edit(expense, _):
             amountTextField.text = String(Int(expense.amount.rub))
             noteTextField.text = expense.note
+            amountTextField.updateFloatingLabel(animated: false)
+            noteTextField.updateFloatingLabel(animated: false)
             titleLabel.text = GlobalConstants.editTitle.rawValue
             deleteButton.isHidden = false
         }
