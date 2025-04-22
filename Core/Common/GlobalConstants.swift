@@ -117,4 +117,18 @@ public enum GlobalConstants: String {
 
     case categoryExpensesAddExpenses = "Добавить расход"
     case categoryExpensesCellNote = "Расход"
+
+    // Settings
+
+    case settingsTitle = "Настройки"
+
+    case settingsTitleChangeTheme = "Тёмная тема"
+    case settingsTitleExportExpenses = "Экспорт расходов"
+    case settingsTitleChooseCurrency = "Валюта"
+    case settingsTitleLogout = "Выйти из аккаунта"
+
+    case settingsSubTitleExportExpenses = "CSV"
+    case settingsSubTitleChooseCurrencyRUB = "RUB"
+    case settingsSubTitleChooseCurrencyEUR = "EUR"
+    case settingsSubTitleChooseCurrencyUSD = "USD"
 }

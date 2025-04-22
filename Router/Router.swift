@@ -12,6 +12,7 @@ import Expenses
 import Combine
 import Analytics
 import Fastis
+import Settings
 
 public final class Router: RouterProtocol {
     public static var shared: Router!
@@ -74,6 +75,9 @@ public final class Router: RouterProtocol {
             )
         }
 
+        viewModel.onOpenSettings = { [weak self] in
+            self?.presentSettings(from: mainVC)
+        }
         setRootViewController(UINavigationController(rootViewController: mainVC))
     }
 
@@ -190,6 +194,14 @@ public final class Router: RouterProtocol {
             }
         }
         dateRangePicker.present(above: viewController)
+    }
+
+    public func presentSettings(from viewController: UIViewController) {
+        let viewModel = SettingsViewModel()
+        let view = SettingsViewController(viewModel: viewModel)
+
+        view.modalPresentationStyle = .fullScreen
+        viewController.present(view, animated: true)
     }
 
     public func routeToCreateCtegoryFlow(from presenter: UIViewController) {
