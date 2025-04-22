@@ -23,5 +23,6 @@ public protocol RouterProtocol {
 
 public protocol AddedExpensesCoordinatorDelegate: AnyObject {
     func didRequestCreateCategory()
-    func didRequestToAddedExpensesFlow()
+    func didRequestToAddedExpensesFlow(onExpenseCreated: @escaping (() -> Void))
+    func didRequestToAddedExpensesFlow(expense: Expense, categoryId: UUID)
 }

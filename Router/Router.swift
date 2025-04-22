@@ -132,7 +132,7 @@ public final class Router: RouterProtocol {
         from.navigationController?.pushViewController(recVC, animated: true)
     }
 
-    public func routeToAddedExpensesFlow(from presenter: UIViewController) {
+    public func routeToAddedExpensesFlow(from presenter: UIViewController, onExpenseCreated: @escaping (() -> Void)) {
         let viewModel = AddedExpensesViewModel(
             expenseService: coreDataAssembly.expenseService,
             categoryService: coreDataAssembly.categoryService,
@@ -250,9 +250,9 @@ extension Router: AddedExpensesCoordinatorDelegate {
         routeToCreateCategoryFlow(from: topVC)
     }
 
-    public func didRequestToAddedExpensesFlow() {
+    public func didRequestToAddedExpensesFlow(onExpenseCreated: @escaping (() -> Void)) {
         guard let topVC = window?.topMostViewController() else { return }
-        routeToAddedExpensesFlow(from: topVC)
+        routeToAddedExpensesFlow(from: topVC, onExpenseCreated: onExpenseCreated)
     }
 
     public func didRequestToAddedExpensesFlow(expense: Expense, categoryId: UUID) {

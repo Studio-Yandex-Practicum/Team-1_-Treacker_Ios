@@ -414,6 +414,8 @@ extension AnalyticsViewModel: AnalyticsViewModelProtocol {
     }
 
     public func didTapOpenNewExpense() {
-        coordinator.didRequestToAddedExpensesFlow()
+        coordinator.didRequestToAddedExpensesFlow { [weak self] in
+            self?.updateChart()
+        }
     }
 }
