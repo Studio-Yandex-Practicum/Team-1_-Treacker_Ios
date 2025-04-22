@@ -46,6 +46,7 @@ targets:
       - target: Persistence
       - target: Router
       - target: Networking
+      - target: Fastis
     bundleId: KV.Lyashenko.SpendWise.SpendWise
     deploymentTarget: "18.0"
     settings:
@@ -235,5 +236,5 @@ targets:
     deploymentTarget: "18.0"
     settings:
         base:
-          PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Analytics'
+          PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Fastis'
           INFOPLIST_FILE: SpendWise/Resouces/Info.plist
