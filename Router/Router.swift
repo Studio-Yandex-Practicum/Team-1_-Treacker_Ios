@@ -211,8 +211,12 @@ public final class Router: RouterProtocol {
         viewController.present(view, animated: true)
     }
 
-    public func routeToCreateCategoryFlow(from presenter: UIViewController) {
-        let viewModel = CreateCategoryViewModel(categoryService: coreDataAssembly.categoryService, router: self)
+    public func routeToCreateCategoryFlow(from presenter: UIViewController, onReloadData: @escaping (() -> Void)) {
+        let viewModel = CreateCategoryViewModel(
+            categoryService: coreDataAssembly.categoryService,
+            router: self,
+            onReloadData: onReloadData
+        )
         let createCategoryVC = CreateCategoryViewController(viewModel: viewModel)
         createCategoryVC.modalPresentationStyle = .formSheet
         presenter.present(createCategoryVC, animated: true)
@@ -247,9 +251,9 @@ public final class Router: RouterProtocol {
 }
 
 extension Router: AddedExpensesCoordinatorDelegate {
-    public func didRequestCreateCategory() {
+    public func didRequestCreateCategory(onReloadData: @escaping (() -> Void)) {
         guard let topVC = window?.topMostViewController() else { return }
-        routeToCreateCategoryFlow(from: topVC)
+        routeToCreateCategoryFlow(from: topVC, onReloadData: onReloadData)
     }
 
     public func didRequestToAddedExpensesFlow(onExpenseCreated: @escaping (() -> Void)) {

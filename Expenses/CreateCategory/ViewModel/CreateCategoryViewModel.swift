@@ -46,6 +46,7 @@ public final class CreateCategoryViewModel: CreateCategoryViewModelProtocol {
     public var onIconItemChanged: ((Int?, Int?) -> Void)?
     public var onColorItemChanged: ((Int?, Int?) -> Void)?
     public var onCreateEnabledChanged: ((Bool) -> Void)?
+    public var onReloadData: (() -> Void)
 
     // MARK: - Private Properties
 
@@ -79,10 +80,12 @@ public final class CreateCategoryViewModel: CreateCategoryViewModelProtocol {
 
     public init(
         categoryService: CategoryStorageServiceProtocol,
-        router: RouterProtocol
+        router: RouterProtocol,
+        onReloadData: @escaping (() -> Void)
     ) {
         self.categoryService = categoryService
         self.router = router
+        self.onReloadData = onReloadData
         rebuildIconCellVMs()
         rebuildColorCellVMs()
         updateCreateEnabled()
@@ -130,7 +133,7 @@ public final class CreateCategoryViewModel: CreateCategoryViewModelProtocol {
         )
 
         categoryService.addCategory(newCategory)
-        router.routeToMainFlow()
+        onReloadData()
     }
 
     // MARK: - Private

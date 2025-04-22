@@ -126,7 +126,7 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
     public func didSelectCategory(at index: Int) {
         let isAddButton = index == categories.count - 1
         if isAddButton {
-            coordinator?.didRequestCreateCategory()
+            coordinator?.didRequestCreateCategory(onReloadData: loadCategories)
         } else {
             selectCategory(at: index)
         }

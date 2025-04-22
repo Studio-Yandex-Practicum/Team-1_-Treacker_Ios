@@ -180,7 +180,7 @@ private extension CreateCategoryViewController {
             return
         }
         viewModel.createCategory(with: name)
-        // TODO: - Переход на другой экран
+        dismiss(animated: true)
     }
 
     @objc private func textFieldDidChange() {
