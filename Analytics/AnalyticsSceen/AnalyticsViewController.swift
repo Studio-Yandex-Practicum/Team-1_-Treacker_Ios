@@ -202,8 +202,7 @@ public final class AnalyticsViewController: UIViewController {
     // MARK: - Actions
 
     @objc private func didNewExpense() {
-        viewModel.test()
-        // TODO: Добавить переход на экран создания расхода
+        viewModel.didTapOpenNewExpense()
     }
 
     @objc private func didCategory() {

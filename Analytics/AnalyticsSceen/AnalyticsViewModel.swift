@@ -33,10 +33,9 @@ public protocol AnalyticsViewModelProtocol {
     func updateCategorySortOrder()
     func updateSelectedCategories(_ categories: [ExpenseCategory])
     func didTapOpenCategorySelection()
-    func didTapOpenSetting()
     func didTapOpenCategoryExpenses(index: Int)
-
-    func test()
+    func didTapOpenSetting()
+    func didTapOpenNewExpense()
 }
 
 public final class AnalyticsViewModel {
@@ -79,6 +78,7 @@ public final class AnalyticsViewModel {
 
     private var serviceExpense: ExpenseStorageServiceProtocol
     private var serviceCategory: CategoryStorageServiceProtocol
+    private var coordinator: AddedExpensesCoordinatorDelegate
 
     private let calendar = Calendar.current
     private var today: Date = Date()
@@ -118,9 +118,14 @@ public final class AnalyticsViewModel {
 
     // MARK: - Initializers
 
-    public init(serviceExpense: ExpenseStorageServiceProtocol, serviceCategory: CategoryStorageServiceProtocol) {
+    public init(
+        serviceExpense: ExpenseStorageServiceProtocol,
+        serviceCategory: CategoryStorageServiceProtocol,
+        coordinator: AddedExpensesCoordinatorDelegate
+    ) {
         self.serviceExpense = serviceExpense
         self.serviceCategory = serviceCategory
+        self.coordinator = coordinator
     }
 
     @available(*, unavailable)
@@ -408,66 +413,7 @@ extension AnalyticsViewModel: AnalyticsViewModelProtocol {
         onOpenSettings?()
     }
 
-    // MARK: TEST CORE DATA
-
-    public func test() {
-        let testCategories: [ExpenseCategory] = [
-            ExpenseCategory(
-                id: UUID(),
-                name: "Еда",
-                colorBgName: "ic-blue-bg",
-                colorPrimaryName: "ic-blue-primary",
-                nameIcon: "icon-shop",
-                expense: []
-            ),
-            ExpenseCategory(
-                id: UUID(),
-                name: "Транспорт",
-                colorBgName: "ic-red-bg",
-                colorPrimaryName: "ic-red-primary",
-                nameIcon: "icon-cinema",
-                expense: []
-            ),
-            ExpenseCategory(
-                id: UUID(),
-                name: "Развлечения",
-                colorBgName: "ic-orange-bg",
-                colorPrimaryName: "ic-orange-primary",
-                nameIcon: "icon-doctor",
-                expense: []
-            )
-        ]
-
-        for category in testCategories {
-            serviceCategory.addCategory(category)
-        }
-
-        let categories = serviceCategory.fetchCategories()
-
-        guard !categories.isEmpty else {
-            Logger.shared.log(.error, message: "❌ Нет доступных категорий для тестовых расходов")
-            return
-        }
-
-        for _ in 0..<1000 {
-            guard let note =  ["Кофе", "Метро", "Фильм", "Шаурма", "Такси", "Пицца", "Проезд", "Чай", "Ланч", "Попкорн"].randomElement(),
-                  let category = categories.randomElement() else { return }
-
-            let randomTimeInterval = Double.random(in: -10*86400...10*86400)
-            let randomDate = Date().addingTimeInterval(randomTimeInterval)
-
-            let expense = Expense(
-                id: UUID(),
-                data: randomDate,
-                note: note,
-                amount: Amount(
-                    rub: Double.random(in: 100...500),
-                    usd: 0,
-                    eur: 0
-                )
-            )
-
-            serviceExpense.addExpense(expense, toCategory: category.id)
-        }
+    public func didTapOpenNewExpense() {
+        coordinator.didRequestToAddedExpensesFlow()
     }
 }

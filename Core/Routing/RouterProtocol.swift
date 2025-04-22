@@ -23,4 +23,5 @@ public protocol RouterProtocol {
 
 public protocol AddedExpensesCoordinatorDelegate: AnyObject {
     func didRequestCreateCategory()
+    func didRequestToAddedExpensesFlow()
 }
