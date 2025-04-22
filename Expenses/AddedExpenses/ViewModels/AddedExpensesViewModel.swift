@@ -11,7 +11,7 @@ import Core
 
 public enum ExpenseMode {
     case create
-    case edit(expense: Expense, categoryIndex: Int)
+    case edit(expense: Expense, category: ExpenseCategory)
 }
 
 public protocol AddedExpensesViewModelProtocol: AnyObject {
@@ -72,15 +72,22 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
     public var onFormValidationChanged: ((Bool) -> Void)?
     public var onDateChanged: ((Date) -> Void)?
     public var onCategoriesLoaded: (([ExpenseCategory]) -> Void)?
+    public var onExpenseCreated: (() -> Void)
 
     // MARK: - State
 
     private(set) public var selectedCategoryIndex: Int? {
-        didSet { onCategorySelected?(selectedCategoryIndex) }
+        didSet {
+            onCategorySelected?(selectedCategoryIndex)
+            validateForm()
+        }
     }
 
     private(set) public var selectDate: Date = Date() {
-        didSet { onDateChanged?(selectDate) }
+        didSet {
+            onDateChanged?(selectDate)
+            validateForm()
+        }
     }
 
     private var amount: String = "" {
@@ -96,19 +103,21 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
         expenseService: ExpenseStorageServiceProtocol,
         categoryService: CategoryStorageServiceProtocol,
         coordinator: AddedExpensesCoordinatorDelegate,
-        mode: ExpenseMode
+        mode: ExpenseMode,
+        onExpenseCreated: @escaping (() -> Void)
     ) {
         self.expenseService = expenseService
         self.categoryService = categoryService
         self.coordinator = coordinator
-
+        self.onExpenseCreated = onExpenseCreated
+        loadCategories()
         switch mode {
         case .create:
             break
-        case let .edit(expense, categoryIndex):
+        case let .edit(expense, category):
             self.amount = "\(expense.amount.rub)"
             self.selectDate = expense.data
-            self.selectedCategoryIndex = categoryIndex
+            selectedCategoryIndex = categories.firstIndex(of: category)
         }
     }
 
@@ -117,7 +126,7 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
     public func didSelectCategory(at index: Int) {
         let isAddButton = index == categories.count - 1
         if isAddButton {
-            coordinator?.didRequestCreateCategory()
+            coordinator?.didRequestCreateCategory(onReloadData: loadCategories)
         } else {
             selectCategory(at: index)
         }
@@ -157,10 +166,12 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
 
     public func addExpense(_ expense: Expense, toCategory categoryId: UUID) {
         expenseService.addExpense(expense, toCategory: categoryId)
+        onExpenseCreated()
     }
 
     public func deleteExpense(_ expenseId: UUID) {
         expenseService.deleteExpense(expenseId)
+        onExpenseCreated()
     }
 
     private func validateForm() {

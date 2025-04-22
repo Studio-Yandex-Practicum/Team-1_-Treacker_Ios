@@ -35,15 +35,15 @@ public final class Router: RouterProtocol {
         if AuthService.shared.isAuthorized {
             routeToMainFlow()
         } else {
-            //routeToAuthFlow()
-            routeToAddedExpensesFlow()
+            routeToAuthFlow()
         }
     }
 
     public func routeToMainFlow() {
         let viewModel = AnalyticsViewModel(
             serviceExpense: coreDataAssembly.expenseService,
-            serviceCategory: coreDataAssembly.categoryService
+            serviceCategory: coreDataAssembly.categoryService,
+            coordinator: self
         )
         let mainVC = AnalyticsViewController(viewModel: viewModel)
 
@@ -130,34 +130,39 @@ public final class Router: RouterProtocol {
         from.navigationController?.pushViewController(recVC, animated: true)
     }
 
-    public func routeToAddedExpensesFlow() {
+    public func routeToAddedExpensesFlow(from presenter: UIViewController, onExpenseCreated: @escaping (() -> Void)) {
         let viewModel = AddedExpensesViewModel(
             expenseService: coreDataAssembly.expenseService,
             categoryService: coreDataAssembly.categoryService,
             coordinator: self,
-            mode: .create
+            mode: .create,
+            onExpenseCreated: onExpenseCreated
         )
         let addedExpensesVC = AddedExpensesViewController(viewModel: viewModel, mode: .create)
-        setRootViewController(UINavigationController(rootViewController: addedExpensesVC))
+//        setRootViewController(UINavigationController(rootViewController: addedExpensesVC))
+        addedExpensesVC.modalPresentationStyle = .formSheet
+        presenter.present(addedExpensesVC, animated: true)
     }
 
-    public func routeToEditExpensesFlow(expense: Expense, categoryIndex: Int) {
+    public func routeToEditExpensesFlow(from presenter: UIViewController, expense: Expense, category: ExpenseCategory, onExpenseCreated: @escaping (() -> Void)) {
         let viewModel = AddedExpensesViewModel(
             expenseService: coreDataAssembly.expenseService,
             categoryService: coreDataAssembly.categoryService,
             coordinator: self,
-            mode: .edit(expense: expense, categoryIndex: categoryIndex)
+            mode: .edit(expense: expense, category: category),
+            onExpenseCreated: onExpenseCreated
         )
 
         let addedExpensesVC = AddedExpensesViewController(
             viewModel: viewModel,
-            mode: .edit(expense: expense, categoryIndex: categoryIndex)
+            mode: .edit(expense: expense, category: category)
         )
 
-        let navController = UINavigationController(rootViewController: addedExpensesVC)
-        navController.modalPresentationStyle = .formSheet
+//        let navController = UINavigationController(rootViewController: addedExpensesVC)
+//        navController.modalPresentationStyle = .formSheet
 
-        window?.topMostViewController()?.present(navController, animated: true)
+        addedExpensesVC.modalPresentationStyle = .formSheet
+        presenter.present(addedExpensesVC, animated: true)
     }
 
     public func presentCategorySelection(
@@ -204,8 +209,12 @@ public final class Router: RouterProtocol {
         viewController.present(view, animated: true)
     }
 
-    public func routeToCreateCtegoryFlow(from presenter: UIViewController) {
-        let viewModel = CreateCategoryViewModel(categoryService: coreDataAssembly.categoryService, router: self)
+    public func routeToCreateCategoryFlow(from presenter: UIViewController, onReloadData: @escaping (() -> Void)) {
+        let viewModel = CreateCategoryViewModel(
+            categoryService: coreDataAssembly.categoryService,
+            router: self,
+            onReloadData: onReloadData
+        )
         let createCategoryVC = CreateCategoryViewController(viewModel: viewModel)
         createCategoryVC.modalPresentationStyle = .formSheet
         presenter.present(createCategoryVC, animated: true)
@@ -220,6 +229,7 @@ public final class Router: RouterProtocol {
     ) {
         let viewModel = CategoryExpensesViewModel(
             serviceExpense: coreDataAssembly.expenseService,
+            coordinator: self,
             dateInterval: dateInterval,
             categoryReport: categoryReport,
             selectedCategory: selectedCategory,
@@ -239,8 +249,18 @@ public final class Router: RouterProtocol {
 }
 
 extension Router: AddedExpensesCoordinatorDelegate {
-    public func didRequestCreateCategory() {
+    public func didRequestCreateCategory(onReloadData: @escaping (() -> Void)) {
         guard let topVC = window?.topMostViewController() else { return }
-        routeToCreateCtegoryFlow(from: topVC)
+        routeToCreateCategoryFlow(from: topVC, onReloadData: onReloadData)
+    }
+
+    public func didRequestToAddedExpensesFlow(onExpenseCreated: @escaping (() -> Void)) {
+        guard let topVC = window?.topMostViewController() else { return }
+        routeToAddedExpensesFlow(from: topVC, onExpenseCreated: onExpenseCreated)
+    }
+
+    public func didRequestToAddedExpensesFlow(expense: Expense, category: ExpenseCategory, onExpenseCreated: @escaping (() -> Void)) {
+        guard let topVC = window?.topMostViewController() else { return }
+        routeToEditExpensesFlow(from: topVC, expense: expense, category: category, onExpenseCreated: onExpenseCreated)
     }
 }

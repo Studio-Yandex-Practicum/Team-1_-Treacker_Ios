@@ -117,7 +117,7 @@ public final class CategoryExpensesViewController: UIViewController {
     // MARK: - Actions
 
     @objc private func didAddExpense() {
-        // TODO: Открытие экрана создания нового расхода
+        viewModel.didTapNewExpense()
     }
 
     @objc private func didBack() {
@@ -182,6 +182,10 @@ extension CategoryExpensesViewController: UITableViewDelegate {
         UIConstants.Constants.large20.rawValue
     }
 
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.viewModel.didTapEditExpense(indexDay: indexPath.section, indexExpense: indexPath.row)
+    }
+
     public func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 
         let deleteAction = UIContextualAction(style: .destructive, title: GlobalConstants.deleteButton.rawValue) { [weak self] (_, _, completionHandler) in
@@ -191,11 +195,11 @@ extension CategoryExpensesViewController: UITableViewDelegate {
                 title: .alertMessage,
                 message: .none,
                 actions: [
-                    AlertAction(title: "Удалить", style: .destructive) {
+                    AlertAction(title: GlobalConstants.deleteButton.rawValue, style: .destructive) {
                         completionHandler(true)
                         self.viewModel.deleteExpense(indexDay: indexPath.section, indexExpense: indexPath.row)
                     },
-                    AlertAction(title: "Отмена", style: .cancel, handler: {
+                    AlertAction(title: GlobalConstants.cancel.rawValue, style: .cancel, handler: {
                         completionHandler(true)
                     })
                 ]

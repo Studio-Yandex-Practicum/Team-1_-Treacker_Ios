@@ -22,7 +22,9 @@ public protocol CategoryExpensesViewModelProtocol {
     var expenseCellViewModels: [[ExpenseCellViewModel]] { get }
     // Inputs
     func updateData()
+    func didTapNewExpense()
     func deleteExpense(indexDay: Int, indexExpense: Int)
+    func didTapEditExpense(indexDay: Int, indexExpense: Int)
 }
 
 public final class CategoryExpensesViewModel {
@@ -53,6 +55,7 @@ public final class CategoryExpensesViewModel {
 
     // MARK: - Private Properties
 
+    private var coordinator: AddedExpensesCoordinatorDelegate
     private var serviceExpense: ExpenseStorageServiceProtocol
     private var dateInterval: Analytics.DateInterval
     private var categoryReport: PeriodCategoryReport {
@@ -69,12 +72,14 @@ public final class CategoryExpensesViewModel {
 
     public init(
         serviceExpense: ExpenseStorageServiceProtocol,
+        coordinator: AddedExpensesCoordinatorDelegate,
         dateInterval: Analytics.DateInterval,
         categoryReport: PeriodCategoryReport,
         selectedCategory: ExpenseCategory,
         onUpdatePersistence: @escaping (() -> Void)
     ) {
         self.serviceExpense = serviceExpense
+        self.coordinator = coordinator
         self.dateInterval = dateInterval
         self.categoryReport = categoryReport
         self.selectedCategory = selectedCategory
@@ -133,13 +138,22 @@ extension CategoryExpensesViewModel: CategoryExpensesViewModelProtocol {
     public func updateData() {
         let expenseCategories = serviceExpense.fetchExpenses(from: dateInterval.start, to: dateInterval.end, categories: nil)
         categoryReport = PeriodCategoryReport.getPeriodCategoryReport(for: expenseCategories)
+        onUpdatePersistence()
+    }
+
+    public func didTapNewExpense() {
+        coordinator.didRequestToAddedExpensesFlow(onExpenseCreated: updateData)
     }
 
     public func deleteExpense(indexDay: Int, indexExpense: Int) {
         let id = expenseCellViewModels[indexDay][indexExpense].expense.id
         serviceExpense.deleteExpense(id)
         updateData()
-        onUpdatePersistence()
+    }
+
+    public func didTapEditExpense(indexDay: Int, indexExpense: Int) {
+        let expense = expenseCellViewModels[indexDay][indexExpense].expense
+        coordinator.didRequestToAddedExpensesFlow(expense: expense, category: selectedCategory, onExpenseCreated: updateData)
     }
 
 }
