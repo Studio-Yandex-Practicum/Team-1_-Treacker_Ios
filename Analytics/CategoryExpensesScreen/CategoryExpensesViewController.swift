@@ -182,6 +182,10 @@ extension CategoryExpensesViewController: UITableViewDelegate {
         UIConstants.Constants.large20.rawValue
     }
 
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.viewModel.didTapEditExpense(indexDay: indexPath.section, indexExpense: indexPath.row)
+    }
+
     public func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 
         let deleteAction = UIContextualAction(style: .destructive, title: GlobalConstants.deleteButton.rawValue) { [weak self] (_, _, completionHandler) in

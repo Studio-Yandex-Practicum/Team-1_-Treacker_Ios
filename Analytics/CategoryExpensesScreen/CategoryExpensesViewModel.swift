@@ -24,6 +24,7 @@ public protocol CategoryExpensesViewModelProtocol {
     func updateData()
     func didTapNewExpense()
     func deleteExpense(indexDay: Int, indexExpense: Int)
+    func didTapEditExpense(indexDay: Int, indexExpense: Int)
 }
 
 public final class CategoryExpensesViewModel {
@@ -148,6 +149,11 @@ extension CategoryExpensesViewModel: CategoryExpensesViewModelProtocol {
         let id = expenseCellViewModels[indexDay][indexExpense].expense.id
         serviceExpense.deleteExpense(id)
         updateData()
+    }
+
+    public func didTapEditExpense(indexDay: Int, indexExpense: Int) {
+        let expense = expenseCellViewModels[indexDay][indexExpense].expense
+        coordinator.didRequestToAddedExpensesFlow(expense: expense, categoryId: selectedCategory.id)
     }
 
 }
