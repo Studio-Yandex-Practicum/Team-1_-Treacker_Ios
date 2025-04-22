@@ -122,7 +122,6 @@ extension AddedExpensesViewController {
         stack.setCustomSpacing(UIConstants.Spacing.small4.rawValue, after: pageControl)
         stack.setCustomSpacing(UIConstants.Spacing.medium12.rawValue, after: dateTextField)
         contentView.setupView(stack)
-        contentView.setupView(addButton)
 
         NSLayoutConstraint.activate([
             closeButton.widthAnchor.constraint(equalToConstant: UIConstants.Widths.width25.rawValue),
@@ -131,22 +130,27 @@ extension AddedExpensesViewController {
             stack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: UIConstants.Constants.large20.rawValue),
             stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
             stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
-            addButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
-            addButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
-            addButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            addButton.topAnchor.constraint(greaterThanOrEqualTo: stack.bottomAnchor, constant: UIConstants.Spacing.medium16.rawValue)
+            stack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
     }
 
     private func setupScrollView() {
         view.setupView(scrollView)
+        view.setupView(addButton)
         scrollView.showsVerticalScrollIndicator = false
         scrollView.setupView(contentView)
-        scrollView.constraintEdgesWithSafeArea(to: view)
         contentView.constraintEdges(to: scrollView)
 
         NSLayoutConstraint.activate([
-            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+
+            addButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
+            addButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
+            addButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
 }
@@ -282,13 +286,40 @@ private extension AddedExpensesViewController {
     }
 
     @objc private func addTapped() {
-        // TODO: вызывать сервис сохранения, закрыть модуль, показать алерт
+        guard let rawText = amountTextField.text?.replacingOccurrences(of: ",", with: "."),
+              let amountValue = Double(rawText),
+              let categoryId = viewModel.selectedCategory?.id else {
+            return
+        }
+
+        let amount = Amount(rub: amountValue, usd: 0, eur: 0)
+        let expense = Expense(
+            id: UUID(),
+            data: viewModel.selectDate,
+            note: noteTextField.text,
+            amount: amount
+        )
+
+        viewModel.addExpense(expense, toCategory: categoryId)
+
+        dismiss(animated: true)
     }
 }
 
 // MARK: - UICollectionViewDelegate
 
 extension AddedExpensesViewController: UICollectionViewDelegate {
+
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let previousIndex = viewModel.selectedCategoryIndex
+        viewModel.didSelectCategory(at: indexPath.item)
+
+        var indexPathsToReload = [indexPath]
+        if let previous = previousIndex, previous != indexPath.item {
+            indexPathsToReload.append(IndexPath(item: previous, section: 0))
+        }
+        collectionView.reloadItems(at: indexPathsToReload)
+    }
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let pageWidth = scrollView.frame.width
@@ -315,12 +346,20 @@ extension AddedExpensesViewController: UICollectionViewDataSource {
         let category = viewModel.category(at: indexPath.item)
         let cell: AddedExpensesCategoryCell = collectionView.dequeueReusableCell(indexPath: indexPath)
 
+        let isSelected = indexPath.item == viewModel.selectedCategoryIndex
+
+        let bgColor = UIColor.from(colorName: category.colorBgName)
+        let accentColor = UIColor.from(colorName: category.colorPrimaryName)
+
         cell.configure(
+            style: .colorBoxWithBorder(borderColor: isSelected ? accentColor : .clear),
             title: category.name,
             image: UIImage(named: category.nameIcon),
-            iconColor: UIColor(named: category.colorPrimaryName) ?? .systemGray,
-            backgrounColor: UIColor(named: category.colorBgName) ?? .systemGray
+            iconColor: accentColor,
+            backgrounColor: bgColor
         )
+        cell.setSelected(isSelected, borderColor: accentColor)
+
         return cell
     }
 }
