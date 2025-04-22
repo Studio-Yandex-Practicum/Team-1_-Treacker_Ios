@@ -18,7 +18,7 @@ public protocol RouterProtocol {
         selectedCategories: [ExpenseCategory],
         onApply: @escaping ([ExpenseCategory]) -> Void
     )
-    func routeToCreateCtegoryFlow(from presenter: UIViewController)
+    func routeToCreateCategoryFlow(from presenter: UIViewController)
 }
 
 public protocol AddedExpensesCoordinatorDelegate: AnyObject {
