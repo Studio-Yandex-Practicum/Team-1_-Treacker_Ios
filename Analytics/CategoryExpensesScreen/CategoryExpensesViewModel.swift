@@ -51,8 +51,6 @@ public final class CategoryExpensesViewModel {
     private(set) public var expenseHeaderViewModels: [ExpenseHeaderViewModel] = []
     private(set) public var expenseCellViewModels: [[ExpenseCellViewModel]] = []
 
-    // MARK: - Input
-
     // MARK: - Private Properties
 
     private var serviceExpense: ExpenseStorageServiceProtocol
