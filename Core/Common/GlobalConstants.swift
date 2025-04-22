@@ -56,6 +56,10 @@ public enum GlobalConstants: String {
     case note = "Примечание (необязательно)"
     case add = "Добавить"
 
+    // Editing Expenses
+
+    case deleteExpense = "Удалить расход"
+
     // Creating Category
 
     case creatingCategory = "Создание категории"
