@@ -34,8 +34,7 @@ public final class Router: RouterProtocol {
         if AuthService.shared.isAuthorized {
             routeToMainFlow()
         } else {
-            //routeToAuthFlow()
-            routeToCreateCtegoryFlow()
+            routeToAuthFlow()
         }
     }
 
@@ -60,6 +59,18 @@ public final class Router: RouterProtocol {
             self?.presentDateIntervalViewController(from: mainVC, onApply: { dateInterval in
                 viewModel.updateCustomDateInterval(to: dateInterval)
             })
+        }
+
+        viewModel.onOpenCategoryExpenses = { [weak self] dateInterval, categoryReport, category in
+            self?.presentCategoryExpenses(
+                from: mainVC,
+                dateInterval: dateInterval,
+                categoryReport: categoryReport,
+                selectedCategory: category,
+                onUpdatePersistence: {
+                    viewModel.updateDataPersistence()
+                }
+            )
         }
 
         setRootViewController(UINavigationController(rootViewController: mainVC))
@@ -143,25 +154,43 @@ public final class Router: RouterProtocol {
     public func presentDateIntervalViewController(from viewController: UIViewController, onApply: @escaping (Analytics.DateInterval?) -> Void) {
         let dateRangePicker = FastisController(mode: .range)
 
-        dateRangePicker.dismissHandler = { [weak self] action in
+        dateRangePicker.dismissHandler = { action in
             switch action {
             case .done(let range):
                 if let range = range {
                     onApply(Analytics.DateInterval(start: range.start, end: range.end))
-                    print("Выбран диапазон: \(range)")
                 }
             case .cancel:
                 onApply(nil)
-                print("Выбор отменен")
             }
         }
         dateRangePicker.present(above: viewController)
     }
+    
+    public func routeToCreateCtegoryFlow(from presenter: UIViewController) {
+            let viewModel = CreateCategoryViewModel(categoryService: coreDataAssembly.categoryService, router: self)
+            let createCategoryVC = CreateCategoryViewController(viewModel: viewModel)
+            createCategoryVC.modalPresentationStyle = .formSheet
+            presenter.present(createCategoryVC, animated: true)
+        }
 
-    public func routeToCreateCtegoryFlow() {
-        let viewModel = CreateCategoryViewModel(categoryService: coreDataAssembly.categoryService, router: self)
-        let createCategoryVC = CreateCategoryViewController(viewModel: viewModel)
-        setRootViewController(createCategoryVC)
+    public func presentCategoryExpenses(
+        from viewController: UIViewController,
+        dateInterval: Analytics.DateInterval,
+        categoryReport: PeriodCategoryReport,
+        selectedCategory: ExpenseCategory,
+        onUpdatePersistence: @escaping (() -> Void)
+    ) {
+        let viewModel = CategoryExpensesViewModel(
+            serviceExpense: coreDataAssembly.expenseService,
+            dateInterval: dateInterval,
+            categoryReport: categoryReport,
+            selectedCategory: selectedCategory,
+            onUpdatePersistence: onUpdatePersistence)
+        let view = CategoryExpensesViewController(viewModel: viewModel)
+
+        view.modalPresentationStyle = .fullScreen
+        viewController.present(view, animated: true)
     }
 
     private func setRootViewController(_ viewController: UIViewController) {

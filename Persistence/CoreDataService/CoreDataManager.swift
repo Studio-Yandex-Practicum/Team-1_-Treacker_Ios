@@ -40,17 +40,19 @@ final class CoreDataManager {
         Logger.shared.log(.info, message: "✅ 💾 Core Data загружена успешно")
     }
 
-    private func saveContext(_ context: NSManagedObjectContext) {
+    private func saveContext(_ context: NSManagedObjectContext) -> Bool {
         guard context.hasChanges else {
             Logger.shared.log(.info, message: "🟡 💾 Нет изменений в переданном context Core Data ")
-            return
+            return false
         }
 
         do {
             try context.save()
             Logger.shared.log(.info, message: "✅ 💾 Данные успешно сохранены в Core Data ")
+            return true
         } catch {
             Logger.shared.log(.error, message: "❌ 💾 Ошибка сохранения в Core Data: \(error.localizedDescription)")
+            return false
         }
     }
 }
@@ -86,7 +88,10 @@ extension CoreDataManager: CoreDataManagerProtocol {
 
     func delete<T: NSManagedObject>(_ object: T) {
         context.delete(object)
-        saveContext(context)
-        Logger.shared.log(.info, message: "✅ 🗑️ 💾 Объект \(T.self) удалён")
+        if saveContext(context) {
+            Logger.shared.log(.info, message: "✅ 🗑️ 💾 Объект \(T.self) удалён")
+        } else {
+            Logger.shared.log(.error, message: "❌ 🗑️ 💾 Не удалось сохранить удаление объекта \(T.self)")
+        }
     }
 }

@@ -71,6 +71,11 @@ final class ExpenseStorageService: ExpenseStorageServiceProtocol {
             return
         }
 
+        if let amount = expenseToDelete.amount {
+            coreDataManager.delete(amount)
+            Logger.shared.log(.info, message: "🗑️ 💾 Amount связан с расходом и был удалён")
+        }
+
         coreDataManager.delete(expenseToDelete)
     }
 
