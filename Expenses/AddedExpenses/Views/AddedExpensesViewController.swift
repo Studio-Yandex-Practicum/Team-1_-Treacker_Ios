@@ -21,7 +21,7 @@ public final class AddedExpensesViewController: UIViewController {
     private var keyboardObserver: KeyboardObserver?
 
     private lazy var titleLabel: UILabel = .init(
-        text: GlobalConstants.addExpense.rawValue,
+        text: "",
         font: .h1,
         color: .primaryText,
         alignment: .left
@@ -122,6 +122,15 @@ extension AddedExpensesViewController {
         hStack.axis = .horizontal
         hStack.alignment = .center
         hStack.contentMode = .scaleAspectFit
+
+        switch mode {
+        case .create:
+            titleLabel.text = GlobalConstants.addExpense.rawValue
+            deleteButton.isHidden = true
+        case .edit:
+            titleLabel.text = GlobalConstants.editTitle.rawValue
+            deleteButton.isHidden = false
+        }
 
         let stack = UIStackView(arrangedSubviews: [
             hStack,
