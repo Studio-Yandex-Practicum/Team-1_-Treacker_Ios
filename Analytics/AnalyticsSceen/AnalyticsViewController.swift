@@ -210,7 +210,7 @@ public final class AnalyticsViewController: UIViewController {
     }
 
     @objc private func didSettings() {
-        // TODO: Добавить переход на экран настроек
+        viewModel.didTapOpenSetting()
     }
 
     @objc private func didSort() {

@@ -37,6 +37,8 @@ public final class SettingsViewController: UIViewController {
 
     private lazy var tableSettings: UITableView = {
         let table = UITableView()
+        table.register(SettingsCellView.self)
+        table.backgroundColor = .secondaryBg
         table.separatorStyle = .none
         table.dataSource = self
         table.delegate = self
@@ -81,20 +83,23 @@ public final class SettingsViewController: UIViewController {
 
 extension SettingsViewController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.settings.count
+        viewModel.settingsCellViewModels.count
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
+        let cell: SettingsCellView = tableView.dequeueReusableCell()
+        cell.updateViewModel(viewModel: viewModel.settingsCellViewModels[indexPath.row])
         return cell
     }
-    
-
 }
 
 // MARK: - Extension: UITableViewDelegate
 
 extension SettingsViewController: UITableViewDelegate {
+    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        68
+//        UIConstants.Heights.height60.rawValue
+    }
 
 }
 
@@ -116,6 +121,11 @@ extension SettingsViewController {
 
             headerTitleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             headerTitleLabel.centerYAnchor.constraint(equalTo: backButton.centerYAnchor),
+
+            tableSettings.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
+            tableSettings.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
+            tableSettings.topAnchor.constraint(equalTo: backButton.bottomAnchor, constant: UIConstants.Constants.large20.rawValue),
+            tableSettings.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
 }

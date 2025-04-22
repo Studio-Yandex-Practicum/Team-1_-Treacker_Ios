@@ -38,4 +38,13 @@ public enum SettingsOption {
             return nil
         }
     }
+
+    var iconName: String? {
+        switch self {
+        case .changeTheme: return nil
+        case .exportExpenses: return AppIcon.download.rawValue
+        case .chooseCurrency: return AppIcon.arrowRight.rawValue
+        case .logout: return AppIcon.exit.rawValue
+        }
+    }
 }

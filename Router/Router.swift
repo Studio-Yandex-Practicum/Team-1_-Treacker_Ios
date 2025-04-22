@@ -12,6 +12,7 @@ import Expenses
 import Combine
 import Analytics
 import Fastis
+import Settings
 
 public final class Router: RouterProtocol {
     public static var shared: Router!
@@ -34,8 +35,7 @@ public final class Router: RouterProtocol {
         if AuthService.shared.isAuthorized {
             routeToMainFlow()
         } else {
-            //routeToAuthFlow()
-            routeToCreateCtegoryFlow()
+            routeToAuthFlow()
         }
     }
 
@@ -62,6 +62,9 @@ public final class Router: RouterProtocol {
             })
         }
 
+        viewModel.onOpenSettings = { [weak self] in
+            self?.presentSettings(from: mainVC)
+        }
         setRootViewController(UINavigationController(rootViewController: mainVC))
     }
 
@@ -148,14 +151,20 @@ public final class Router: RouterProtocol {
             case .done(let range):
                 if let range = range {
                     onApply(Analytics.DateInterval(start: range.start, end: range.end))
-                    print("Выбран диапазон: \(range)")
                 }
             case .cancel:
                 onApply(nil)
-                print("Выбор отменен")
             }
         }
         dateRangePicker.present(above: viewController)
+    }
+
+    public func presentSettings(from viewController: UIViewController) {
+        let viewModel = SettingsViewModel()
+        let view = SettingsViewController(viewModel: viewModel)
+
+        view.modalPresentationStyle = .fullScreen
+        viewController.present(view, animated: true)
     }
 
     public func routeToCreateCtegoryFlow() {
