@@ -62,6 +62,18 @@ public final class Router: RouterProtocol {
             })
         }
 
+        viewModel.onOpenCategoryExpenses = { [weak self] dateInterval, categoryReport, category in
+            self?.presentCategoryExpenses(
+                from: mainVC,
+                dateInterval: dateInterval,
+                categoryReport: categoryReport,
+                selectedCategory: category,
+                onUpdatePersistence: {
+                    viewModel.updateDataPersistence()
+                }
+            )
+        }
+
         viewModel.onOpenSettings = { [weak self] in
             self?.presentSettings(from: mainVC)
         }
@@ -118,10 +130,14 @@ public final class Router: RouterProtocol {
     }
 
     public func routeToAddedExpensesFlow() {
-        let viewModel = AddedExpensesViewModel()
+        let viewModel = AddedExpensesViewModel(
+            expenseService: coreDataAssembly.expenseService,
+            categoryService: coreDataAssembly.categoryService,
+            coordinator: self
+        )
         let addedExpensesVC = AddedExpensesViewController(viewModel: viewModel)
         setRootViewController(UINavigationController(rootViewController: addedExpensesVC))
-	}  
+    }
   
 	public func presentCategorySelection(
         from: UIViewController,
@@ -146,7 +162,7 @@ public final class Router: RouterProtocol {
     public func presentDateIntervalViewController(from viewController: UIViewController, onApply: @escaping (Analytics.DateInterval?) -> Void) {
         let dateRangePicker = FastisController(mode: .range)
 
-        dateRangePicker.dismissHandler = { [weak self] action in
+        dateRangePicker.dismissHandler = { action in
             switch action {
             case .done(let range):
                 if let range = range {
@@ -167,10 +183,30 @@ public final class Router: RouterProtocol {
         viewController.present(view, animated: true)
     }
 
-    public func routeToCreateCtegoryFlow() {
+    public func routeToCreateCtegoryFlow(from presenter: UIViewController) {
         let viewModel = CreateCategoryViewModel(categoryService: coreDataAssembly.categoryService, router: self)
         let createCategoryVC = CreateCategoryViewController(viewModel: viewModel)
-        setRootViewController(createCategoryVC)
+        createCategoryVC.modalPresentationStyle = .formSheet
+        presenter.present(createCategoryVC, animated: true)
+    }
+
+    public func presentCategoryExpenses(
+        from viewController: UIViewController,
+        dateInterval: Analytics.DateInterval,
+        categoryReport: PeriodCategoryReport,
+        selectedCategory: ExpenseCategory,
+        onUpdatePersistence: @escaping (() -> Void)
+    ) {
+        let viewModel = CategoryExpensesViewModel(
+            serviceExpense: coreDataAssembly.expenseService,
+            dateInterval: dateInterval,
+            categoryReport: categoryReport,
+            selectedCategory: selectedCategory,
+            onUpdatePersistence: onUpdatePersistence)
+        let view = CategoryExpensesViewController(viewModel: viewModel)
+
+        view.modalPresentationStyle = .fullScreen
+        viewController.present(view, animated: true)
     }
 
     private func setRootViewController(_ viewController: UIViewController) {
@@ -179,5 +215,11 @@ public final class Router: RouterProtocol {
             window.rootViewController = viewController
         }
     }
+}
 
+extension Router: AddedExpensesCoordinatorDelegate {
+    public func didRequestCreateCategory() {
+        guard let topVC = window?.topMostViewController() else { return }
+        routeToCreateCtegoryFlow(from: topVC)
+    }
 }

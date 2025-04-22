@@ -13,12 +13,6 @@ public final class AddedExpensesCategoryCell: UICollectionViewCell, ReuseIdentif
 
     // MARK: - Private Properties
 
-    private lazy var iconContainer: UIView = {
-        let view = UIView()
-        view.layer.cornerRadius = UIConstants.CornerRadius.medium16.rawValue
-        return view
-    }()
-
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -27,11 +21,11 @@ public final class AddedExpensesCategoryCell: UICollectionViewCell, ReuseIdentif
         return label
     }()
 
-    private lazy var iconImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
-        imageView.tintColor = .secondaryText
-        return imageView
+    private(set) lazy var iconView: CategoryIconView = {
+        CategoryIconView(
+            containerSize: UIConstants.Widths.width52.rawValue,
+            cornerRadius: UIConstants.CornerRadius.medium16.rawValue
+        )
     }()
 
     // MARK: - Init
@@ -45,29 +39,21 @@ public final class AddedExpensesCategoryCell: UICollectionViewCell, ReuseIdentif
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-}
 
-// MARK: - UI
-
-private extension AddedExpensesCategoryCell {
+    // MARK: - UI
 
     private func setupUI() {
-        let stack = UIStackView(arrangedSubviews: [titleLabel, iconContainer])
+        let stack = UIStackView(arrangedSubviews: [titleLabel, iconView])
         stack.axis = .vertical
         stack.alignment = .center
         stack.spacing = 4
 
         contentView.setupView(stack)
 
-        iconContainer.setupView(iconImageView)
-        iconImageView.constraintCenters(to: iconContainer)
-
         NSLayoutConstraint.activate([
             titleLabel.widthAnchor.constraint(equalToConstant: UIConstants.Widths.width52.rawValue),
-            iconContainer.widthAnchor.constraint(equalToConstant: UIConstants.Widths.width52.rawValue),
-            iconContainer.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height52.rawValue),
-            iconImageView.widthAnchor.constraint(equalToConstant: UIConstants.Widths.width24.rawValue),
-            iconImageView.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height24.rawValue),
+            iconView.widthAnchor.constraint(equalToConstant: UIConstants.Widths.width52.rawValue),
+            iconView.heightAnchor.constraint(equalToConstant: UIConstants.Widths.width52.rawValue),
 
             stack.topAnchor.constraint(equalTo: contentView.topAnchor),
             stack.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor),
@@ -80,16 +66,26 @@ private extension AddedExpensesCategoryCell {
 // MARK: - Configure Cell
 
 public extension AddedExpensesCategoryCell {
-
     func configure(
+        style: CategoryCellStyle,
         title: String,
         image: UIImage?,
         iconColor: UIColor,
         backgrounColor: UIColor
     ) {
         titleLabel.text = title
-        iconImageView.image = image?.withRenderingMode(.alwaysTemplate)
-        iconImageView.tintColor = iconColor
-        iconContainer.backgroundColor = backgrounColor
+        iconView.configure(
+            style: style,
+            image: image,
+            iconSize: UIConstants.Constants.large24.rawValue,
+            iconColor: iconColor,
+            backgroundColor: backgrounColor
+        )
+    }
+}
+
+public extension AddedExpensesCategoryCell {
+    func setSelected(_ selected: Bool, borderColor: UIColor? = nil) {
+        iconView.setSelected(selected, borderColor: borderColor)
     }
 }
