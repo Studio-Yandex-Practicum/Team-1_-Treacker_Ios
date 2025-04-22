@@ -77,11 +77,17 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
     // MARK: - State
 
     private(set) public var selectedCategoryIndex: Int? {
-        didSet { onCategorySelected?(selectedCategoryIndex) }
+        didSet {
+            onCategorySelected?(selectedCategoryIndex)
+            validateForm()
+        }
     }
 
     private(set) public var selectDate: Date = Date() {
-        didSet { onDateChanged?(selectDate) }
+        didSet {
+            onDateChanged?(selectDate)
+            validateForm()
+        }
     }
 
     private var amount: String = "" {
