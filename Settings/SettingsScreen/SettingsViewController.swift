@@ -97,8 +97,7 @@ extension SettingsViewController: UITableViewDataSource {
 
 extension SettingsViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        68
-//        UIConstants.Heights.height60.rawValue
+        UIConstants.Heights.height68.rawValue
     }
 
 }
