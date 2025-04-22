@@ -117,7 +117,7 @@ public final class CategoryExpensesViewController: UIViewController {
     // MARK: - Actions
 
     @objc private func didAddExpense() {
-        // TODO: Открытие экрана создания нового расхода
+        viewModel.didTapNewExpense()
     }
 
     @objc private func didBack() {
