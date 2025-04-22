@@ -170,19 +170,13 @@ public final class Router: RouterProtocol {
         }
         dateRangePicker.present(above: viewController)
     }
-    
-    public func routeToCreateCtegoryFlow(from presenter: UIViewController) {
-            let viewModel = CreateCategoryViewModel(categoryService: coreDataAssembly.categoryService, router: self)
-            let createCategoryVC = CreateCategoryViewController(viewModel: viewModel)
-            createCategoryVC.modalPresentationStyle = .formSheet
-            presenter.present(createCategoryVC, animated: true)
-        }
 
     public func routeToCreateCtegoryFlow(from presenter: UIViewController) {
         let viewModel = CreateCategoryViewModel(categoryService: coreDataAssembly.categoryService, router: self)
         let createCategoryVC = CreateCategoryViewController(viewModel: viewModel)
         createCategoryVC.modalPresentationStyle = .formSheet
         presenter.present(createCategoryVC, animated: true)
+    }
 
     public func presentCategoryExpenses(
         from viewController: UIViewController,
@@ -209,7 +203,6 @@ public final class Router: RouterProtocol {
             window.rootViewController = viewController
         }
     }
-
 }
 
 extension Router: AddedExpensesCoordinatorDelegate {
