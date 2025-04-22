@@ -47,7 +47,6 @@ public final class CreateCategoryViewModel: CreateCategoryViewModelProtocol {
     public var onColorItemChanged: ((Int?, Int?) -> Void)?
     public var onCreateEnabledChanged: ((Bool) -> Void)?
 
-
     // MARK: - Private Properties
 
     private let categoryService: CategoryStorageServiceProtocol

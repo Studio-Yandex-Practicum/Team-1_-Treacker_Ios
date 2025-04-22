@@ -35,7 +35,8 @@ public final class Router: RouterProtocol {
         if AuthService.shared.isAuthorized {
             routeToMainFlow()
         } else {
-            routeToAuthFlow()
+            //routeToAuthFlow()
+            routeToAddedExpensesFlow()
         }
     }
 
@@ -133,13 +134,33 @@ public final class Router: RouterProtocol {
         let viewModel = AddedExpensesViewModel(
             expenseService: coreDataAssembly.expenseService,
             categoryService: coreDataAssembly.categoryService,
-            coordinator: self
+            coordinator: self,
+            mode: .create
         )
-        let addedExpensesVC = AddedExpensesViewController(viewModel: viewModel)
+        let addedExpensesVC = AddedExpensesViewController(viewModel: viewModel, mode: .create)
         setRootViewController(UINavigationController(rootViewController: addedExpensesVC))
     }
-  
-	public func presentCategorySelection(
+
+    public func routeToEditExpensesFlow(expense: Expense, categoryIndex: Int) {
+        let viewModel = AddedExpensesViewModel(
+            expenseService: coreDataAssembly.expenseService,
+            categoryService: coreDataAssembly.categoryService,
+            coordinator: self,
+            mode: .edit(expense: expense, categoryIndex: categoryIndex)
+        )
+
+        let addedExpensesVC = AddedExpensesViewController(
+            viewModel: viewModel,
+            mode: .edit(expense: expense, categoryIndex: categoryIndex)
+        )
+
+        let navController = UINavigationController(rootViewController: addedExpensesVC)
+        navController.modalPresentationStyle = .formSheet
+
+        window?.topMostViewController()?.present(navController, animated: true)
+    }
+
+    public func presentCategorySelection(
         from: UIViewController,
         selectedCategories: [ExpenseCategory],
         onApply: @escaping ([ExpenseCategory]) -> Void

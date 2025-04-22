@@ -13,6 +13,7 @@ public final class AddedExpensesViewController: UIViewController {
 
     // MARK: - Private Properties
 
+    private let mode: ExpenseMode
     private let viewModel: AddedExpensesViewModelProtocol
     private let scrollView = UIScrollView()
     private let contentView = UIView()
@@ -20,7 +21,7 @@ public final class AddedExpensesViewController: UIViewController {
     private var keyboardObserver: KeyboardObserver?
 
     private lazy var titleLabel: UILabel = .init(
-        text: GlobalConstants.addExpense.rawValue,
+        text: "",
         font: .h1,
         color: .primaryText,
         alignment: .left
@@ -69,10 +70,23 @@ public final class AddedExpensesViewController: UIViewController {
         action: #selector(addTapped)
     )
 
+    private lazy var deleteButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle(GlobalConstants.deleteExpense.rawValue, for: .normal)
+        button.setTitleColor(.systemRed, for: .normal)
+        button.addTarget(self, action: #selector(deleteTapped), for: .touchUpInside)
+        button.isHidden = true
+        return button
+    }()
+
     // MARK: - Lifecycle
 
-    public init(viewModel: AddedExpensesViewModelProtocol) {
+    public init(
+        viewModel: AddedExpensesViewModelProtocol,
+        mode: ExpenseMode
+    ) {
         self.viewModel = viewModel
+        self.mode = mode
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -84,8 +98,9 @@ public final class AddedExpensesViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .secondaryBg
-        setupScrollView()
         setupUI()
+        setupScrollView()
+        setupButtons()
         setupActions()
         setupTextFieldDelegate()
         bindViewModel()
@@ -107,6 +122,15 @@ extension AddedExpensesViewController {
         hStack.axis = .horizontal
         hStack.alignment = .center
         hStack.contentMode = .scaleAspectFit
+
+        switch mode {
+        case .create:
+            titleLabel.text = GlobalConstants.addExpense.rawValue
+            deleteButton.isHidden = true
+        case .edit:
+            titleLabel.text = GlobalConstants.editTitle.rawValue
+            deleteButton.isHidden = false
+        }
 
         let stack = UIStackView(arrangedSubviews: [
             hStack,
@@ -136,7 +160,6 @@ extension AddedExpensesViewController {
 
     private func setupScrollView() {
         view.setupView(scrollView)
-        view.setupView(addButton)
         scrollView.showsVerticalScrollIndicator = false
         scrollView.setupView(contentView)
         contentView.constraintEdges(to: scrollView)
@@ -146,11 +169,21 @@ extension AddedExpensesViewController {
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
+    }
 
-            addButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
-            addButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
-            addButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+    private func setupButtons() {
+        let hStack = UIStackView(arrangedSubviews: [
+            addButton,
+            deleteButton
+        ])
+        view.setupView(hStack)
+
+        NSLayoutConstraint.activate([
+            hStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.Constants.large20.rawValue),
+            hStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.Constants.large20.rawValue),
+            hStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
 }
@@ -302,6 +335,12 @@ private extension AddedExpensesViewController {
 
         viewModel.addExpense(expense, toCategory: categoryId)
 
+        dismiss(animated: true)
+    }
+
+    @objc private func deleteTapped() {
+        guard case let .edit(expense, _) = mode else { return }
+        viewModel.deleteExpense(expense.id)
         dismiss(animated: true)
     }
 }

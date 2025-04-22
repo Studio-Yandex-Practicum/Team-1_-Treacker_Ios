@@ -9,6 +9,11 @@ import Foundation
 import Persistence
 import Core
 
+public enum ExpenseMode {
+    case create
+    case edit(expense: Expense, categoryIndex: Int)
+}
+
 public protocol AddedExpensesViewModelProtocol: AnyObject {
 
     // Outputs
@@ -35,6 +40,7 @@ public protocol AddedExpensesViewModelProtocol: AnyObject {
     func category(at index: Int) -> ExpenseCategory
     func didSelectCategory(at index: Int)
     func addExpense(_ expense: Expense, toCategory categoryId: UUID)
+    func deleteExpense(_ expenseId: UUID)
 }
 
 public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
@@ -89,11 +95,21 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
     public init(
         expenseService: ExpenseStorageServiceProtocol,
         categoryService: CategoryStorageServiceProtocol,
-        coordinator: AddedExpensesCoordinatorDelegate
+        coordinator: AddedExpensesCoordinatorDelegate,
+        mode: ExpenseMode
     ) {
         self.expenseService = expenseService
         self.categoryService = categoryService
         self.coordinator = coordinator
+
+        switch mode {
+        case .create:
+            break
+        case let .edit(expense, categoryIndex):
+            self.amount = "\(expense.amount.rub)"
+            self.selectDate = expense.data
+            self.selectedCategoryIndex = categoryIndex
+        }
     }
 
     // MARK: - Inputs
@@ -141,6 +157,10 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
 
     public func addExpense(_ expense: Expense, toCategory categoryId: UUID) {
         expenseService.addExpense(expense, toCategory: categoryId)
+    }
+
+    public func deleteExpense(_ expenseId: UUID) {
+        expenseService.deleteExpense(expenseId)
     }
 
     private func validateForm() {
