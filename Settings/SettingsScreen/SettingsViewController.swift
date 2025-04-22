@@ -93,6 +93,9 @@ extension SettingsViewController: UITableViewDelegate {
         UIConstants.Heights.height68.rawValue
     }
 
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.viewModel.didTapEditOption(indexOption: indexPath.row)
+    }
 }
 
 // MARK: - Extension: Setup Layout

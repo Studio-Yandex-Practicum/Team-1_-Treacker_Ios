@@ -195,11 +195,11 @@ extension CategoryExpensesViewController: UITableViewDelegate {
                 title: .alertMessage,
                 message: .none,
                 actions: [
-                    AlertAction(title: "Удалить", style: .destructive) {
+                    AlertAction(title: GlobalConstants.deleteButton.rawValue, style: .destructive) {
                         completionHandler(true)
                         self.viewModel.deleteExpense(indexDay: indexPath.section, indexExpense: indexPath.row)
                     },
-                    AlertAction(title: "Отмена", style: .cancel, handler: {
+                    AlertAction(title: GlobalConstants.cancel.rawValue, style: .cancel, handler: {
                         completionHandler(true)
                     })
                 ]

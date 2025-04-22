@@ -145,6 +145,7 @@ targets:
     dependencies:
       - target: Core
       - target: UIComponents
+      - target: Auth
     bundleId: KV.Lyashenko.SpendWise.Settings
     deploymentTarget: "18.0"
     settings:

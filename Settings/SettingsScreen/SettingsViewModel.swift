@@ -7,12 +7,14 @@
 
 import Foundation
 import Core
+import Auth
 // TODO: Убрать UIKit когда уберу метод по обновлению темы
 import UIKit
 
 public protocol SettingsViewModelProtocol {
     // State
     var settingsCellViewModels: [SettingsCellViewModel] { get }
+    func didTapEditOption(indexOption: Int)
 }
 
 public final class SettingsViewModel: SettingsViewModelProtocol {
@@ -66,6 +68,19 @@ public final class SettingsViewModel: SettingsViewModelProtocol {
                 }
             }
         }
+    }
 
+    public func didTapEditOption(indexOption: Int) {
+        let setting: SettingsOption = settings[indexOption]
+        switch setting {
+        case .changeTheme:
+            return
+        case .exportExpenses:
+            return
+        case .chooseCurrency:
+            return
+        case .logout:
+            AuthService.shared.logout()
+        }
     }
 }
