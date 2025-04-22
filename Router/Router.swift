@@ -226,6 +226,7 @@ public final class Router: RouterProtocol {
     ) {
         let viewModel = CategoryExpensesViewModel(
             serviceExpense: coreDataAssembly.expenseService,
+            coordinator: self,
             dateInterval: dateInterval,
             categoryReport: categoryReport,
             selectedCategory: selectedCategory,
