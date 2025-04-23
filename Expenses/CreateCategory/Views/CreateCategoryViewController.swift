@@ -17,7 +17,7 @@ public final class CreateCategoryViewController: UIViewController {
 
     private lazy var titleLabel: UILabel = .init(
         text: GlobalConstants.creatingCategory.rawValue,
-        font: .h1,
+        font: .h1Font,
         color: .primaryText,
         alignment: .left
     )

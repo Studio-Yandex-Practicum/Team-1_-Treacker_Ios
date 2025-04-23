@@ -21,14 +21,14 @@ public final class AuthViewController: UIViewController {
 
     private lazy var titleLabel: UILabel = .init(
         text: GlobalConstants.greeting.rawValue,
-        font: .h1,
+        font: .h1Font,
         color: .primaryText,
         alignment: .left
     )
 
     private lazy var subtitleLabel: UILabel = .init(
         text: GlobalConstants.authInfoSubtitle.rawValue,
-        font: .h5,
+        font: .h5Font,
         color: .secondaryText,
         alignment: .left
     )
@@ -55,7 +55,7 @@ public final class AuthViewController: UIViewController {
 
     private lazy var orLabel: UILabel = .init(
         text: GlobalConstants.orLabel.rawValue,
-        font: .h5,
+        font: .h5Font,
         color: .secondaryText,
         alignment: .center
     )
@@ -68,7 +68,7 @@ public final class AuthViewController: UIViewController {
 
     private lazy var appleButton = makeAuthButton(
         title: .apple,
-        image: .ic,
+        image: .icon,
         action: #selector(didTapApple)
     )
 
@@ -212,7 +212,7 @@ private extension AuthViewController {
     private func makeHintLabel(text: String) -> UILabel {
         let label: UILabel = .init(
             text: text,
-            font: .h5,
+            font: .h5Font,
             color: .hintText
         )
 
@@ -233,7 +233,7 @@ private extension AuthViewController {
             backgroundColor: .primaryBg,
             titleColor: .secondaryText,
             cornerRadius: .medium16,
-            font: .h4,
+            font: .h4Font,
             target: self,
             action: action
         )
@@ -245,7 +245,7 @@ private extension AuthViewController {
         let button = UIButton(configuration: config)
         button.setTitle(title.rawValue, for: .normal)
         button.setTitleColor(.accentText, for: .normal)
-        button.titleLabel?.font = .h5
+        button.titleLabel?.font = .h5Font
         button.contentHorizontalAlignment = .left
         button.addTarget(self, action: action, for: .touchUpInside)
         return button

@@ -9,7 +9,7 @@ import Foundation
 
 extension Date {
     var startOfDay: Date {
-        return Calendar.current.startOfDay(for: self)
+        Calendar.current.startOfDay(for: self)
     }
 
     var endOfDay: Date {

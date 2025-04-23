@@ -40,7 +40,7 @@ public final class AnalyticsViewController: UIViewController {
     private lazy var labelTitle: UILabel = {
         let label = UILabel()
         label.text = GlobalConstants.analyticsTitle.rawValue
-        label.font = .h1
+        label.font = .h1Font
         label.textColor = .primaryText
         return label
     }()
@@ -70,7 +70,7 @@ public final class AnalyticsViewController: UIViewController {
     private lazy var labelTimePeriod: UILabel = {
         let label = UILabel()
         label.text = viewModel.titleTimePeriod
-        label.font = .h3
+        label.font = .h3Font
         label.textColor = .secondaryText
         return label
     }()
@@ -109,7 +109,7 @@ public final class AnalyticsViewController: UIViewController {
     private lazy var labelCategory: UILabel = {
         let label = UILabel()
         label.text = GlobalConstants.analyticsTitleExpense.rawValue
-        label.font = .h4
+        label.font = .h4Font
         label.textColor = .secondaryText
         return label
     }()

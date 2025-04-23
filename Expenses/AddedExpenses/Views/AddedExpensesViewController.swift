@@ -22,7 +22,7 @@ public final class AddedExpensesViewController: UIViewController {
 
     private lazy var titleLabel: UILabel = .init(
         text: "",
-        font: .h1,
+        font: .h1Font,
         color: .primaryText,
         alignment: .left
     )

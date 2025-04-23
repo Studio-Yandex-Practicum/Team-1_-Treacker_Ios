@@ -34,7 +34,7 @@ final class ExpenseCellView: UITableViewCell, ReuseIdentifying {
 
     private lazy var titleNoteLabel: UILabel = {
         let label = UILabel()
-        label.font = .h3
+        label.font = .h3Font
         label.textColor = .primaryText
         label.textAlignment = .left
         label.text = viewModel?.expense.note == "" ?
@@ -45,7 +45,7 @@ final class ExpenseCellView: UITableViewCell, ReuseIdentifying {
 
     private lazy var titleAmountLabel: UILabel = {
         let label = UILabel()
-        label.font = .h3
+        label.font = .h3Font
         label.textColor = .primaryText
         label.textAlignment = .right
         label.text = String(Int(viewModel?.expense.amount.rub ?? 0)) + GlobalConstants.symbolRUB.rawValue

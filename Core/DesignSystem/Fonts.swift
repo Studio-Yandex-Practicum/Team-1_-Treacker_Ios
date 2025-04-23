@@ -17,11 +17,11 @@ extension UIFont {
 
     // MARK: - Static properties
 
-    public static var h1 = heading(.bold, size: 24)
-    public static var h2 = heading(.bold, size: 20)
-    public static var h3 = heading(.medium, size: 16)
-    public static var h4 = heading(.medium, size: 14)
-    public static var h5 = heading(.regular, size: 14)
+    public static var h1Font = heading(.bold, size: 24)
+    public static var h2Font = heading(.bold, size: 20)
+    public static var h3Font = heading(.medium, size: 16)
+    public static var h4Font = heading(.medium, size: 14)
+    public static var h5Font = heading(.regular, size: 14)
     public static var hintFont = heading(.regular, size: 12)
     public static var hintFontInput = heading(.medium, size: 10)
     public static var tabBarText = heading(.medium, size: 12)

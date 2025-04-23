@@ -102,7 +102,7 @@ public final class DatePickerTextField: UITextField {
             height: containerHeight)
         )
         container.backgroundColor = .secondaryBg
-        font = .h4
+        font = .h4Font
         textColor = .primaryText
         tintColor = .clear
         backgroundColor = .primaryBg

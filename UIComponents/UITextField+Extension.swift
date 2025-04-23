@@ -36,7 +36,7 @@ public final class CustomTextField: UITextField {
     private lazy var floatingLabel: UILabel = {
         let label = UILabel()
         label.text = placeholderText
-        label.font = .h4
+        label.font = .h4Font
         label.textColor = .secondaryText
         return label
     }()
@@ -92,7 +92,7 @@ public final class CustomTextField: UITextField {
         floatingLabelTopConstraint.constant = isActive ?
         UIConstants.Constants.medium12.rawValue :
         UIConstants.Constants.medium19.rawValue
-        floatingLabel.font = isActive ? .hintFont : .h4
+        floatingLabel.font = isActive ? .hintFont : .h4Font
         floatingLabel.textColor = .secondaryText
 
         if animated {
@@ -138,7 +138,7 @@ public final class CustomTextField: UITextField {
         layer.masksToBounds = true
         backgroundColor = .primaryBg
         tintColor = .primaryText
-        font = .h4
+        font = .h4Font
 
         setupView(floatingLabel)
 

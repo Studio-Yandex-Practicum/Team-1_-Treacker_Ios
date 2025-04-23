@@ -20,7 +20,7 @@ final class CellAnalytics: UICollectionViewCell, ReuseIdentifying {
 
     private lazy var labelAmount: UILabel = {
         let label = UILabel()
-        label.font = .h2
+        label.font = .h2Font
         label.textColor = .primaryText
         return label
     }()

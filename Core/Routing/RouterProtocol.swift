@@ -11,8 +11,8 @@ public protocol RouterProtocol {
     func routeToMainFlow()
     func routeToAuthFlow()
     func routeBasedOnAuth()
-    func routeToRegisterFlow(from vc: UIViewController)
-    func routeToRecoverFlow(from vc: UIViewController)
+    func routeToRegisterFlow(from: UIViewController)
+    func routeToRecoverFlow(from: UIViewController)
     func presentCategorySelection(
         from: UIViewController,
         selectedCategories: [ExpenseCategory],

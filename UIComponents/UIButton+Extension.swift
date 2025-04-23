@@ -46,7 +46,7 @@ public extension UIButton {
     static func makeButton(title: GlobalConstants, target: Any?, action: Selector) -> UIButton {
         let button = UIButton(type: .custom)
         button.setTitle(title.rawValue, for: .normal)
-        button.titleLabel?.font = .h4
+        button.titleLabel?.font = .h4Font
         button.layer.cornerRadius = UIConstants.CornerRadius.medium16.rawValue
         button.clipsToBounds = true
         button.isEnabled = false
