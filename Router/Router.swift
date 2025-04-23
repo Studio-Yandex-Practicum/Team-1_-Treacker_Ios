@@ -47,7 +47,7 @@ public final class Router: RouterProtocol {
         )
         let mainVC = AnalyticsViewController(viewModel: viewModel)
 
-        viewModel.onOpenCategorySelection = { [weak self] categories in
+        viewModel.onOpenCategorySelection = { [weak self, unowned mainVC] categories in
             self?.presentCategorySelection(
                 from: mainVC,
                 selectedCategories: categories,
@@ -57,13 +57,13 @@ public final class Router: RouterProtocol {
             )
         }
 
-        viewModel.onOpenDateInterval = { [weak self] in
+        viewModel.onOpenDateInterval = { [weak self, unowned mainVC] in
             self?.presentDateIntervalViewController(from: mainVC, onApply: { dateInterval in
                 viewModel.updateCustomDateInterval(to: dateInterval)
             })
         }
 
-        viewModel.onOpenCategoryExpenses = { [weak self] dateInterval, categoryReport, category in
+        viewModel.onOpenCategoryExpenses = { [weak self, unowned mainVC] dateInterval, categoryReport, category in
             self?.presentCategoryExpenses(
                 from: mainVC,
                 dateInterval: dateInterval,
@@ -75,7 +75,7 @@ public final class Router: RouterProtocol {
             )
         }
 
-        viewModel.onOpenSettings = { [weak self] in
+        viewModel.onOpenSettings = { [weak self, unowned mainVC] in
             self?.presentSettings(from: mainVC)
         }
         setRootViewController(UINavigationController(rootViewController: mainVC))
@@ -202,7 +202,7 @@ public final class Router: RouterProtocol {
     }
 
     public func presentSettings(from viewController: UIViewController) {
-        let viewModel = SettingsViewModel()
+        let viewModel = SettingsViewModel(onLogout: allDismiss)
         let view = SettingsViewController(viewModel: viewModel)
 
         view.modalPresentationStyle = .fullScreen
@@ -244,6 +244,12 @@ public final class Router: RouterProtocol {
         guard let window else { return }
         UIView.transition(with: window, duration: 0.3, options: [.transitionCrossDissolve]) {
             window.rootViewController = viewController
+        }
+    }
+
+    private func allDismiss() {
+        window?.dismissAllPresentedViewControllers { [weak self] in
+            self?.routeToAuthFlow()
         }
     }
 }

@@ -20,6 +20,7 @@ public protocol SettingsViewModelProtocol {
 public final class SettingsViewModel: SettingsViewModelProtocol {
     //
     var onTapOption: ((SettingsOption) -> Void)?
+    var onLogout: (() -> Void)
     // MARK: - State
     private(set) public var settingsCellViewModels: [SettingsCellViewModel] = []
 
@@ -29,7 +30,8 @@ public final class SettingsViewModel: SettingsViewModelProtocol {
 
     // MARK: - Initializers
 
-    public init() {
+    public init(onLogout: @escaping (() -> Void)) {
+        self.onLogout = onLogout
         updateSettingsCellViewModels()
     }
 
@@ -81,6 +83,7 @@ public final class SettingsViewModel: SettingsViewModelProtocol {
             return
         case .logout:
             AuthService.shared.logout()
+            onLogout()
         }
     }
 }
