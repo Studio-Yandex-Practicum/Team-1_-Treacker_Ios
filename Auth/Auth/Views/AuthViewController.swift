@@ -526,18 +526,12 @@ private extension AuthViewController {
                 switch state {
                 case let .idle(isFormValid, _, _):
                     loginButton.isEnabled = isFormValid
-                    loginButton.alpha = 1.0
-
                 case .loading:
                     loginButton.isEnabled = false
-                    loginButton.alpha = 0.5
-
                 case .success:
                     break
-
                 case .failure(let error):
                     loginButton.isEnabled = true
-                    loginButton.alpha = 1.0
                     AlertService.present(
                         on: self,
                         title: .emailAuthFailed,
