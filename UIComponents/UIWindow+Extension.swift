@@ -15,4 +15,17 @@ public extension UIWindow {
         }
         return top
     }
+    func dismissAllPresentedViewControllers(completion: (() -> Void)? = nil) {
+            func dismiss(viewController: UIViewController?) {
+                if let presented = viewController?.presentedViewController {
+                    presented.dismiss(animated: false) {
+                        dismiss(viewController: viewController)
+                    }
+                } else {
+                    completion?()
+                }
+            }
+
+            dismiss(viewController: topMostViewController())
+        }
 }
