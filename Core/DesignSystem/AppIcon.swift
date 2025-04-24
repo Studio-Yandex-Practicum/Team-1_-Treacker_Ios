@@ -9,7 +9,7 @@ import UIKit
 
 public enum AppIcon: String {
     case eyeClosed = "eye"
-    case ic = "ic"
+    case icon = "ic"
     case arrowLeft = "icon-arrow_left"
     case arrowRight = "icon-arrow_right"
     case beauty = "icon-beauty"

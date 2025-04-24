@@ -406,7 +406,7 @@ public extension FastisConfig {
 
          Default value — `.systemFont(ofSize: 17)`
          */
-        public var dateLabelFont: UIFont = .h3
+        public var dateLabelFont: UIFont = .h3Font
 
         /**
          Color of date label in cell

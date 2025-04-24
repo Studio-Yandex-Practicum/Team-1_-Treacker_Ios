@@ -136,7 +136,10 @@ public final class Router: RouterProtocol {
         from.navigationController?.pushViewController(recVC, animated: true)
     }
 
-    public func routeToAddedExpensesFlow(from presenter: UIViewController, onExpenseCreated: @escaping (() -> Void)) {
+    public func routeToAddedExpensesFlow(
+        from presenter: UIViewController,
+        onExpenseCreated: @escaping (() -> Void)
+    ) {
         let viewModel = AddedExpensesViewModel(
             expenseService: coreDataAssembly.expenseService,
             categoryService: coreDataAssembly.categoryService,
@@ -145,12 +148,16 @@ public final class Router: RouterProtocol {
             onExpenseCreated: onExpenseCreated
         )
         let addedExpensesVC = AddedExpensesViewController(viewModel: viewModel, mode: .create)
-//        setRootViewController(UINavigationController(rootViewController: addedExpensesVC))
         addedExpensesVC.modalPresentationStyle = .formSheet
         presenter.present(addedExpensesVC, animated: true)
     }
 
-    public func routeToEditExpensesFlow(from presenter: UIViewController, expense: Expense, category: ExpenseCategory, onExpenseCreated: @escaping (() -> Void)) {
+    public func routeToEditExpensesFlow(
+        from presenter: UIViewController,
+        expense: Expense,
+        category: ExpenseCategory,
+        onExpenseCreated: @escaping (() -> Void)
+    ) {
         let viewModel = AddedExpensesViewModel(
             expenseService: coreDataAssembly.expenseService,
             categoryService: coreDataAssembly.categoryService,
@@ -163,9 +170,6 @@ public final class Router: RouterProtocol {
             viewModel: viewModel,
             mode: .edit(expense: expense, category: category)
         )
-
-//        let navController = UINavigationController(rootViewController: addedExpensesVC)
-//        navController.modalPresentationStyle = .formSheet
 
         addedExpensesVC.modalPresentationStyle = .formSheet
         presenter.present(addedExpensesVC, animated: true)
@@ -191,7 +195,10 @@ public final class Router: RouterProtocol {
         from.present(categorySVC, animated: true)
     }
 
-    public func presentDateIntervalViewController(from viewController: UIViewController, onApply: @escaping (Analytics.DateInterval?) -> Void) {
+    public func presentDateIntervalViewController(
+        from viewController: UIViewController,
+        onApply: @escaping (Analytics.DateInterval?) -> Void
+    ) {
         let dateRangePicker = FastisController(mode: .range)
 
         dateRangePicker.dismissHandler = { action in
@@ -229,7 +236,10 @@ public final class Router: RouterProtocol {
         viewController.present(view, animated: true)
     }
 
-    public func routeToCreateCategoryFlow(from presenter: UIViewController, onReloadData: @escaping (() -> Void)) {
+    public func routeToCreateCategoryFlow(
+        from presenter: UIViewController,
+        onReloadData: @escaping (() -> Void)
+    ) {
         let viewModel = CreateCategoryViewModel(
             categoryService: coreDataAssembly.categoryService,
             router: self,
@@ -286,9 +296,17 @@ extension Router: AddedExpensesCoordinatorDelegate {
         routeToAddedExpensesFlow(from: topVC, onExpenseCreated: onExpenseCreated)
     }
 
-    public func didRequestToAddedExpensesFlow(expense: Expense, category: ExpenseCategory, onExpenseCreated: @escaping (() -> Void)) {
+    public func didRequestToAddedExpensesFlow(
+        expense: Expense, category: ExpenseCategory,
+        onExpenseCreated: @escaping (() -> Void)
+    ) {
         guard let topVC = window?.topMostViewController() else { return }
-        routeToEditExpensesFlow(from: topVC, expense: expense, category: category, onExpenseCreated: onExpenseCreated)
+        routeToEditExpensesFlow(
+            from: topVC,
+            expense: expense,
+            category: category,
+            onExpenseCreated: onExpenseCreated
+        )
     }
 
     public func didRequestPresentCurrencySelection() {

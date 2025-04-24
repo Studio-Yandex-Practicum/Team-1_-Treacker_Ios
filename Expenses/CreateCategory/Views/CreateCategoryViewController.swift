@@ -17,7 +17,7 @@ public final class CreateCategoryViewController: UIViewController {
 
     private lazy var titleLabel: UILabel = .init(
         text: GlobalConstants.creatingCategory.rawValue,
-        font: .h1,
+        font: .h1Font,
         color: .primaryText,
         alignment: .left
     )
@@ -124,6 +124,7 @@ private extension CreateCategoryViewController {
 
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.register(CategoryCollectionCell.self)
+        collectionView.backgroundColor = .secondaryBg
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.isScrollEnabled = false

@@ -18,7 +18,7 @@ public final class CategorySelectionViewController: UIViewController {
 
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.font = .h2
+        label.font = .h2Font
         label.textColor = .primaryText
         label.text = GlobalConstants.selectCategoryTitle.rawValue
         return label
@@ -52,6 +52,7 @@ public final class CategorySelectionViewController: UIViewController {
         collectionView.register(CellSelectionCategoriesView.self)
         collectionView.dataSource = self
         collectionView.delegate = self
+        collectionView.backgroundColor = .secondaryBg
         return collectionView
     }()
 

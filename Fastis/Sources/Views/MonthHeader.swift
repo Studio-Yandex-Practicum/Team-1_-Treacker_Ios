@@ -117,7 +117,7 @@ public extension FastisConfig {
 
          Default value — `.systemFont(ofSize: 17, weight: .semibold)`
          */
-        public var labelFont: UIFont = .h2
+        public var labelFont: UIFont = .h2Font
 
         /**
          Insets for month title label
