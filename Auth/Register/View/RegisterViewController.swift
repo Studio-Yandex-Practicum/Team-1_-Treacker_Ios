@@ -19,7 +19,7 @@ public final class RegisterViewController: UIViewController {
 
     private lazy var titleLabel: UILabel = .init(
         text: GlobalConstants.register.rawValue,
-        font: .h1,
+        font: .h1Font,
         color: .primaryText,
         alignment: .left
     )
@@ -122,10 +122,8 @@ private extension RegisterViewController {
                 switch state {
                 case .idle(let isValid, _, _):
                     registerButton.isEnabled = isValid
-                    registerButton.alpha = isValid ? 1.0 : 0.5
                 case .loading:
                     registerButton.isEnabled = false
-                    registerButton.alpha = 0.5
                 case .success:
                     break
                 case .failure(let error):

@@ -28,7 +28,7 @@ public final class SettingsViewController: UIViewController {
 
     private lazy var headerTitleLabel: UILabel = {
         let label = UILabel()
-        label.font = .h3
+        label.font = .h3Font
         label.textColor = .primaryText
         label.textAlignment = .center
         label.text = GlobalConstants.settingsTitle.rawValue

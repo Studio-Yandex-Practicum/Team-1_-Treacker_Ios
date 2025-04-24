@@ -25,7 +25,7 @@ final class CellCategoryExpense: UITableViewCell, ReuseIdentifying {
 
     private lazy var labelName: UILabel = {
         let label = UILabel()
-        label.font = .h4
+        label.font = .h4Font
         label.textColor = .primaryText
         return label
     }()
@@ -54,7 +54,7 @@ final class CellCategoryExpense: UITableViewCell, ReuseIdentifying {
 
     private lazy var labelPercent: UILabel = {
         let label = UILabel()
-        label.font = .h4
+        label.font = .h4Font
         label.textColor = .secondaryText
         return label
     }()
@@ -82,6 +82,7 @@ final class CellCategoryExpense: UITableViewCell, ReuseIdentifying {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         self.selectionStyle = .none
+        self.backgroundColor = .secondaryBg
         setupLayout()
     }
 

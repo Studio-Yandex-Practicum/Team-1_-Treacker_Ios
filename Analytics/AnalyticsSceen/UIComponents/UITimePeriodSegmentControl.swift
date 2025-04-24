@@ -162,7 +162,7 @@ final class UITimePeriodSegmentControl: UIView {
             button.setTitle(segment.title, for: .normal)
             let color: UIColor = segment == selectedTimePeriod ? .accentText : .secondaryText
             button.setTitleColor(color, for: .normal)
-            button.titleLabel?.font = UIFont.h4
+            button.titleLabel?.font = UIFont.h4Font
             button.backgroundColor = .clear
             button.tag = segment.index
             button.addTarget(self, action: #selector(segmentTapped(_:)), for: .touchUpInside)

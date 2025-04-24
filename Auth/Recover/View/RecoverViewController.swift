@@ -19,14 +19,14 @@ public final class RecoverViewController: UIViewController {
 
     private lazy var titleLabel: UILabel = .init(
         text: GlobalConstants.recPass.rawValue,
-        font: .h1,
+        font: .h1Font,
         color: .primaryText,
         alignment: .left
     )
 
     private lazy var subtitleLabel: UILabel = .init(
         text: GlobalConstants.recInfoSubtitle.rawValue,
-        font: .h5,
+        font: .h5Font,
         color: .secondaryText,
         alignment: .left
     )

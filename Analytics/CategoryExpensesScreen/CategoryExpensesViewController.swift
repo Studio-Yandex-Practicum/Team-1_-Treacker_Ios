@@ -27,7 +27,7 @@ public final class CategoryExpensesViewController: UIViewController {
 
     private lazy var headerTitleLabel: UILabel = {
         let label = UILabel()
-        label.font = .h3
+        label.font = .h3Font
         label.textColor = .primaryText
         label.textAlignment = .center
         label.text = viewModel.nameCategory
@@ -38,7 +38,7 @@ public final class CategoryExpensesViewController: UIViewController {
 
     private lazy var titleAmountLabel: UILabel = {
         let label = UILabel()
-        label.font = .h4
+        label.font = .h4Font
         label.textColor = .primaryText
         label.textAlignment = .left
         label.text = viewModel.amount
@@ -47,7 +47,7 @@ public final class CategoryExpensesViewController: UIViewController {
 
     private lazy var titlePercentLabel: UILabel = {
         let label = UILabel()
-        label.font = .h4
+        label.font = .h4Font
         label.textColor = .secondaryText
         label.textAlignment = .right
         label.text = viewModel.percent
@@ -76,6 +76,7 @@ public final class CategoryExpensesViewController: UIViewController {
     private lazy var tableExpenses: UITableView = {
         let table = UITableView()
         table.register(ExpenseCellView.self)
+        table.backgroundColor = .secondaryBg
         table.separatorStyle = .none
         table.dataSource = self
         table.delegate = self

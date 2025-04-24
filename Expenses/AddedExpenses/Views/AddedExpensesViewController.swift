@@ -22,7 +22,7 @@ public final class AddedExpensesViewController: UIViewController {
 
     private lazy var titleLabel: UILabel = .init(
         text: "",
-        font: .h1,
+        font: .h1Font,
         color: .primaryText,
         alignment: .left
     )
@@ -129,6 +129,8 @@ extension AddedExpensesViewController {
         case let .edit(expense, _):
             amountTextField.text = String(Int(expense.amount.rub))
             noteTextField.text = expense.note
+            amountTextField.updateFloatingLabel(animated: false)
+            noteTextField.updateFloatingLabel(animated: false)
             titleLabel.text = GlobalConstants.editTitle.rawValue
             deleteButton.isHidden = false
         }

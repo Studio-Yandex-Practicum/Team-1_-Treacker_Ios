@@ -114,7 +114,7 @@ public extension FastisConfig {
 
          Default value — `.systemFont(ofSize: 10, weight: .bold)`
          */
-        public var textFont: UIFont = .h4
+        public var textFont: UIFont = .h4Font
 
         /**
          Height of the view

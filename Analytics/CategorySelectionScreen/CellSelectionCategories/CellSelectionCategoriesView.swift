@@ -43,7 +43,7 @@ final class CellSelectionCategoriesView: UICollectionViewCell, ReuseIdentifying 
 
     private lazy var labelNameCategory: UILabel = {
         let label = UILabel()
-        label.font = .h4
+        label.font = .h4Font
         label.textColor = .primaryText
         return label
     }()

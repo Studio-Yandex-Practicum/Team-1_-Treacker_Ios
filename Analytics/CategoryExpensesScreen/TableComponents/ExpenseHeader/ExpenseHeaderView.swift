@@ -20,7 +20,7 @@ final class ExpenseHeaderView: UIView {
 
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.font = .h4
+        label.font = .h4Font
         label.textColor = .secondaryText
         label.text = viewModel?.title ?? ""
         return label

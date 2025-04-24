@@ -110,7 +110,9 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
         self.categoryService = categoryService
         self.coordinator = coordinator
         self.onExpenseCreated = onExpenseCreated
+
         loadCategories()
+
         switch mode {
         case .create:
             break

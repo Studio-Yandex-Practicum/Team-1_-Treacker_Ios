@@ -21,8 +21,8 @@ public enum AuthState {
 extension AuthState: Equatable {
     public static func == (lhs: AuthState, rhs: AuthState) -> Bool {
         switch (lhs, rhs) {
-        case let (.idle(a1, b1, c1), .idle(a2, b2, c2)):
-            return a1 == a2 && b1 == b2 && c1 == c2
+        case let (.idle(form1, email1, pass1), .idle(form2, email2, pass2)):
+            return form1 == form2 && email1 == email2 && pass1 == pass2
         case (.loading, .loading), (.success, .success):
             return true
         case (.failure, .failure):
