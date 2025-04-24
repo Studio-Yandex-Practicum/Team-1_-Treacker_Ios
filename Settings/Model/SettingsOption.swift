@@ -26,25 +26,26 @@ public enum SettingsOption {
         }
     }
 
-    var subTitle: String? {
-        switch self {
-        case .changeTheme:
-            return nil
-        case .exportExpenses:
-            return GlobalConstants.settingsSubTitleExportExpenses.rawValue
-        case .chooseCurrency:
-            return AppSettings.shared.selectedCurrency.title
-        case .logout:
-            return nil
-        }
-    }
-
     var iconName: String? {
         switch self {
         case .changeTheme: return nil
         case .exportExpenses: return AppIcon.download.rawValue
         case .chooseCurrency: return AppIcon.arrowRight.rawValue
         case .logout: return AppIcon.exit.rawValue
+        }
+    }
+
+    func subTitle(_ option: Self, settings: AppSettingsReadable? = nil) -> String? {
+        switch option {
+        case .changeTheme:
+            return nil
+        case .exportExpenses:
+            return GlobalConstants.settingsSubTitleExportExpenses.rawValue
+        case .chooseCurrency:
+            guard let settings else { return nil }
+            return settings.currency.title
+        case .logout:
+            return nil
         }
     }
 }

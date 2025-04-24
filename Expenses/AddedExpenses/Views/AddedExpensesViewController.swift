@@ -330,7 +330,7 @@ private extension AddedExpensesViewController {
             return
         }
 
-        let amount = Amount(rub: amountValue, usd: 0, eur: 0)
+        let amount = Amount(rub: amountValue, usd: amountValue, eur: amountValue)
         let expense = Expense(
             id: UUID(),
             data: viewModel.selectDate,

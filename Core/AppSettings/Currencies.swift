@@ -5,17 +5,15 @@
 //  Created by Глеб Хамин on 21.04.2025.
 //
 
-import Core
-
-enum Currencies: String {
+public enum Currencies: String {
     case rub
     case eur
     case usd
 
-    var simbol: String {
+    public var simbol: String {
         switch self {
         case .rub:
-            GlobalConstants.symbolEUR.rawValue
+            GlobalConstants.symbolRUB.rawValue
         case .eur:
             GlobalConstants.symbolEUR.rawValue
         case .usd:
@@ -23,7 +21,7 @@ enum Currencies: String {
         }
     }
 
-    var title: String {
+    public var title: String {
         switch self {
         case .rub:
             GlobalConstants.settingsSubTitleChooseCurrencyRUB.rawValue
@@ -31,6 +29,17 @@ enum Currencies: String {
             GlobalConstants.settingsSubTitleChooseCurrencyEUR.rawValue
         case .usd:
             GlobalConstants.settingsSubTitleChooseCurrencyUSD.rawValue
+        }
+    }
+
+    public var fulTitle: String {
+        switch self {
+        case .rub:
+            GlobalConstants.settingsCurrencySelectionRUB.rawValue
+        case .eur:
+            GlobalConstants.settingsCurrencySelectionEUR.rawValue
+        case .usd:
+            GlobalConstants.settingsCurrencySelectionUSD.rawValue
         }
     }
 }

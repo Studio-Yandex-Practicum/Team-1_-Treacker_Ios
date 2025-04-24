@@ -1,19 +1,19 @@
 //
-//  SettingsViewController.swift
+//  CurrencySelectionViewController.swift
 //  Settings
 //
-//  Created by Глеб Хамин on 21.04.2025.
+//  Created by Глеб Хамин on 23.04.2025.
 //
 
 import UIKit
 import Core
 import UIComponents
 
-public final class SettingsViewController: UIViewController {
+public final class CurrencySelectionViewController: UIViewController {
 
     // MARK: - Private Properties
 
-    private var viewModel: SettingsViewModelProtocol
+    private var viewModel: CurrencySelectionViewModelProtocol
 
     // MARK: UIComponents: Header
 
@@ -31,13 +31,13 @@ public final class SettingsViewController: UIViewController {
         label.font = .h3Font
         label.textColor = .primaryText
         label.textAlignment = .center
-        label.text = GlobalConstants.settingsTitle.rawValue
+        label.text = GlobalConstants.settingsCurrencySelectionTitle.rawValue
         return label
     }()
 
     private lazy var tableSettings: UITableView = {
         let table = UITableView()
-        table.register(SettingsCellView.self)
+        table.register(CurrencyCellView.self)
         table.backgroundColor = .secondaryBg
         table.separatorStyle = .none
         table.dataSource = self
@@ -54,17 +54,9 @@ public final class SettingsViewController: UIViewController {
         setupLayout()
     }
 
-    public override func viewWillAppear(_ animated: Bool) {
-        viewModel.viewWillAppear()
-    }
-
-    override public func viewWillDisappear(_ animated: Bool) {
-        viewModel.viewWillDisappear()
-    }
-
     // MARK: - Initializers
 
-    public init(viewModel: SettingsViewModelProtocol) {
+    public init(viewModel: CurrencySelectionViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -80,8 +72,10 @@ public final class SettingsViewController: UIViewController {
         dismiss(animated: true)
     }
 
+    // MARK: - Private Methods
+
     private func bind() {
-        viewModel.onSettingsCellViewModels = { [weak self] in
+        viewModel.onCurrencyCellViewModels = { [weak self] in
             self?.tableSettings.reloadData()
         }
     }
@@ -89,21 +83,21 @@ public final class SettingsViewController: UIViewController {
 
 // MARK: - Extension: UITableViewDataSource
 
-extension SettingsViewController: UITableViewDataSource {
+extension CurrencySelectionViewController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.settingsCellViewModels.count
+        viewModel.currencyCellViewModels.count
     }
-    
+
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: SettingsCellView = tableView.dequeueReusableCell()
-        cell.updateViewModel(viewModel: viewModel.settingsCellViewModels[indexPath.row])
+        let cell: CurrencyCellView = tableView.dequeueReusableCell()
+        cell.updateViewModel(viewModel.currencyCellViewModels[indexPath.row])
         return cell
     }
 }
 
 // MARK: - Extension: UITableViewDelegate
 
-extension SettingsViewController: UITableViewDelegate {
+extension CurrencySelectionViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         UIConstants.Heights.height68.rawValue
     }
@@ -115,7 +109,7 @@ extension SettingsViewController: UITableViewDelegate {
 
 // MARK: - Extension: Setup Layout
 
-extension SettingsViewController {
+extension CurrencySelectionViewController {
     private func setupLayout() {
         view.backgroundColor = .secondaryBg
         navigationController?.isNavigationBarHidden = true

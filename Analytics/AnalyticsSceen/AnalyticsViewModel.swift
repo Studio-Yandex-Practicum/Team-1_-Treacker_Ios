@@ -78,6 +78,7 @@ public final class AnalyticsViewModel {
 
     private var serviceExpense: ExpenseStorageServiceProtocol
     private var serviceCategory: CategoryStorageServiceProtocol
+    private var settings: AppSettingsReadable
     private weak var coordinator: AddedExpensesCoordinatorDelegate?
 
     private let calendar = Calendar.current
@@ -121,11 +122,13 @@ public final class AnalyticsViewModel {
     public init(
         serviceExpense: ExpenseStorageServiceProtocol,
         serviceCategory: CategoryStorageServiceProtocol,
-        coordinator: AddedExpensesCoordinatorDelegate
+        coordinator: AddedExpensesCoordinatorDelegate,
+        settings: AppSettingsReadable
     ) {
         self.serviceExpense = serviceExpense
         self.serviceCategory = serviceCategory
         self.coordinator = coordinator
+        self.settings = settings
     }
 
     @available(*, unavailable)
@@ -156,11 +159,11 @@ public final class AnalyticsViewModel {
         let fetchedCategories = serviceExpense.fetchExpenses(from: newDateInterval.start, to: newDateInterval.end, categories: selectedCategoriesString)
         switch direction {
         case .before:
-            var report = PeriodCategoryReport.getPeriodCategoryReport(for: fetchedCategories)
+            var report = PeriodCategoryReport.getPeriodCategoryReport(for: fetchedCategories, settings: settings)
             report = getSortedPeriodCategoryReport(of: report)
             categoryReports.insert(report, at: 0)
         case .after:
-            var report = PeriodCategoryReport.getPeriodCategoryReport(for: fetchedCategories)
+            var report = PeriodCategoryReport.getPeriodCategoryReport(for: fetchedCategories, settings: settings)
             report = getSortedPeriodCategoryReport(of: report)
             categoryReports.append(report)
         }
@@ -298,7 +301,7 @@ public final class AnalyticsViewModel {
                 segments.append(SegmentPieChart(color: category.category.colorPrimaryName, value: category.percent))
             }
         }
-        return PieChartDisplayItem(amount: "\(Int(report.totalAmount)) ₽", segments: segments)
+        return PieChartDisplayItem(amount: "\(Int(report.totalAmount)) \(settings.currency.simbol)", segments: segments)
     }
 
     private func updatePieChartDisplayItem() {
@@ -318,7 +321,7 @@ public final class AnalyticsViewModel {
             nameIcon: category.nameIcon,
             name: category.name,
             countExpenses: countExpenses,
-            amount: String(Int(categorySummary.amount)),
+            amount: String(Int(categorySummary.amount)) + " " + settings.currency.simbol,
             percentageOfTotal: String(Int(categorySummary.percent))
         )
         return modelCategory
@@ -417,5 +420,12 @@ extension AnalyticsViewModel: AnalyticsViewModelProtocol {
         coordinator?.didRequestToAddedExpensesFlow { [weak self] in
             self?.updateChart()
         }
+    }
+
+    public func updateCurrency() {
+        updateAllCategories()
+        updatePieChartDisplayItem()
+        updateModelCellCategory()
+        onSelectedIndex?(selectedIndex)
     }
 }

@@ -12,26 +12,46 @@ import Auth
 import UIKit
 
 public protocol SettingsViewModelProtocol {
+    var onSettingsCellViewModels: (() -> Void)? { get set }
     // State
     var settingsCellViewModels: [SettingsCellViewModel] { get }
     func didTapEditOption(indexOption: Int)
+    func viewWillAppear()
+    func viewWillDisappear()
 }
 
-public final class SettingsViewModel: SettingsViewModelProtocol {
-    //
+public final class SettingsViewModel {
+    public var onSettingsCellViewModels: (() -> Void)?
     var onTapOption: ((SettingsOption) -> Void)?
     var onLogout: (() -> Void)
+
+    var onUpdateCurrency: (() -> Void)
     // MARK: - State
-    private(set) public var settingsCellViewModels: [SettingsCellViewModel] = []
+    private(set) public var settingsCellViewModels: [SettingsCellViewModel] = [] {
+        didSet { onSettingsCellViewModels?() }
+    }
 
     // MARK: - Private Properties
-    
+
+    private let appSettingsReadable: AppSettingsReadable
+    private let appSettingsWritable: AppSettingsWritable
+    private weak var coordinator: AddedExpensesCoordinatorDelegate?
     private let settings: [SettingsOption] = [.changeTheme, .exportExpenses, .chooseCurrency, .logout]
 
     // MARK: - Initializers
 
-    public init(onLogout: @escaping (() -> Void)) {
+    public init(
+        onLogout: @escaping (() -> Void),
+        coordinator: AddedExpensesCoordinatorDelegate,
+        appSettingsReadable: AppSettingsReadable,
+        appSettingsWritable: AppSettingsWritable,
+        onUpdateCurrency: @escaping (() -> Void)
+    ) {
         self.onLogout = onLogout
+        self.coordinator = coordinator
+        self.appSettingsReadable = appSettingsReadable
+        self.appSettingsWritable = appSettingsWritable
+        self.onUpdateCurrency = onUpdateCurrency
         updateSettingsCellViewModels()
     }
 
@@ -44,10 +64,10 @@ public final class SettingsViewModel: SettingsViewModelProtocol {
         settingsCellViewModels = settings.map {
             switch $0 {
             case .changeTheme:
-                let isOn: Bool = AppSettings.shared.selectedTheme == .dark ? true : false
-                return SettingsCellViewModel(option: $0, isOn: isOn, onSwitchChanged: updateInterfaceStyle)
+                let isOn: Bool = appSettingsReadable.getSelectedTheme() == .dark ? true : false
+                return SettingsCellViewModel(option: $0, settings: appSettingsReadable, isOn: isOn, onSwitchChanged: updateInterfaceStyle)
             case .exportExpenses, .chooseCurrency, .logout:
-                return SettingsCellViewModel(option: $0)
+                return SettingsCellViewModel(option: $0, settings: appSettingsReadable)
             }
         }
     }
@@ -55,7 +75,7 @@ public final class SettingsViewModel: SettingsViewModelProtocol {
     private func updateInterfaceStyle(to status: Bool) {
         switch status {
         case true:
-            AppSettings.shared.selectedTheme = .dark
+            appSettingsWritable.updateSelectedTheme(.dark)
             // TODO: Вынести из модели, обсудить куда
             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
                 for window in windowScene.windows {
@@ -63,7 +83,7 @@ public final class SettingsViewModel: SettingsViewModelProtocol {
                 }
             }
         case false:
-            AppSettings.shared.selectedTheme = .system
+            appSettingsWritable.updateSelectedTheme(.system)
             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
                 for window in windowScene.windows {
                     window.overrideUserInterfaceStyle = .unspecified
@@ -71,6 +91,9 @@ public final class SettingsViewModel: SettingsViewModelProtocol {
             }
         }
     }
+}
+
+extension SettingsViewModel: SettingsViewModelProtocol {
 
     public func didTapEditOption(indexOption: Int) {
         let setting: SettingsOption = settings[indexOption]
@@ -80,10 +103,18 @@ public final class SettingsViewModel: SettingsViewModelProtocol {
         case .exportExpenses:
             return
         case .chooseCurrency:
-            return
+            coordinator?.didRequestPresentCurrencySelection()
         case .logout:
             AuthService.shared.logout()
             onLogout()
         }
+    }
+
+    public func viewWillAppear() {
+        updateSettingsCellViewModels()
+    }
+
+    public func viewWillDisappear() {
+        onUpdateCurrency()
     }
 }

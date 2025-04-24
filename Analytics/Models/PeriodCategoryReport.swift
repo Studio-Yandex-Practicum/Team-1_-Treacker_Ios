@@ -17,11 +17,11 @@ public struct PeriodCategoryReport {
         self.totalAmount = totalAmount
     }
 
-    public static func getPeriodCategoryReport(for listCategories: [ExpenseCategory]) -> PeriodCategoryReport {
+    public static func getPeriodCategoryReport(for listCategories: [ExpenseCategory], settings: AppSettingsReadable) -> PeriodCategoryReport {
         var totalAmount: Double = 0.0
         var summaries: [CategorySummary] = []
         for category in listCategories {
-            let categorySummary = getCategorySummary(for: category)
+            let categorySummary = getCategorySummary(for: category, settings: settings)
             totalAmount += categorySummary.amount
             summaries.append(categorySummary)
         }
@@ -33,8 +33,8 @@ public struct PeriodCategoryReport {
         return periodCategoryReport
     }
 
-    private static func getCategorySummary(for category: ExpenseCategory) -> CategorySummary {
-        let amount = category.expense.reduce(0) { $0 + $1.amount.rub}
+    private static func getCategorySummary(for category: ExpenseCategory, settings: AppSettingsReadable) -> CategorySummary {
+        let amount = category.expense.reduce(0) { $0 + settings.getAmount($1.amount)}
         let categorySummary = CategorySummary(category: category, amount: amount, percent: 0.0)
         return categorySummary
     }
