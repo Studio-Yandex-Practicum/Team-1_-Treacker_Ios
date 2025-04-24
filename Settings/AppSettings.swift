@@ -6,34 +6,46 @@
 //
 
 import Foundation
+import Core
 
 public final class AppSettings {
-    static let shared = AppSettings()
+    private(set) public lazy var currency: Currencies = getSelectedCurrency()
 
-    private init() {}
+    public init() {}
 
-    enum Theme: String {
-        case dark
-        case system
+    private func getSelectedCurrency() -> Currencies {
+        let rawValue = UserDefaults.standard.string(forKey: "selectedCurrency") ?? Currencies.rub.rawValue
+        return Currencies(rawValue: rawValue) ?? .rub
+    }
+}
+
+extension AppSettings: AppSettingsReadable {
+
+    public func getSelectedTheme() -> SystemTheme {
+        let rawValue = UserDefaults.standard.string(forKey: "selectedCurrency") ?? Currencies.rub.rawValue
+        return SystemTheme(rawValue: rawValue) ?? .system
     }
 
-    var selectedCurrency: Currencies {
-        get {
-            let rawValue = UserDefaults.standard.string(forKey: "selectedCurrency") ?? Currencies.rub.rawValue
-            return Currencies(rawValue: rawValue) ?? .rub
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: "selectedCurrency")
+    public func getAmount(_ amount: Amount) -> Double {
+        switch currency {
+        case .rub:
+            return amount.rub
+        case .eur:
+            return amount.eur
+        case .usd:
+            return amount.usd
         }
     }
+}
 
-    var selectedTheme: Theme {
-        get {
-            let rawValue = UserDefaults.standard.string(forKey: "selectedTheme") ?? Theme.system.rawValue
-            return Theme(rawValue: rawValue) ?? .system
-        }
-        set {
-            UserDefaults.standard.set(newValue.rawValue, forKey: "selectedTheme")
-        }
+extension AppSettings: AppSettingsWritable {
+
+    public func updateSelectedCurrency(_ currency: Currencies) {
+        UserDefaults.standard.set(currency.rawValue, forKey: "selectedCurrency")
+        self.currency = currency
+    }
+
+    public func updateSelectedTheme(_ theme: SystemTheme) {
+        UserDefaults.standard.set(theme.rawValue, forKey: "selectedCurrency")
     }
 }

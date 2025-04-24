@@ -24,12 +24,18 @@ public final class SettingsViewModel: SettingsViewModelProtocol {
     private(set) public var settingsCellViewModels: [SettingsCellViewModel] = []
 
     // MARK: - Private Properties
-    
+
+    private let appSettingsReadable: AppSettingsReadable
+    private let appSettingsWritable: AppSettingsWritable
+    weak var coordinator: AddedExpensesCoordinatorDelegate?
     private let settings: [SettingsOption] = [.changeTheme, .exportExpenses, .chooseCurrency, .logout]
 
     // MARK: - Initializers
 
-    public init() {
+    public init(coordinator: AddedExpensesCoordinatorDelegate, appSettingsReadable: AppSettingsReadable, appSettingsWritable: AppSettingsWritable) {
+        self.coordinator = coordinator
+        self.appSettingsReadable = appSettingsReadable
+        self.appSettingsWritable = appSettingsWritable
         updateSettingsCellViewModels()
     }
 
@@ -42,10 +48,10 @@ public final class SettingsViewModel: SettingsViewModelProtocol {
         settingsCellViewModels = settings.map {
             switch $0 {
             case .changeTheme:
-                let isOn: Bool = AppSettings.shared.selectedTheme == .dark ? true : false
-                return SettingsCellViewModel(option: $0, isOn: isOn, onSwitchChanged: updateInterfaceStyle)
+                let isOn: Bool = appSettingsReadable.getSelectedTheme() == .dark ? true : false
+                return SettingsCellViewModel(option: $0, settings: appSettingsReadable, isOn: isOn, onSwitchChanged: updateInterfaceStyle)
             case .exportExpenses, .chooseCurrency, .logout:
-                return SettingsCellViewModel(option: $0)
+                return SettingsCellViewModel(option: $0, settings: appSettingsReadable)
             }
         }
     }
@@ -53,7 +59,7 @@ public final class SettingsViewModel: SettingsViewModelProtocol {
     private func updateInterfaceStyle(to status: Bool) {
         switch status {
         case true:
-            AppSettings.shared.selectedTheme = .dark
+            appSettingsWritable.updateSelectedTheme(.dark)
             // TODO: Вынести из модели, обсудить куда
             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
                 for window in windowScene.windows {
@@ -61,7 +67,7 @@ public final class SettingsViewModel: SettingsViewModelProtocol {
                 }
             }
         case false:
-            AppSettings.shared.selectedTheme = .system
+            appSettingsWritable.updateSelectedTheme(.system)
             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
                 for window in windowScene.windows {
                     window.overrideUserInterfaceStyle = .unspecified
@@ -78,7 +84,7 @@ public final class SettingsViewModel: SettingsViewModelProtocol {
         case .exportExpenses:
             return
         case .chooseCurrency:
-            return
+            coordinator?.didRequestPresentCurrencySelection()
         case .logout:
             AuthService.shared.logout()
         }

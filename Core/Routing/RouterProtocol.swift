@@ -25,4 +25,5 @@ public protocol AddedExpensesCoordinatorDelegate: AnyObject {
     func didRequestCreateCategory(onReloadData: @escaping (() -> Void))
     func didRequestToAddedExpensesFlow(onExpenseCreated: @escaping (() -> Void))
     func didRequestToAddedExpensesFlow(expense: Expense, category: ExpenseCategory, onExpenseCreated: @escaping (() -> Void))
+    func didRequestPresentCurrencySelection()
 }

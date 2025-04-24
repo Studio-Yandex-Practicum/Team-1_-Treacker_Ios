@@ -99,7 +99,7 @@ final class SettingsCellView: UITableViewCell, ReuseIdentifying {
     private func configureCell(to option: SettingsOption?) {
         guard let option else { return }
         titleLabel.text = option.title
-        if let subTitle = option.subTitle {
+        if let subTitle = option.subTitle(option, settings: viewModel?.settings) {
             subTitleLabel.text = subTitle
             titleStack.spacing = UIConstants.Spacing.small4.rawValue
         } else {

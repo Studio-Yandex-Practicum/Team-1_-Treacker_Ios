@@ -19,6 +19,7 @@ public final class Router: RouterProtocol {
     public var window: UIWindow?
     private var cancellables = Set<AnyCancellable>()
     private let coreDataAssembly: CoreDataAssemblyProtocol
+    private let appSettings = AppSettings()
 
     public init(coreDataAssembly: CoreDataAssemblyProtocol) {
         self.coreDataAssembly = coreDataAssembly
@@ -202,8 +203,20 @@ public final class Router: RouterProtocol {
     }
 
     public func presentSettings(from viewController: UIViewController) {
-        let viewModel = SettingsViewModel()
+        let viewModel = SettingsViewModel(
+            coordinator: self,
+            appSettingsReadable: appSettings,
+            appSettingsWritable: appSettings
+        )
         let view = SettingsViewController(viewModel: viewModel)
+
+        view.modalPresentationStyle = .fullScreen
+        viewController.present(view, animated: true)
+    }
+
+    public func presentCurrencySelection(from viewController: UIViewController) {
+        let viewModel = CurrencySelectionViewModel(appSettingsReadable: appSettings, appSettingsWritable: appSettings)
+        let view = CurrencySelectionViewController(viewModel: viewModel)
 
         view.modalPresentationStyle = .fullScreen
         viewController.present(view, animated: true)
@@ -262,5 +275,10 @@ extension Router: AddedExpensesCoordinatorDelegate {
     public func didRequestToAddedExpensesFlow(expense: Expense, category: ExpenseCategory, onExpenseCreated: @escaping (() -> Void)) {
         guard let topVC = window?.topMostViewController() else { return }
         routeToEditExpensesFlow(from: topVC, expense: expense, category: category, onExpenseCreated: onExpenseCreated)
+    }
+
+    public func didRequestPresentCurrencySelection() {
+        guard let topVC = window?.topMostViewController() else { return }
+        presentCurrencySelection(from: topVC)
     }
 }

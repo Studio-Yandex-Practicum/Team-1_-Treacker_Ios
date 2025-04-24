@@ -10,6 +10,7 @@ import Foundation
 public enum UIConstants {
 
     public enum CornerRadius: CGFloat {
+        case small7 = 7.0
         case small8 = 8.0
         case small12 = 12.0
         case medium16 = 16.0
@@ -59,6 +60,7 @@ public enum UIConstants {
     public enum Heights: CGFloat {
         case height1 = 1.0
         case height2 = 2.0
+        case height14 = 14.0
         case height20 = 20.0
         case height24 = 24.0
         case height40 = 40.0
@@ -78,6 +80,7 @@ public enum UIConstants {
 
     public enum Widths: CGFloat {
         case zero = 0.0
+        case width14 = 14.0
         case width24 = 24.0
         case width25 = 25.0
         case width40 = 40.0
