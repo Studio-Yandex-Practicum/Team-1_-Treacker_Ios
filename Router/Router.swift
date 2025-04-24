@@ -44,7 +44,8 @@ public final class Router: RouterProtocol {
         let viewModel = AnalyticsViewModel(
             serviceExpense: coreDataAssembly.expenseService,
             serviceCategory: coreDataAssembly.categoryService,
-            coordinator: self
+            coordinator: self,
+            settings: appSettings
         )
         let mainVC = AnalyticsViewController(viewModel: viewModel)
 
@@ -77,7 +78,11 @@ public final class Router: RouterProtocol {
         }
 
         viewModel.onOpenSettings = { [weak self, unowned mainVC] in
-            self?.presentSettings(from: mainVC)
+            self?.presentSettings(
+                from: mainVC,
+                onUpdateCurrency: {
+                viewModel.updateCurrency()
+            })
         }
         setRootViewController(UINavigationController(rootViewController: mainVC))
     }
@@ -202,11 +207,13 @@ public final class Router: RouterProtocol {
         dateRangePicker.present(above: viewController)
     }
 
-    public func presentSettings(from viewController: UIViewController) {
-        let viewModel = SettingsViewModel(onLogout: allDismiss,
+    public func presentSettings(from viewController: UIViewController, onUpdateCurrency: @escaping () -> Void) {
+        let viewModel = SettingsViewModel(
+            onLogout: allDismiss,
             coordinator: self,
             appSettingsReadable: appSettings,
-            appSettingsWritable: appSettings
+            appSettingsWritable: appSettings,
+            onUpdateCurrency: onUpdateCurrency
         )
         let view = SettingsViewController(viewModel: viewModel)
 
@@ -246,6 +253,7 @@ public final class Router: RouterProtocol {
             dateInterval: dateInterval,
             categoryReport: categoryReport,
             selectedCategory: selectedCategory,
+            settings: appSettings,
             onUpdatePersistence: onUpdatePersistence)
         let view = CategoryExpensesViewController(viewModel: viewModel)
 

@@ -16,7 +16,8 @@ final class ExpenseCellView: UITableViewCell, ReuseIdentifying {
     private var viewModel: ExpenseCellViewModel? {
         didSet {
             viewModel?.onExpense = { [weak self] expense in
-                self?.titleAmountLabel.text = String(Int(expense.amount.rub)) + GlobalConstants.symbolRUB.rawValue
+                guard let viewModel = self?.viewModel else { return }
+                self?.titleAmountLabel.text = String(Int(viewModel.settings.getAmount(expense.amount))) + viewModel.settings.currency.simbol
                 self?.titleNoteLabel.text = expense.note == "" ?
                 GlobalConstants.categoryExpensesCellNote.rawValue :
                 expense.note

@@ -7,13 +7,13 @@
 
 import Foundation
 
-public protocol AppSettingsReadable {
+public protocol AppSettingsReadable: AnyObject {
     var currency: Currencies { get }
     func getSelectedTheme() -> SystemTheme
     func getAmount(_ amount: Amount) -> Double
 }
 
-public protocol AppSettingsWritable {
+public protocol AppSettingsWritable: AnyObject {
     func updateSelectedCurrency(_ currency: Currencies)
     func updateSelectedTheme(_ theme: SystemTheme)
 }

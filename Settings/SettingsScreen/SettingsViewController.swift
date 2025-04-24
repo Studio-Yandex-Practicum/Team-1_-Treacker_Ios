@@ -13,7 +13,7 @@ public final class SettingsViewController: UIViewController {
 
     // MARK: - Private Properties
 
-    private let viewModel: SettingsViewModelProtocol
+    private var viewModel: SettingsViewModelProtocol
 
     // MARK: UIComponents: Header
 
@@ -50,7 +50,16 @@ public final class SettingsViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
+        bind()
         setupLayout()
+    }
+
+    public override func viewWillAppear(_ animated: Bool) {
+        viewModel.viewWillAppear()
+    }
+
+    override public func viewWillDisappear(_ animated: Bool) {
+        viewModel.viewWillDisappear()
     }
 
     // MARK: - Initializers
@@ -69,6 +78,12 @@ public final class SettingsViewController: UIViewController {
 
     @objc private func didBack() {
         dismiss(animated: true)
+    }
+
+    private func bind() {
+        viewModel.onSettingsCellViewModels = { [weak self] in
+            self?.tableSettings.reloadData()
+        }
     }
 }
 

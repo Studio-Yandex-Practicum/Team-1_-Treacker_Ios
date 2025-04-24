@@ -98,7 +98,7 @@ final class CellCategoryExpense: UITableViewCell, ReuseIdentifying {
         iconView.tintColor = category.iconColorPrimary
         labelName.text = category.name
         labelCount.text = category.countExpenses + " " + GlobalConstants.analyticsCellCategoryOperation.rawValue
-        labelAmount.text = category.amount + " " + GlobalConstants.symbolRUB.rawValue
+        labelAmount.text = category.amount
         labelPercent.text = category.percentageOfTotal + GlobalConstants.analyticsCellCategoryPercent.rawValue
     }
 }

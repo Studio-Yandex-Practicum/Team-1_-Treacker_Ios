@@ -58,6 +58,7 @@ public final class CategoryExpensesViewModel {
     private var coordinator: AddedExpensesCoordinatorDelegate
     private var serviceExpense: ExpenseStorageServiceProtocol
     private var dateInterval: Analytics.DateInterval
+    private var settings: AppSettingsReadable
     private var categoryReport: PeriodCategoryReport {
         didSet {
             updateTitles()
@@ -76,6 +77,7 @@ public final class CategoryExpensesViewModel {
         dateInterval: Analytics.DateInterval,
         categoryReport: PeriodCategoryReport,
         selectedCategory: ExpenseCategory,
+        settings: AppSettingsReadable,
         onUpdatePersistence: @escaping (() -> Void)
     ) {
         self.serviceExpense = serviceExpense
@@ -83,6 +85,7 @@ public final class CategoryExpensesViewModel {
         self.dateInterval = dateInterval
         self.categoryReport = categoryReport
         self.selectedCategory = selectedCategory
+        self.settings = settings
         self.onUpdatePersistence = onUpdatePersistence
     }
 
@@ -95,7 +98,7 @@ public final class CategoryExpensesViewModel {
 
     private func updateTitles() {
         if let category = categoryReport.summaries.first(where: { $0.category.id == selectedCategory.id }) {
-            amount = String(Int(category.amount)) + " " + GlobalConstants.symbolRUB.rawValue
+            amount = String(Int(category.amount)) + " " + settings.currency.simbol
             percent = String(Int(category.percent)) + GlobalConstants.analyticsCellCategoryPercent.rawValue
         }
     }
@@ -117,7 +120,7 @@ public final class CategoryExpensesViewModel {
         let cellViewModels: [[ExpenseCellViewModel]] = sortedDates.map { date in
             let expenses = groupedByDay[date]?.sorted(by: { $0.data > $1.data }) ?? []
             return expenses.enumerated().map { index, expense in
-                ExpenseCellViewModel(expense: expense, isLastExpense: index == expenses.count - 1)
+                ExpenseCellViewModel(expense: expense, isLastExpense: index == expenses.count - 1, settings: settings)
             }
         }
 
@@ -137,7 +140,7 @@ extension CategoryExpensesViewModel: CategoryExpensesViewModelProtocol {
 
     public func updateData() {
         let expenseCategories = serviceExpense.fetchExpenses(from: dateInterval.start, to: dateInterval.end, categories: nil)
-        categoryReport = PeriodCategoryReport.getPeriodCategoryReport(for: expenseCategories)
+        categoryReport = PeriodCategoryReport.getPeriodCategoryReport(for: expenseCategories, settings: settings)
         onUpdatePersistence()
     }
 

@@ -12,32 +12,46 @@ import Auth
 import UIKit
 
 public protocol SettingsViewModelProtocol {
+    var onSettingsCellViewModels: (() -> Void)? { get set }
     // State
     var settingsCellViewModels: [SettingsCellViewModel] { get }
     func didTapEditOption(indexOption: Int)
+    func viewWillAppear()
+    func viewWillDisappear()
 }
 
-public final class SettingsViewModel: SettingsViewModelProtocol {
-    //
+public final class SettingsViewModel {
+    public var onSettingsCellViewModels: (() -> Void)?
     var onTapOption: ((SettingsOption) -> Void)?
     var onLogout: (() -> Void)
+
+    var onUpdateCurrency: (() -> Void)
     // MARK: - State
-    private(set) public var settingsCellViewModels: [SettingsCellViewModel] = []
+    private(set) public var settingsCellViewModels: [SettingsCellViewModel] = [] {
+        didSet { onSettingsCellViewModels?() }
+    }
 
     // MARK: - Private Properties
 
     private let appSettingsReadable: AppSettingsReadable
     private let appSettingsWritable: AppSettingsWritable
-    weak var coordinator: AddedExpensesCoordinatorDelegate?
+    private weak var coordinator: AddedExpensesCoordinatorDelegate?
     private let settings: [SettingsOption] = [.changeTheme, .exportExpenses, .chooseCurrency, .logout]
 
     // MARK: - Initializers
 
-    public init(onLogout: @escaping (() -> Void), coordinator: AddedExpensesCoordinatorDelegate, appSettingsReadable: AppSettingsReadable, appSettingsWritable: AppSettingsWritable) {
+    public init(
+        onLogout: @escaping (() -> Void),
+        coordinator: AddedExpensesCoordinatorDelegate,
+        appSettingsReadable: AppSettingsReadable,
+        appSettingsWritable: AppSettingsWritable,
+        onUpdateCurrency: @escaping (() -> Void)
+    ) {
         self.onLogout = onLogout
         self.coordinator = coordinator
         self.appSettingsReadable = appSettingsReadable
         self.appSettingsWritable = appSettingsWritable
+        self.onUpdateCurrency = onUpdateCurrency
         updateSettingsCellViewModels()
     }
 
@@ -77,6 +91,9 @@ public final class SettingsViewModel: SettingsViewModelProtocol {
             }
         }
     }
+}
+
+extension SettingsViewModel: SettingsViewModelProtocol {
 
     public func didTapEditOption(indexOption: Int) {
         let setting: SettingsOption = settings[indexOption]
@@ -91,5 +108,13 @@ public final class SettingsViewModel: SettingsViewModelProtocol {
             AuthService.shared.logout()
             onLogout()
         }
+    }
+
+    public func viewWillAppear() {
+        updateSettingsCellViewModels()
+    }
+
+    public func viewWillDisappear() {
+        onUpdateCurrency()
     }
 }

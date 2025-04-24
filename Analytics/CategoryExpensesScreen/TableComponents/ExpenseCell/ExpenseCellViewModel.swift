@@ -20,10 +20,12 @@ public final class ExpenseCellViewModel: Identifiable {
     public let id: UUID
     public let isLastExpense: Bool
     public let expense: Expense
+    public let settings: AppSettingsReadable
 
-    init(expense: Expense, isLastExpense: Bool) {
+    init(expense: Expense, isLastExpense: Bool, settings: AppSettingsReadable) {
         self.id = expense.id
         self.expense = expense
         self.isLastExpense = isLastExpense
+        self.settings = settings
     }
 }

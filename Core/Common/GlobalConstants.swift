@@ -135,6 +135,6 @@ public enum GlobalConstants: String {
     case settingsCurrencySelectionTitle = "Выбор валюты"
 
     case settingsCurrencySelectionRUB = "Российский рубль, ₽"
-    case settingsCurrencySelectionEUR = "Доллар США, $"
-    case settingsCurrencySelectionUSD = "Евро, €"
+    case settingsCurrencySelectionEUR = "Евро, €"
+    case settingsCurrencySelectionUSD = "Доллар США, $"
 }

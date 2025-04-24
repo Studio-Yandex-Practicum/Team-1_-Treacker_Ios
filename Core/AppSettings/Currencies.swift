@@ -13,7 +13,7 @@ public enum Currencies: String {
     public var simbol: String {
         switch self {
         case .rub:
-            GlobalConstants.symbolEUR.rawValue
+            GlobalConstants.symbolRUB.rawValue
         case .eur:
             GlobalConstants.symbolEUR.rawValue
         case .usd:
