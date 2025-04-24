@@ -78,7 +78,7 @@ public final class AnalyticsViewModel {
 
     private var serviceExpense: ExpenseStorageServiceProtocol
     private var serviceCategory: CategoryStorageServiceProtocol
-    private var coordinator: AddedExpensesCoordinatorDelegate
+    private weak var coordinator: AddedExpensesCoordinatorDelegate?
 
     private let calendar = Calendar.current
     private var today: Date = Date()
@@ -414,7 +414,7 @@ extension AnalyticsViewModel: AnalyticsViewModelProtocol {
     }
 
     public func didTapOpenNewExpense() {
-        coordinator.didRequestToAddedExpensesFlow { [weak self] in
+        coordinator?.didRequestToAddedExpensesFlow { [weak self] in
             self?.updateChart()
         }
     }

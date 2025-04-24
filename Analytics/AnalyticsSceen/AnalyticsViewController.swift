@@ -96,7 +96,7 @@ public final class AnalyticsViewController: UIViewController {
     private lazy var pageControl: UIPageControl = {
         let pageControl = UIPageControl()
         pageControl.numberOfPages = viewModel.pieChartDisplayItem.count
-        pageControl.currentPage = viewModel.currentIndex
+        pageControl.currentPage = viewModel.selectedIndex
         pageControl.pageIndicatorTintColor = .lightGray
         pageControl.currentPageIndicatorTintColor = .cAccent
         pageControl.heightAnchor.constraint(equalToConstant: UIConstants.Heights.height24.rawValue).isActive = true
@@ -152,7 +152,7 @@ public final class AnalyticsViewController: UIViewController {
 
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        let indexPath = IndexPath(item: viewModel.currentIndex, section: 0)
+        let indexPath = IndexPath(item: viewModel.selectedIndex, section: 0)
         analyticsCollection.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
         pageControl.currentPage = viewModel.currentIndex
     }

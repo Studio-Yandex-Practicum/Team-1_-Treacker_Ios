@@ -20,6 +20,7 @@ public protocol SettingsViewModelProtocol {
 public final class SettingsViewModel: SettingsViewModelProtocol {
     //
     var onTapOption: ((SettingsOption) -> Void)?
+    var onLogout: (() -> Void)
     // MARK: - State
     private(set) public var settingsCellViewModels: [SettingsCellViewModel] = []
 
@@ -32,7 +33,8 @@ public final class SettingsViewModel: SettingsViewModelProtocol {
 
     // MARK: - Initializers
 
-    public init(coordinator: AddedExpensesCoordinatorDelegate, appSettingsReadable: AppSettingsReadable, appSettingsWritable: AppSettingsWritable) {
+    public init(onLogout: @escaping (() -> Void), coordinator: AddedExpensesCoordinatorDelegate, appSettingsReadable: AppSettingsReadable, appSettingsWritable: AppSettingsWritable) {
+        self.onLogout = onLogout
         self.coordinator = coordinator
         self.appSettingsReadable = appSettingsReadable
         self.appSettingsWritable = appSettingsWritable
@@ -87,6 +89,7 @@ public final class SettingsViewModel: SettingsViewModelProtocol {
             coordinator?.didRequestPresentCurrencySelection()
         case .logout:
             AuthService.shared.logout()
+            onLogout()
         }
     }
 }
