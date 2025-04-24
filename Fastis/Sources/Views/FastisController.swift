@@ -681,7 +681,7 @@ public extension FastisConfig {
 
         public var doneButtonTitle = "Done"
 
-        public var backgroundColor: UIColor = .systemBackground
+        public var backgroundColor: UIColor = .secondaryBg
 
         public var barButtonItemsColor: UIColor = .systemBlue
 

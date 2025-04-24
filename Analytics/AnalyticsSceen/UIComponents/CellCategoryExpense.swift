@@ -82,6 +82,7 @@ final class CellCategoryExpense: UITableViewCell, ReuseIdentifying {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         self.selectionStyle = .none
+        self.backgroundColor = .secondaryBg
         setupLayout()
     }
 

@@ -76,6 +76,7 @@ public final class CategoryExpensesViewController: UIViewController {
     private lazy var tableExpenses: UITableView = {
         let table = UITableView()
         table.register(ExpenseCellView.self)
+        table.backgroundColor = .secondaryBg
         table.separatorStyle = .none
         table.dataSource = self
         table.delegate = self

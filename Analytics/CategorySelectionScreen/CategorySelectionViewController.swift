@@ -52,6 +52,7 @@ public final class CategorySelectionViewController: UIViewController {
         collectionView.register(CellSelectionCategoriesView.self)
         collectionView.dataSource = self
         collectionView.delegate = self
+        collectionView.backgroundColor = .secondaryBg
         return collectionView
     }()
 
