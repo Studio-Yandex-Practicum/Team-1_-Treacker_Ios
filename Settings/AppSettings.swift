@@ -22,7 +22,7 @@ public final class AppSettings {
 extension AppSettings: AppSettingsReadable {
 
     public func getSelectedTheme() -> SystemTheme {
-        let rawValue = UserDefaults.standard.string(forKey: "selectedCurrency") ?? Currencies.rub.rawValue
+        let rawValue = UserDefaults.standard.string(forKey: "selectedTheme") ?? SystemTheme.system.rawValue
         return SystemTheme(rawValue: rawValue) ?? .system
     }
 
@@ -46,6 +46,6 @@ extension AppSettings: AppSettingsWritable {
     }
 
     public func updateSelectedTheme(_ theme: SystemTheme) {
-        UserDefaults.standard.set(theme.rawValue, forKey: "selectedCurrency")
+        UserDefaults.standard.set(theme.rawValue, forKey: "selectedTheme")
     }
 }

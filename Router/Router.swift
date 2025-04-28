@@ -145,6 +145,7 @@ public final class Router: RouterProtocol {
             categoryService: coreDataAssembly.categoryService,
             coordinator: self,
             mode: .create,
+            settings: appSettings,
             onExpenseCreated: onExpenseCreated
         )
         let addedExpensesVC = AddedExpensesViewController(viewModel: viewModel, mode: .create)
@@ -163,6 +164,7 @@ public final class Router: RouterProtocol {
             categoryService: coreDataAssembly.categoryService,
             coordinator: self,
             mode: .edit(expense: expense, category: category),
+            settings: appSettings,
             onExpenseCreated: onExpenseCreated
         )
 
@@ -222,6 +224,11 @@ public final class Router: RouterProtocol {
             appSettingsWritable: appSettings,
             onUpdateCurrency: onUpdateCurrency
         )
+
+        viewModel.onThemeChanged = { [weak self] newTheme in
+            self?.applyTheme(newTheme)
+        }
+
         let view = SettingsViewController(viewModel: viewModel)
 
         view.modalPresentationStyle = .fullScreen
@@ -282,6 +289,20 @@ public final class Router: RouterProtocol {
         window?.dismissAllPresentedViewControllers { [weak self] in
             self?.routeToAuthFlow()
         }
+    }
+
+    public func applyTheme(_ theme: SystemTheme) {
+        guard let window = window else { return }
+        let style: UIUserInterfaceStyle = (theme == .dark ? .dark : .light)
+        UIView.transition(
+            with: window,
+            duration: 0.3,
+            options: [.transitionCrossDissolve],
+            animations: {
+                window.overrideUserInterfaceStyle = style
+            },
+            completion: nil
+        )
     }
 }
 

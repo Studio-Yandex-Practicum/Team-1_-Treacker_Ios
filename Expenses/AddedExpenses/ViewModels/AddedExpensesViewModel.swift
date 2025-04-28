@@ -41,11 +41,13 @@ public protocol AddedExpensesViewModelProtocol: AnyObject {
     func didSelectCategory(at index: Int)
     func addExpense(_ expense: Expense, toCategory categoryId: UUID)
     func deleteExpense(_ expenseId: UUID)
+    func addCurrency() -> String
 }
 
 public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
 
     private weak var coordinator: AddedExpensesCoordinatorDelegate?
+    private let settings: AppSettingsReadable
 
     // MARK: - Public Property
 
@@ -104,11 +106,13 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
         categoryService: CategoryStorageServiceProtocol,
         coordinator: AddedExpensesCoordinatorDelegate,
         mode: ExpenseMode,
+        settings: AppSettingsReadable,
         onExpenseCreated: @escaping (() -> Void)
     ) {
         self.expenseService = expenseService
         self.categoryService = categoryService
         self.coordinator = coordinator
+        self.settings = settings
         self.onExpenseCreated = onExpenseCreated
 
         loadCategories()
@@ -117,7 +121,7 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
         case .create:
             break
         case let .edit(expense, category):
-            self.amount = "\(expense.amount.rub)"
+            self.amount = "\(settings.currency.simbol)"
             self.selectDate = expense.data
             selectedCategoryIndex = categories.firstIndex(of: category)
         }
@@ -174,6 +178,10 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
     public func deleteExpense(_ expenseId: UUID) {
         expenseService.deleteExpense(expenseId)
         onExpenseCreated()
+    }
+
+    public func addCurrency() -> String {
+        settings.currency.simbol
     }
 
     private func validateForm() {

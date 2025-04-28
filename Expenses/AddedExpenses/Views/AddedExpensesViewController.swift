@@ -38,7 +38,7 @@ public final class AddedExpensesViewController: UIViewController {
 
     private lazy var amountTextField = CustomTextField(
         placeholder: GlobalConstants.sum.rawValue,
-        type: .amount(currencySymbol: "₽")
+        type: .amount(currencySymbol: viewModel.addCurrency())
     )
 
     private lazy var noteTextField = CustomTextField(placeholder: GlobalConstants.note.rawValue)
