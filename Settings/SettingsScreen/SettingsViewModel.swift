@@ -8,11 +8,10 @@
 import Foundation
 import Core
 import Auth
-// TODO: Убрать UIKit когда уберу метод по обновлению темы
-import UIKit
 
 public protocol SettingsViewModelProtocol {
     var onSettingsCellViewModels: (() -> Void)? { get set }
+    var onThemeChanged: ((SystemTheme) -> Void)? { get set }
     // State
     var settingsCellViewModels: [SettingsCellViewModel] { get }
     func didTapEditOption(indexOption: Int)
@@ -30,6 +29,7 @@ public final class SettingsViewModel {
     private(set) public var settingsCellViewModels: [SettingsCellViewModel] = [] {
         didSet { onSettingsCellViewModels?() }
     }
+    public var onThemeChanged: ((SystemTheme) -> Void)?
 
     // MARK: - Private Properties
 
@@ -64,32 +64,23 @@ public final class SettingsViewModel {
         settingsCellViewModels = settings.map {
             switch $0 {
             case .changeTheme:
-                let isOn: Bool = appSettingsReadable.getSelectedTheme() == .dark ? true : false
-                return SettingsCellViewModel(option: $0, settings: appSettingsReadable, isOn: isOn, onSwitchChanged: updateInterfaceStyle)
+                let isDark = appSettingsReadable.getSelectedTheme() == .dark
+                return SettingsCellViewModel(
+                    option: $0,
+                    settings: appSettingsReadable,
+                    isOn: isDark,
+                    onSwitchChanged: self.updateTheme
+                )
             case .exportExpenses, .chooseCurrency, .logout:
                 return SettingsCellViewModel(option: $0, settings: appSettingsReadable)
             }
         }
     }
 
-    private func updateInterfaceStyle(to status: Bool) {
-        switch status {
-        case true:
-            appSettingsWritable.updateSelectedTheme(.dark)
-            // TODO: Вынести из модели, обсудить куда
-            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-                for window in windowScene.windows {
-                    window.overrideUserInterfaceStyle = .dark
-                }
-            }
-        case false:
-            appSettingsWritable.updateSelectedTheme(.system)
-            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-                for window in windowScene.windows {
-                    window.overrideUserInterfaceStyle = .unspecified
-                }
-            }
-        }
+    private func updateTheme(to isOn: Bool) {
+        let newTheme: SystemTheme = isOn ? .dark : .system
+        appSettingsWritable.updateSelectedTheme(newTheme)
+        onThemeChanged?(newTheme)
     }
 }
 
