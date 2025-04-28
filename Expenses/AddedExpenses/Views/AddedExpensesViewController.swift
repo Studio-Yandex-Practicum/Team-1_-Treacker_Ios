@@ -65,7 +65,7 @@ public final class AddedExpensesViewController: UIViewController {
     }()
 
     private lazy var addButton: UIButton = .makeButton(
-        title: .add,
+        title: getTitleAddButton(),
         target: self,
         action: #selector(addTapped)
     )
@@ -276,6 +276,13 @@ private extension AddedExpensesViewController {
         }
         return section
     }
+
+    private func getTitleAddButton() -> GlobalConstants {
+        switch mode {
+        case .create: return .add
+        case .edit: return .save
+        }
+    }
 }
 
 // MARK: - Bindings
@@ -331,14 +338,25 @@ private extension AddedExpensesViewController {
         }
 
         let amount = Amount(rub: amountValue, usd: amountValue, eur: amountValue)
-        let expense = Expense(
-            id: UUID(),
-            data: viewModel.selectDate,
-            note: noteTextField.text,
-            amount: amount
-        )
 
-        viewModel.addExpense(expense, toCategory: categoryId)
+        switch mode {
+        case .create:
+            let expense = Expense(
+                id: UUID(),
+                data: viewModel.selectDate,
+                note: noteTextField.text,
+                amount: amount
+            )
+            viewModel.addExpense(expense, toCategory: categoryId)
+        case let .edit(expense, _):
+            let expense = Expense(
+                id: expense.id,
+                data: viewModel.selectDate,
+                note: noteTextField.text,
+                amount: amount
+            )
+            viewModel.saveEditExpense(expense, toCategory: categoryId)
+        }
 
         dismiss(animated: true)
     }

@@ -55,6 +55,7 @@ public enum GlobalConstants: String {
     case sum = "Сумма"
     case note = "Примечание (необязательно)"
     case add = "Добавить"
+    case save = "Сохранить"
 
     // Editing Expenses
 

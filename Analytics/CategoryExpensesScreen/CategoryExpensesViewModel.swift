@@ -61,8 +61,13 @@ public final class CategoryExpensesViewModel {
     private var settings: AppSettingsReadable
     private var categoryReport: PeriodCategoryReport {
         didSet {
-            updateTitles()
-            updateDataTable()
+            switch categoryReport.summaries.contains(where: { $0.category == selectedCategory }) {
+            case true:
+                updateTitles()
+                updateDataTable()
+            case false:
+                updateIfDataNil()
+            }
             onCategoryReport?()
         }
     }
@@ -127,6 +132,13 @@ public final class CategoryExpensesViewModel {
         expenseHeaderViewModels = headers
         expenseCellViewModels = cellViewModels
     }
+
+    private func updateIfDataNil() {
+        expenseHeaderViewModels.removeAll()
+        expenseCellViewModels.removeAll()
+        amount.removeAll()
+        percent.removeAll()
+    }
 }
 
 // MARK: - CategorySelectionViewModelProtocol
@@ -140,7 +152,11 @@ extension CategoryExpensesViewModel: CategoryExpensesViewModelProtocol {
 
     public func updateData() {
         let expenseCategories = serviceExpense.fetchExpenses(from: dateInterval.start, to: dateInterval.end, categories: nil)
-        categoryReport = PeriodCategoryReport.getPeriodCategoryReport(for: expenseCategories, settings: settings)
+        if expenseCategories.isEmpty {
+            categoryReport = PeriodCategoryReport(summaries: [], totalAmount: 0)
+        } else {
+            categoryReport = PeriodCategoryReport.getPeriodCategoryReport(for: expenseCategories, settings: settings)
+        }
         onUpdatePersistence()
     }
 
