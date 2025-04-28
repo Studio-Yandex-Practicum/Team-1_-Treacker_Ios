@@ -145,6 +145,7 @@ public final class Router: RouterProtocol {
             categoryService: coreDataAssembly.categoryService,
             coordinator: self,
             mode: .create,
+            settings: appSettings,
             onExpenseCreated: onExpenseCreated
         )
         let addedExpensesVC = AddedExpensesViewController(viewModel: viewModel, mode: .create)
@@ -163,6 +164,7 @@ public final class Router: RouterProtocol {
             categoryService: coreDataAssembly.categoryService,
             coordinator: self,
             mode: .edit(expense: expense, category: category),
+            settings: appSettings,
             onExpenseCreated: onExpenseCreated
         )
 
