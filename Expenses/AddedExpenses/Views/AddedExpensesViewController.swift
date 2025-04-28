@@ -65,7 +65,7 @@ public final class AddedExpensesViewController: UIViewController {
     }()
 
     private lazy var addButton: UIButton = .makeButton(
-        title: .add,
+        title: getTitleAddButton(),
         target: self,
         action: #selector(addTapped)
     )
@@ -275,6 +275,13 @@ private extension AddedExpensesViewController {
             }
         }
         return section
+    }
+
+    private func getTitleAddButton() -> GlobalConstants {
+        switch mode {
+        case .create: return .add
+        case .edit: return .save
+        }
     }
 }
 
