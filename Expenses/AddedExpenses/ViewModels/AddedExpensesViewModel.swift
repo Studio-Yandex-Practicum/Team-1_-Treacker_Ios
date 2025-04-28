@@ -41,6 +41,7 @@ public protocol AddedExpensesViewModelProtocol: AnyObject {
     func didSelectCategory(at index: Int)
     func addExpense(_ expense: Expense, toCategory categoryId: UUID)
     func deleteExpense(_ expenseId: UUID)
+    func saveEditExpense(_ expense: Expense, toCategory categoryId: UUID)
 }
 
 public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
@@ -173,6 +174,12 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
 
     public func deleteExpense(_ expenseId: UUID) {
         expenseService.deleteExpense(expenseId)
+        onExpenseCreated()
+    }
+
+    public func saveEditExpense(_ expense: Expense, toCategory categoryId: UUID) {
+        expenseService.deleteExpense(expense.id)
+        expenseService.addExpense(expense, toCategory: categoryId)
         onExpenseCreated()
     }
 

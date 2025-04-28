@@ -61,12 +61,12 @@ public final class CategoryExpensesViewModel {
     private var settings: AppSettingsReadable
     private var categoryReport: PeriodCategoryReport {
         didSet {
-            switch categoryReport.summaries.isEmpty {
+            switch categoryReport.summaries.contains(where: { $0.category == selectedCategory }) {
             case true:
-                updateIfDataNil()
-            case false:
                 updateTitles()
                 updateDataTable()
+            case false:
+                updateIfDataNil()
             }
             onCategoryReport?()
         }

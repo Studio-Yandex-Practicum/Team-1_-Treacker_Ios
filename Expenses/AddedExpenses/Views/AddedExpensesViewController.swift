@@ -331,14 +331,25 @@ private extension AddedExpensesViewController {
         }
 
         let amount = Amount(rub: amountValue, usd: amountValue, eur: amountValue)
-        let expense = Expense(
-            id: UUID(),
-            data: viewModel.selectDate,
-            note: noteTextField.text,
-            amount: amount
-        )
 
-        viewModel.addExpense(expense, toCategory: categoryId)
+        switch mode {
+        case .create:
+            let expense = Expense(
+                id: UUID(),
+                data: viewModel.selectDate,
+                note: noteTextField.text,
+                amount: amount
+            )
+            viewModel.addExpense(expense, toCategory: categoryId)
+        case let .edit(expense, _):
+            let expense = Expense(
+                id: expense.id,
+                data: viewModel.selectDate,
+                note: noteTextField.text,
+                amount: amount
+            )
+            viewModel.saveEditExpense(expense, toCategory: categoryId)
+        }
 
         dismiss(animated: true)
     }
