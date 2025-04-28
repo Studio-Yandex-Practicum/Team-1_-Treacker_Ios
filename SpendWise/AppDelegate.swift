@@ -32,5 +32,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
     }
-
 }

@@ -9,6 +9,8 @@ import UIKit
 import Router
 import UIComponents
 import Persistence
+import Core
+import Settings
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -21,9 +23,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         let coreDataAssembly = CoreDataAssembly()
 
+        let initialTheme = AppSettings().getSelectedTheme()
+
+        let defaults = UserDefaults.standard
+        if defaults.object(forKey: "selectedTheme") != nil {
+            let initialTheme = initialTheme
+            window.overrideUserInterfaceStyle = (initialTheme == .dark ? .dark : .light)
+        }
+
         let router = Router(coreDataAssembly: coreDataAssembly)
         router.startApp(using: window)
-
+        
         self.window = window
     }
 }
