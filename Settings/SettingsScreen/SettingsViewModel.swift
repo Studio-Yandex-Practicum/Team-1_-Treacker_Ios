@@ -13,6 +13,7 @@ public protocol SettingsViewModelProtocol {
     var onSettingsCellViewModels: (() -> Void)? { get set }
     var onThemeChanged: ((SystemTheme) -> Void)? { get set }
     var onExportData: ((URL) -> Void)? { get set }
+    var isDarkModeEnabled: (() -> Bool)? { get set }
     // State
     var settingsCellViewModels: [SettingsCellViewModel] { get }
     func didTapEditOption(indexOption: Int)
@@ -22,10 +23,13 @@ public protocol SettingsViewModelProtocol {
 
 public final class SettingsViewModel {
     public var onSettingsCellViewModels: (() -> Void)?
+    public var isDarkModeEnabled: (() -> Bool)?
+
     var onTapOption: ((SettingsOption) -> Void)?
     var onLogout: (() -> Void)
 
     var onUpdateCurrency: (() -> Void)
+
     // MARK: - State
     private(set) public var settingsCellViewModels: [SettingsCellViewModel] = [] {
         didSet { onSettingsCellViewModels?() }
@@ -70,7 +74,7 @@ public final class SettingsViewModel {
         settingsCellViewModels = settings.map {
             switch $0 {
             case .changeTheme:
-                let isDark = appSettingsReadable.getSelectedTheme() == .dark
+                let isDark = isDarkModeEnabled?()
                 return SettingsCellViewModel(
                     option: $0,
                     settings: appSettingsReadable,
