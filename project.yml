@@ -110,6 +110,7 @@ targets:
       - target: Core
       - target: Persistence
       - target: Auth
+      - target: Networking
     bundleId: KV.Lyashenko.SpendWise.Expenses
     deploymentTarget: "18.0"
     settings:

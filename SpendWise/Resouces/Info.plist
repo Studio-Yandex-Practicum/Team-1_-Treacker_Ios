@@ -35,6 +35,11 @@
         <key>CFBundleName</key>
         <string>SpendWise</string>
 
+        <key>RAPIDAPI_KEY</key>
+        <string>$(RAPIDAPI_KEY)</string>
+        <key>RAPIDAPI_HOST</key>
+        <string>$(RAPIDAPI_HOST)</string>
+
         <key>CFBundleURLTypes</key>
             <array>
                 <dict>

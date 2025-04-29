@@ -8,6 +8,7 @@
 import Foundation
 import Persistence
 import Core
+import Networking
 
 public enum ExpenseMode {
     case create
@@ -48,6 +49,7 @@ public protocol AddedExpensesViewModelProtocol: AnyObject {
 public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
 
     private weak var coordinator: AddedExpensesCoordinatorDelegate?
+    private let converter: CurrencyConverterService
     private let settings: AppSettingsReadable
 
     // MARK: - Public Property
@@ -115,6 +117,7 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
         self.coordinator = coordinator
         self.settings = settings
         self.onExpenseCreated = onExpenseCreated
+        self.converter = CurrencyConverterService()
 
         loadCategories()
 

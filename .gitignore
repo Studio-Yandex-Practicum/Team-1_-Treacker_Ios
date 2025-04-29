@@ -42,3 +42,6 @@ fastlane/screenshots
 !*.xcworkspace/contents.xcworkspacedata
 /*.gcno
 **/xcshareddata/WorkspaceSettings.xcsettings
+
+# Ключи для API
+Keys.xcconfig

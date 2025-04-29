@@ -79,6 +79,12 @@ public enum GlobalConstants: String {
     case wrongPassword = "Неверный пароль"
     case emailInUse = "Email уже используется"
     case invalidEmail = "Неверный формат email"
+    case invalidURL = "Неверный адрес сервиса."
+    case requestFailed = "Ошибка запроса:"
+    case invalidResponse = "Неверный ответ от сервера."
+    case httpError = "Сервер вернул ошибку"
+    case emptyData = "Сервер вернул пустые данные."
+    case decodingFailed = "Не удалось обработать данные от сервера."
 
     // Alert
 

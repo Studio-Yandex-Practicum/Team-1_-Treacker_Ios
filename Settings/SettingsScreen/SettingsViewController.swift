@@ -8,6 +8,7 @@
 import UIKit
 import Core
 import UIComponents
+import Networking
 
 public final class SettingsViewController: UIViewController {
 
