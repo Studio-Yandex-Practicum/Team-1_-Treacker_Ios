@@ -2,7 +2,7 @@ name: SpendWise
 options:
     bundleIdPrefix: KV.Lyashenko.SpendWise
     deploymentTarget:
-    iOS: "18.0"
+    iOS: "15.0"
 
 settings:
     SUPPORTED_DEVICE_FAMILIES: 1
@@ -48,7 +48,7 @@ targets:
       - target: Networking
       - target: Fastis
     bundleId: KV.Lyashenko.SpendWise.SpendWise
-    deploymentTarget: "18.0"
+    deploymentTarget: "15.0"
     settings:
         base:
           PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise'
@@ -70,7 +70,7 @@ targets:
         excludes:
           - Supporting SpendWise/Resouces/Info.plist
     bundleId: KV.Lyashenko.SpendWise.Core
-    deploymentTarget: "18.0"
+    deploymentTarget: "15.0"
     settings:
         base:
           PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Core'
@@ -93,7 +93,7 @@ targets:
       - package: GoogleSignIn
         product: GoogleSignInSwift
     bundleId: KV.Lyashenko.SpendWise.Auth
-    deploymentTarget: "18.0"
+    deploymentTarget: "15.0"
     settings:
         base:
           PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Auth'
@@ -111,7 +111,7 @@ targets:
       - target: Persistence
       - target: Auth
     bundleId: KV.Lyashenko.SpendWise.Expenses
-    deploymentTarget: "18.0"
+    deploymentTarget: "15.0"
     settings:
         base:
           PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Expenses'
@@ -129,7 +129,7 @@ targets:
       - target: UIComponents
       - target: Persistence
     bundleId: KV.Lyashenko.SpendWise.Analytics
-    deploymentTarget: "18.0"
+    deploymentTarget: "15.0"
     settings:
         base:
           PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Analytics'
@@ -147,7 +147,7 @@ targets:
       - target: UIComponents
       - target: Auth
     bundleId: KV.Lyashenko.SpendWise.Settings
-    deploymentTarget: "18.0"
+    deploymentTarget: "15.0"
     settings:
         base:
           PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Settings'
@@ -163,7 +163,7 @@ targets:
     dependencies:
       - target: Core
     bundleId: KV.Lyashenko.SpendWise.UIComponents
-    deploymentTarget: "18.0"
+    deploymentTarget: "15.0"
     settings:
         base:
           PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.UIComponents'
@@ -179,7 +179,7 @@ targets:
     dependencies:
       - target: Core
     bundleId: KV.Lyashenko.SpendWise.Persistence
-    deploymentTarget: "18.0"
+    deploymentTarget: "15.0"
     settings:
         base:
           PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Persistence'
@@ -200,7 +200,7 @@ targets:
       - target: Fastis
       - target: Settings
     bundleId: KV.Lyashenko.SpendWise.Router
-    deploymentTarget: "18.0"
+    deploymentTarget: "15.0"
     settings:
         base:
           PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Router'
@@ -216,7 +216,7 @@ targets:
     dependencies:
       - target: Core
     bundleId: KV.Lyashenko.SpendWise.Networking
-    deploymentTarget: "18.0"
+    deploymentTarget: "15.0"
     settings:
         base:
           PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Networking'
@@ -235,7 +235,7 @@ targets:
       - package: JTAppleCalendar
       - package: PrettyCards
     bundleId: KV.Lyashenko.SpendWise.Fastis
-    deploymentTarget: "18.0"
+    deploymentTarget: "15.0"
     settings:
         base:
           PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Fastis'
