@@ -93,6 +93,21 @@ public final class SettingsViewController: UIViewController {
             let activityVC = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
             self?.present(activityVC, animated: true)
         }
+
+        viewModel.onTapedLogout = { [weak self] in
+            guard let self else { return }
+            AlertService.present(
+                on: self,
+                title: .alertLogoutTitle,
+                message: .none,
+                actions: [
+                    AlertAction(title: GlobalConstants.alertLogoutExit.rawValue, style: .destructive, handler: {
+                        self.viewModel.logout()
+                    }),
+                    AlertAction(title: GlobalConstants.alertLogoutStay.rawValue, style: .cancel) {}
+                ]
+            )
+        }
     }
 }
 

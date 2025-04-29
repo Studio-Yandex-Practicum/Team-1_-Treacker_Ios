@@ -13,17 +13,21 @@ public protocol SettingsViewModelProtocol {
     var onSettingsCellViewModels: (() -> Void)? { get set }
     var onThemeChanged: ((SystemTheme) -> Void)? { get set }
     var onExportData: ((URL) -> Void)? { get set }
+    var onTapedLogout: (() -> Void)? { get set }
+
     var isDarkModeEnabled: (() -> Bool)? { get set }
     // State
     var settingsCellViewModels: [SettingsCellViewModel] { get }
     func didTapEditOption(indexOption: Int)
     func viewWillAppear()
     func viewWillDisappear()
+    func logout()
 }
 
 public final class SettingsViewModel {
     public var onSettingsCellViewModels: (() -> Void)?
     public var isDarkModeEnabled: (() -> Bool)?
+    public var onTapedLogout: (() -> Void)?
 
     var onTapOption: ((SettingsOption) -> Void)?
     var onLogout: (() -> Void)
@@ -152,8 +156,7 @@ extension SettingsViewModel: SettingsViewModelProtocol {
         case .chooseCurrency:
             coordinator?.didRequestPresentCurrencySelection()
         case .logout:
-            AuthService.shared.logout()
-            onLogout()
+            onTapedLogout?()
         }
     }
 
@@ -163,5 +166,10 @@ extension SettingsViewModel: SettingsViewModelProtocol {
 
     public func viewWillDisappear() {
         onUpdateCurrency()
+    }
+
+    public func logout() {
+        AuthService.shared.logout()
+        onLogout()
     }
 }
