@@ -14,6 +14,7 @@ public protocol CoreDataAssemblyProtocol {
 
 public protocol CategoryStorageServiceProtocol {
     func fetchCategories() -> [ExpenseCategory]
+    func fetchCategoriesWithExpenses() -> [ExpenseCategory]
     func addCategory(_ category: ExpenseCategory)
     func deleteCategory(_ categoryId: UUID)
 }

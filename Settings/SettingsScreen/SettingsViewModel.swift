@@ -35,6 +35,7 @@ public final class SettingsViewModel {
 
     private let appSettingsReadable: AppSettingsReadable
     private let appSettingsWritable: AppSettingsWritable
+    private let storageCategoryService :CategoryStorageServiceProtocol
     private weak var coordinator: AddedExpensesCoordinatorDelegate?
     private let settings: [SettingsOption] = [.changeTheme, .exportExpenses, .chooseCurrency, .logout]
 
@@ -45,12 +46,14 @@ public final class SettingsViewModel {
         coordinator: AddedExpensesCoordinatorDelegate,
         appSettingsReadable: AppSettingsReadable,
         appSettingsWritable: AppSettingsWritable,
+        storageCategoryService :CategoryStorageServiceProtocol,
         onUpdateCurrency: @escaping (() -> Void)
     ) {
         self.onLogout = onLogout
         self.coordinator = coordinator
         self.appSettingsReadable = appSettingsReadable
         self.appSettingsWritable = appSettingsWritable
+        self.storageCategoryService = storageCategoryService
         self.onUpdateCurrency = onUpdateCurrency
         updateSettingsCellViewModels()
     }
