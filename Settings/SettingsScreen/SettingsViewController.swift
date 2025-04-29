@@ -87,6 +87,11 @@ public final class SettingsViewController: UIViewController {
 
         viewModel.isDarkModeEnabled = { [weak self] in
             self?.traitCollection.userInterfaceStyle == .dark
+		}
+
+        viewModel.onExportData = { [weak self] fileURL in
+            let activityVC = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
+            self?.present(activityVC, animated: true)
         }
 
         viewModel.onTapedLogout = { [weak self] in

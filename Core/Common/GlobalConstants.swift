@@ -142,4 +142,7 @@ public enum GlobalConstants: String {
     case settingsCurrencySelectionRUB = "Российский рубль, ₽"
     case settingsCurrencySelectionEUR = "Евро, €"
     case settingsCurrencySelectionUSD = "Доллар США, $"
+
+    case settingsTitleExpert = "Категория,Цвет BG,Цвет текста,Иконка,Дата,Описание,RUB,USD,EUR"
+    case settingsNameExport = "SpendWiseFullExport.csv"
 }

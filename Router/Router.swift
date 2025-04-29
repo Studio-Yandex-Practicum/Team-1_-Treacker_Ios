@@ -222,6 +222,7 @@ public final class Router: RouterProtocol {
             coordinator: self,
             appSettingsReadable: appSettings,
             appSettingsWritable: appSettings,
+            storageCategoryService: coreDataAssembly.categoryService,
             onUpdateCurrency: onUpdateCurrency
         )
 
