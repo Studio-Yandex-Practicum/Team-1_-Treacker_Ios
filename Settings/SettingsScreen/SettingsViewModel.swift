@@ -12,6 +12,7 @@ import Auth
 public protocol SettingsViewModelProtocol {
     var onSettingsCellViewModels: (() -> Void)? { get set }
     var onThemeChanged: ((SystemTheme) -> Void)? { get set }
+    var onExportData: ((URL) -> Void)? { get set }
     // State
     var settingsCellViewModels: [SettingsCellViewModel] { get }
     func didTapEditOption(indexOption: Int)
@@ -30,6 +31,8 @@ public final class SettingsViewModel {
         didSet { onSettingsCellViewModels?() }
     }
     public var onThemeChanged: ((SystemTheme) -> Void)?
+    public var onExportData: ((URL) -> Void)?
+
 
     // MARK: - Private Properties
 
@@ -85,6 +88,45 @@ public final class SettingsViewModel {
         appSettingsWritable.updateSelectedTheme(newTheme)
         onThemeChanged?(newTheme)
     }
+
+    private func exportData() {
+        let categories = storageCategoryService.fetchCategoriesWithExpenses()
+
+        let csvLines = prepareCSVLines(from: categories)
+
+        let csvString = csvLines.joined(separator: "\n")
+        let fileName = GlobalConstants.settingsNameExport.rawValue
+        let tempDirectory = FileManager.default.temporaryDirectory
+        let fileURL = tempDirectory.appendingPathComponent(fileName)
+
+        do {
+            try csvString.write(to: fileURL, atomically: true, encoding: .utf8)
+            Logger.shared.log(.info, message: "✅ Файл экспортирован в \(fileURL)")
+            onExportData?(fileURL)
+        } catch {
+            Logger.shared.log(.error, message: "❌ Ошибка записи файла: \(error.localizedDescription)")
+        }
+    }
+
+    private func prepareCSVLines(from categories: [ExpenseCategory]) -> [String] {
+        var csvLines: [String] = []
+        csvLines.append(GlobalConstants.settingsTitleExpert.rawValue)
+
+        for category in categories {
+            if category.expense.isEmpty {
+                let line = "\(category.name),\(category.colorBgName),\(category.colorPrimaryName),\(category.nameIcon),,,,,"
+                csvLines.append(line)
+            } else {
+                for expense in category.expense {
+                    let dateStr = DateFormatter.localizedString(from: expense.data, dateStyle: .short, timeStyle: .none)
+                    let note = expense.note ?? ""
+                    let line = "\(category.name),\(category.colorBgName),\(category.colorPrimaryName),\(category.nameIcon),\(dateStr),\(note),\(expense.amount.rub),\(expense.amount.usd),\(expense.amount.eur)"
+                    csvLines.append(line)
+                }
+            }
+        }
+        return csvLines
+    }
 }
 
 extension SettingsViewModel: SettingsViewModelProtocol {
@@ -95,7 +137,7 @@ extension SettingsViewModel: SettingsViewModelProtocol {
         case .changeTheme:
             return
         case .exportExpenses:
-            return
+            exportData()
         case .chooseCurrency:
             coordinator?.didRequestPresentCurrencySelection()
         case .logout:

@@ -84,6 +84,10 @@ public final class SettingsViewController: UIViewController {
         viewModel.onSettingsCellViewModels = { [weak self] in
             self?.tableSettings.reloadData()
         }
+        viewModel.onExportData = { [weak self] fileURL in
+            let activityVC = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
+            self?.present(activityVC, animated: true)
+        }
     }
 }
 
