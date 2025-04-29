@@ -88,6 +88,26 @@ public final class SettingsViewController: UIViewController {
 
         viewModel.isDarkModeEnabled = { [weak self] in
             self?.traitCollection.userInterfaceStyle == .dark
+		}
+
+        viewModel.onExportData = { [weak self] fileURL in
+            let activityVC = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
+            self?.present(activityVC, animated: true)
+        }
+
+        viewModel.onTapedLogout = { [weak self] in
+            guard let self else { return }
+            AlertService.present(
+                on: self,
+                title: .alertLogoutTitle,
+                message: .none,
+                actions: [
+                    AlertAction(title: GlobalConstants.alertLogoutExit.rawValue, style: .destructive, handler: {
+                        self.viewModel.logout()
+                    }),
+                    AlertAction(title: GlobalConstants.alertLogoutStay.rawValue, style: .cancel) {}
+                ]
+            )
         }
     }
 }

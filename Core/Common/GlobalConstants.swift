@@ -101,6 +101,10 @@ public enum GlobalConstants: String {
     case checkMail = "Проверьте почту для сброса пароля"
     case alertPlaceholder = "Будем честны, будут деньги - будет фича!"
 
+    case alertLogoutTitle = "Выйти из аккаунта?"
+    case alertLogoutStay = "Остаться"
+    case alertLogoutExit = "Выйти"
+
     // Calendar
 
     case yesterday = "Вчера"
@@ -144,4 +148,7 @@ public enum GlobalConstants: String {
     case settingsCurrencySelectionRUB = "Российский рубль, ₽"
     case settingsCurrencySelectionEUR = "Евро, €"
     case settingsCurrencySelectionUSD = "Доллар США, $"
+
+    case settingsTitleExpert = "Категория,Цвет BG,Цвет текста,Иконка,Дата,Описание,RUB,USD,EUR"
+    case settingsNameExport = "SpendWiseFullExport.csv"
 }
