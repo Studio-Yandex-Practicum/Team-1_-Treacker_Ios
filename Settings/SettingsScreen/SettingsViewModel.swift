@@ -42,9 +42,17 @@ public final class SettingsViewModel {
 
     private let appSettingsReadable: AppSettingsReadable
     private let appSettingsWritable: AppSettingsWritable
-    private let storageCategoryService :CategoryStorageServiceProtocol
+    private let storageCategoryService: CategoryStorageServiceProtocol
     private weak var coordinator: AddedExpensesCoordinatorDelegate?
     private let settings: [SettingsOption] = [.changeTheme, .exportExpenses, .chooseCurrency, .logout]
+
+    private lazy var dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .none
+        formatter.locale = Locale.current
+        return formatter
+    }()
 
     // MARK: - Initializers
 
@@ -53,7 +61,7 @@ public final class SettingsViewModel {
         coordinator: AddedExpensesCoordinatorDelegate,
         appSettingsReadable: AppSettingsReadable,
         appSettingsWritable: AppSettingsWritable,
-        storageCategoryService :CategoryStorageServiceProtocol,
+        storageCategoryService: CategoryStorageServiceProtocol,
         onUpdateCurrency: @escaping (() -> Void)
     ) {
         self.onLogout = onLogout
@@ -122,7 +130,7 @@ public final class SettingsViewModel {
                 csvLines.append(line)
             } else {
                 for expense in category.expense {
-                    let dateStr = DateFormatter.localizedString(from: expense.data, dateStyle: .short, timeStyle: .none)
+                    let dateStr = dateFormatter.string(from: expense.data)
                     let note = expense.note ?? ""
                     let line = "\(category.name),\(category.colorBgName),\(category.colorPrimaryName),\(category.nameIcon),\(dateStr),\(note),\(expense.amount.rub),\(expense.amount.usd),\(expense.amount.eur)"
                     csvLines.append(line)
