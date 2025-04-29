@@ -37,7 +37,6 @@ public final class SettingsViewModel {
     public var onThemeChanged: ((SystemTheme) -> Void)?
     public var onExportData: ((URL) -> Void)?
 
-
     // MARK: - Private Properties
 
     private let appSettingsReadable: AppSettingsReadable
