@@ -61,8 +61,8 @@ public final class AnalyticsViewController: UIViewController {
 
     // MARK: - SegmentControl
 
-    private lazy var timePeriod = UITimePeriodSegmentControl { period in
-        self.didTapSegment(period: period)
+    private lazy var timePeriod = UITimePeriodSegmentControl { [weak self] period in
+        self?.didTapSegment(period: period)
     }
 
     // MARK: - Analytics
