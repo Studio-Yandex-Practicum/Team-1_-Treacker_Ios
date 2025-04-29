@@ -84,6 +84,10 @@ public final class SettingsViewController: UIViewController {
         viewModel.onSettingsCellViewModels = { [weak self] in
             self?.tableSettings.reloadData()
         }
+
+        viewModel.isDarkModeEnabled = { [weak self] in
+            self?.traitCollection.userInterfaceStyle == .dark
+        }
     }
 }
 
