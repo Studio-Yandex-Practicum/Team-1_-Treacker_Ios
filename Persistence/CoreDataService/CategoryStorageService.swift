@@ -25,6 +25,14 @@ final class CategoryStorageService: CategoryStorageServiceProtocol {
         return convertCategories(from: results)
     }
 
+    func fetchCategoriesWithExpenses() -> [ExpenseCategory] {
+        let sortDescriptor = NSSortDescriptor(key: "name", ascending: false)
+
+        let results: [CategoryCD] = coreDataManager.fetch(predicate: nil, sortDescriptors: [sortDescriptor])
+
+        return convertCategoriesWithExpenses(from: results)
+    }
+
     func addCategory(_ category: ExpenseCategory) {
         let predicate = NSPredicate(format: "name == %@", category.name)
         let categories: [CategoryCD] = coreDataManager.fetch(predicate: predicate, sortDescriptors: nil)
@@ -76,6 +84,54 @@ final class CategoryStorageService: CategoryStorageServiceProtocol {
                 colorPrimaryName: colorPrimaryName,
                 nameIcon: nameIcon,
                 expense: []
+            )
+
+            categories.append(category)
+        }
+
+        return categories
+    }
+
+    private func convertCategoriesWithExpenses(from: [CategoryCD]) -> [ExpenseCategory] {
+        var categories: [ExpenseCategory] = []
+
+        for categoryCD in from {
+            guard let categoryId = categoryCD.id,
+                  let name = categoryCD.name,
+                  let colorBgName = categoryCD.colorBgName,
+                  let colorPrimaryName = categoryCD.colorPrimaryName,
+                  let nameIcon = categoryCD.nameIcon
+            else {
+                continue
+            }
+
+            let expensesCD = (categoryCD.expense as? Set<ExpenseCD>) ?? []
+            let expenses: [Expense] = expensesCD.compactMap { expenseCD in
+                guard let id = expenseCD.id,
+                      let date = expenseCD.date,
+                      let amount = expenseCD.amount else {
+                    return nil
+                }
+
+                return Expense(
+                    id: id,
+                    data: date,
+                    note: expenseCD.note,
+                    amount: Amount(
+                        rub: amount.rub,
+                        usd: amount.usd,
+                        eur: amount.eur
+                    )
+                )
+            }
+
+            let category = ExpenseCategory(
+                id: categoryId,
+                name: name,
+                colorBgName: colorBgName,
+                colorPrimaryName: colorPrimaryName,
+                nameIcon: nameIcon,
+                expense: expenses
             )
 
             categories.append(category)
