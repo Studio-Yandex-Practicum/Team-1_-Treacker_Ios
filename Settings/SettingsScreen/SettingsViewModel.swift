@@ -89,9 +89,9 @@ public final class SettingsViewModel {
                 return SettingsCellViewModel(
                     option: $0,
                     settings: appSettingsReadable,
-                    isOn: isDark,
-                    onSwitchChanged: self.updateTheme
-                )
+                    isOn: isDark) { [weak self] status in
+                        self?.updateTheme(to: status)
+                    }
             case .exportExpenses, .chooseCurrency, .logout:
                 return SettingsCellViewModel(option: $0, settings: appSettingsReadable)
             }

@@ -9,11 +9,11 @@ import Core
 
 public final class SettingsCellViewModel: Identifiable {
     let option: SettingsOption
-    var settings: AppSettingsReadable
+    weak var settings: AppSettingsReadable?
     var isOn: Bool?
     var onSwitchChanged: ((Bool) -> Void)?
 
-    init(option: SettingsOption, settings: AppSettingsReadable, isOn: Bool? = nil, onSwitchChanged: ((Bool) -> Void)? = nil) {
+    init(option: SettingsOption, settings: AppSettingsReadable?, isOn: Bool? = nil, onSwitchChanged: ((Bool) -> Void)? = nil) {
         self.option = option
         self.settings = settings
         self.isOn = isOn
