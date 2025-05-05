@@ -13,6 +13,7 @@ public protocol CoreDataAssemblyProtocol {
 }
 
 public protocol CategoryStorageServiceProtocol {
+    func preloadDefaultCategories()
     func fetchCategories() -> [ExpenseCategory]
     func fetchCategoriesWithExpenses() -> [ExpenseCategory]
     func addCategory(_ category: ExpenseCategory)
