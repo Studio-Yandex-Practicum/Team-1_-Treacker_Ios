@@ -8,5 +8,5 @@
 import Foundation
 
 public protocol NetworkService {
-    func request<T: Decodable>(endpoint: Endpoint, completion: @escaping (Result<T, NetworkError>) -> Void)
+    func request<T: Decodable>(url: URL, completion: @escaping (Result<T, NetworkError>) -> Void)
 }
