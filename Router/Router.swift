@@ -49,39 +49,43 @@ public final class Router: RouterProtocol {
         )
         let mainVC = AnalyticsViewController(viewModel: viewModel)
 
-        viewModel.onOpenCategorySelection = { [weak self, unowned mainVC] categories in
+        viewModel.onOpenCategorySelection = { [weak self, weak mainVC, weak viewModel] categories in
+            guard let mainVC else { return }
             self?.presentCategorySelection(
                 from: mainVC,
                 selectedCategories: categories,
                 onApply: { categories in
-                    viewModel.updateSelectedCategories(categories)
+                    viewModel?.updateSelectedCategories(categories)
                 }
             )
         }
 
-        viewModel.onOpenDateInterval = { [weak self, unowned mainVC] in
+        viewModel.onOpenDateInterval = { [weak self, weak mainVC, weak viewModel] in
+            guard let mainVC else { return }
             self?.presentDateIntervalViewController(from: mainVC, onApply: { dateInterval in
-                viewModel.updateCustomDateInterval(to: dateInterval)
+                viewModel?.updateCustomDateInterval(to: dateInterval)
             })
         }
 
-        viewModel.onOpenCategoryExpenses = { [weak self, unowned mainVC] dateInterval, categoryReport, category in
+        viewModel.onOpenCategoryExpenses = { [weak self, weak mainVC, weak viewModel] dateInterval, categoryReport, category in
+            guard let mainVC else { return }
             self?.presentCategoryExpenses(
                 from: mainVC,
                 dateInterval: dateInterval,
                 categoryReport: categoryReport,
                 selectedCategory: category,
                 onUpdatePersistence: {
-                    viewModel.updateDataPersistence()
+                    viewModel?.updateDataPersistence()
                 }
             )
         }
 
-        viewModel.onOpenSettings = { [weak self, unowned mainVC] in
+        viewModel.onOpenSettings = { [weak self, weak mainVC, weak viewModel] in
+            guard let mainVC else { return }
             self?.presentSettings(
                 from: mainVC,
                 onUpdateCurrency: {
-                viewModel.updateCurrency()
+                viewModel?.updateCurrency()
             })
         }
         setRootViewController(UINavigationController(rootViewController: mainVC))
