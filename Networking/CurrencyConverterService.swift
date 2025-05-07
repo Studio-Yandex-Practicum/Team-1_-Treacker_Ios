@@ -8,7 +8,16 @@
 import Foundation
 import Core
 
-public final class CurrencyConverterService {
+public protocol CurrencyConverterServiceProtocol {
+    func convert(from base: Currencies,
+                 to target: Currencies,
+                 amount: Double,
+                 date: String?,
+                 completion: @escaping (Result<Double, NetworkError>) -> Void
+    )
+}
+
+public final class CurrencyConverterService: CurrencyConverterServiceProtocol {
 
     // MARK: - Private Properties
 
@@ -18,17 +27,16 @@ public final class CurrencyConverterService {
 
     // MARK: - Init
 
-    public init(networkService: NetworkService = NetworkServiceImpl(),
-    ) {
+    public init(networkService: NetworkService = NetworkServiceImpl()) {
         self.network = networkService
     }
 
     // MARK: - Public Method
 
-    func convert(from base: Currencies,
+    public func convert(from base: Currencies,
                  to target: Currencies,
                  amount: Double,
-                 date: String? = nil,
+                 date: String?,
                  completion: @escaping (Result<Double, NetworkError>) -> Void
     ) {
         fetchRates(base: base, date: date) { result in

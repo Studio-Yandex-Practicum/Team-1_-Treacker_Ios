@@ -48,9 +48,7 @@ public protocol AddedExpensesViewModelProtocol: AnyObject {
 
 public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
 
-    private weak var coordinator: AddedExpensesCoordinatorDelegate?
-    private let converter: CurrencyConverterService
-    private let settings: AppSettingsReadable
+
 
     // MARK: - Public Property
 
@@ -63,6 +61,17 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
 
     private let expenseService: ExpenseStorageServiceProtocol
     private let categoryService: CategoryStorageServiceProtocol
+    private weak var coordinator: AddedExpensesCoordinatorDelegate?
+    private let converter: CurrencyConverterServiceProtocol
+    private let settings: AppSettingsReadable
+
+    private let dateFormatter: DateFormatter = {
+        let date = DateFormatter()
+        date.locale = Locale(identifier: "ru_RU")
+        date.timeZone = TimeZone.current
+        date.dateFormat = "yyyy-MMMM-dd"
+        return date
+    }()
 
     public var categoriesCount: Int {
         categories.count
@@ -126,7 +135,7 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
             break
         case let .edit(expense, category):
             self.amount = "\(settings.currency.simbol)"
-            self.selectDate = expense.data
+            self.selectDate = expense.date
             selectedCategoryIndex = categories.firstIndex(of: category)
         }
     }
@@ -175,8 +184,37 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
     }
 
     public func addExpense(_ expense: Expense, toCategory categoryId: UUID) {
-        expenseService.addExpense(expense, toCategory: categoryId)
-        onExpenseCreated()
+        let group = DispatchGroup()
+        var currency: [Currencies] = []
+        var amount: [Double] = Array(repeating: 0, count: currency.count)
+
+        if settings.currency == .rub {
+            currency.append(.eur)
+            currency.append(.usd)
+        }
+
+        for index in currency.indices {
+            group.enter()
+            converter.convert(
+                from: .rub,
+                to: currency[index],
+                amount: expense.amount.rub,
+                date: dateFormatter.string(from: expense.date)
+            ) { result in
+                switch result {
+                case .success(let value):
+                    amount[index] = value
+                case .failure(let error):
+                    Logger.shared.log(.error, message: "No currency")
+                }
+                group.leave()
+            }
+        }
+
+        group.notify(queue: .main) {
+            self.expenseService.addExpense(expense, toCategory: categoryId)
+            self.onExpenseCreated()
+        }
     }
 
     public func deleteExpense(_ expenseId: UUID) {
