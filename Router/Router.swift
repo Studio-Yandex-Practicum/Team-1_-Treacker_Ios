@@ -147,7 +147,6 @@ public final class Router: RouterProtocol {
         let viewModel = AddedExpensesViewModel(
             expenseService: coreDataAssembly.expenseService,
             categoryService: coreDataAssembly.categoryService,
-            currencyConverterService: <#T##any CurrencyConverterServiceProtocol#>
             coordinator: self,
             mode: .create,
             settings: appSettings,

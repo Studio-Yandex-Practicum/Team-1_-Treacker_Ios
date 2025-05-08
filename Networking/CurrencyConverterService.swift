@@ -45,7 +45,6 @@ public final class CurrencyConverterService: CurrencyConverterServiceProtocol {
                 let key = target.rawValue.lowercased()
 
                 if let rate = ratesModel.rates[key] {
-                    print(amount * rate)
                     completion(.success(amount * rate))
                 } else {
                     completion(.failure(
@@ -72,7 +71,6 @@ public final class CurrencyConverterService: CurrencyConverterServiceProtocol {
         let versionDate = date ?? latestDate
         let base = base.rawValue.lowercased()
         let urlString = "\(baseURL)@\(versionDate)/v1/currencies/\(base).json"
-
         guard let url = URL(string: urlString) else {
             completion(.failure(.invalidURL))
             return
