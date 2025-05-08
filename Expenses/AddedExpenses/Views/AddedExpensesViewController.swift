@@ -127,7 +127,7 @@ extension AddedExpensesViewController {
             titleLabel.text = GlobalConstants.addExpense.rawValue
             deleteButton.isHidden = true
         case let .edit(expense, _):
-            amountTextField.text = String(Int(expense.amount.rub))
+            amountTextField.text = String(Int(viewModel.getAmount(expense.amount)))
             noteTextField.text = expense.note
             amountTextField.updateFloatingLabel(animated: false)
             noteTextField.updateFloatingLabel(animated: false)
@@ -341,21 +341,23 @@ private extension AddedExpensesViewController {
 
         switch mode {
         case .create:
-            let expense = Expense(
-                id: UUID(),
-                data: viewModel.selectDate,
-                note: noteTextField.text,
-                amount: amount
+            let descriptionExpense = DescriptionExpense(
+                categoryId: categoryId,
+                expenseId: UUID(),
+                date: viewModel.selectDate,
+                amount: amountValue,
+                note: noteTextField.text
             )
-            viewModel.addExpense(expense, toCategory: categoryId)
+            viewModel.addExpense(descriptionExpense)
         case let .edit(expense, _):
-            let expense = Expense(
-                id: expense.id,
-                data: viewModel.selectDate,
-                note: noteTextField.text,
-                amount: amount
+            let descriptionExpense = DescriptionExpense(
+                categoryId: categoryId,
+                expenseId: expense.id,
+                date: viewModel.selectDate,
+                amount: amountValue,
+                note: noteTextField.text
             )
-            viewModel.saveEditExpense(expense, toCategory: categoryId)
+            viewModel.saveEditExpense(descriptionExpense)
         }
 
         dismiss(animated: true)

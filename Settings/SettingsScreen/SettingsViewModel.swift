@@ -133,7 +133,7 @@ public final class SettingsViewModel {
                 csvLines.append(line)
             } else {
                 for expense in category.expense {
-                    let dateStr = dateFormatter.string(from: expense.data)
+                    let dateStr = dateFormatter.string(from: expense.date)
                     let note = expense.note ?? ""
                     let line = "\(category.name),\(category.colorBgName),\(category.colorPrimaryName),\(category.nameIcon),\(dateStr),\(note),\(expense.amount.rub),\(expense.amount.usd),\(expense.amount.eur)"
                     csvLines.append(line)

@@ -8,6 +8,7 @@
 import Foundation
 import Persistence
 import Core
+import Networking
 
 public enum ExpenseMode {
     case create
@@ -39,16 +40,14 @@ public protocol AddedExpensesViewModelProtocol: AnyObject {
     func loadCategories()
     func category(at index: Int) -> ExpenseCategory
     func didSelectCategory(at index: Int)
-    func addExpense(_ expense: Expense, toCategory categoryId: UUID)
+    func addExpense(_ descriptionExpense: DescriptionExpense)
     func deleteExpense(_ expenseId: UUID)
-    func saveEditExpense(_ expense: Expense, toCategory categoryId: UUID)
+    func saveEditExpense(_ descriptionExpense: DescriptionExpense)
     func addCurrency() -> String
+    func getAmount(_ amount: Amount) -> Double
 }
 
 public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
-
-    private weak var coordinator: AddedExpensesCoordinatorDelegate?
-    private let settings: AppSettingsReadable
 
     // MARK: - Public Property
 
@@ -61,6 +60,17 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
 
     private let expenseService: ExpenseStorageServiceProtocol
     private let categoryService: CategoryStorageServiceProtocol
+    private weak var coordinator: AddedExpensesCoordinatorDelegate?
+    private let converter: CurrencyConverterServiceProtocol
+    private let settings: AppSettingsReadable
+
+    private let dateFormatter: DateFormatter = {
+        let date = DateFormatter()
+        date.locale = Locale(identifier: "ru_RU")
+        date.timeZone = TimeZone.current
+        date.dateFormat = "yyyy-MM-dd"
+        return date
+    }()
 
     public var categoriesCount: Int {
         categories.count
@@ -115,6 +125,7 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
         self.coordinator = coordinator
         self.settings = settings
         self.onExpenseCreated = onExpenseCreated
+        self.converter = CurrencyConverterService()
 
         loadCategories()
 
@@ -123,7 +134,7 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
             break
         case let .edit(expense, category):
             self.amount = "\(settings.currency.simbol)"
-            self.selectDate = expense.data
+            self.selectDate = expense.date
             selectedCategoryIndex = categories.firstIndex(of: category)
         }
     }
@@ -171,9 +182,16 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
         selectDate = date
     }
 
-    public func addExpense(_ expense: Expense, toCategory categoryId: UUID) {
-        expenseService.addExpense(expense, toCategory: categoryId)
-        onExpenseCreated()
+    public func addExpense(_ descriptionExpense: DescriptionExpense) {
+        getExpense(to: descriptionExpense) { [weak self] result in
+            switch result {
+            case .success(let expense):
+                self?.expenseService.addExpense(expense, toCategory: descriptionExpense.categoryId)
+                self?.onExpenseCreated()
+            case .failure(let error):
+                Logger.shared.log(.error, message: "❌ Не удалось создать расход: \(error)")
+            }
+        }
     }
 
     public func deleteExpense(_ expenseId: UUID) {
@@ -181,18 +199,95 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
         onExpenseCreated()
     }
 
-    public func saveEditExpense(_ expense: Expense, toCategory categoryId: UUID) {
-        expenseService.deleteExpense(expense.id)
-        expenseService.addExpense(expense, toCategory: categoryId)
-        onExpenseCreated()
+    public func saveEditExpense(_ descriptionExpense: DescriptionExpense) {
+        getExpense(to: descriptionExpense) { [weak self] result in
+            switch result {
+            case .success(let expense):
+                self?.expenseService.deleteExpense(expense.id)
+                self?.expenseService.addExpense(expense, toCategory: descriptionExpense.categoryId)
+                self?.onExpenseCreated()
+            case .failure(let error):
+                Logger.shared.log(.error, message: "❌ Не удалось создать расход: \(error)")
+            }
+        }
     }
 
     public func addCurrency() -> String {
         settings.currency.simbol
     }
 
+    public func getAmount(_ amount: Amount) -> Double {
+        settings.getAmount(amount)
+    }
+
     private func validateForm() {
         let isValid = !amount.isEmpty && selectedCategoryIndex != nil
         onFormValidationChanged?(isValid)
+    }
+
+    private func getExpense(
+        to descriptionExpense: DescriptionExpense,
+        completion: @escaping (Result<Expense, Error>) -> Void
+    ) {
+
+        let group = DispatchGroup()
+        var currency: [Currencies] = []
+
+        switch settings.currency {
+        case .eur: currency = [.rub, .usd]
+        case .rub: currency = [.eur, .usd]
+        case .usd: currency = [.rub, .eur]
+        }
+
+        var convertedAmounts: [Double] = Array(repeating: 0, count: currency.count)
+        var errorOccurred: Error?
+
+        for index in currency.indices {
+            group.enter()
+            converter.convert(
+                from: settings.currency,
+                to: currency[index],
+                amount: descriptionExpense.amount,
+                date: dateFormatter.string(from: descriptionExpense.date)
+            ) { result in
+                switch result {
+                case .success(let value):
+                    convertedAmounts[index] = value
+                case .failure(let error):
+                    errorOccurred = error
+                    Logger.shared.log(.error, message: "No currency \(error)")
+                }
+                group.leave()
+            }
+        }
+
+        group.notify(queue: .main) { [weak self] in
+            guard let self else { return }
+
+            if let error = errorOccurred {
+                completion(.failure(error))
+                return
+            }
+
+            let amount: Amount
+
+            switch self.settings.currency {
+            case .rub:
+                amount = Amount(rub: descriptionExpense.amount, usd: convertedAmounts[1], eur: convertedAmounts[0])
+            case .usd:
+                amount = Amount(rub: convertedAmounts[0], usd: descriptionExpense.amount, eur: convertedAmounts[1])
+            case .eur:
+                amount = Amount(rub: convertedAmounts[0], usd: convertedAmounts[1], eur: descriptionExpense.amount)
+            }
+
+            let expense = Expense(
+                id: descriptionExpense.expenseId,
+                data: descriptionExpense.date,
+                note: descriptionExpense.note,
+                amount: amount
+            )
+
+            completion(.success(expense))
+        }
     }
 }

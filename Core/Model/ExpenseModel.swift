@@ -9,13 +9,13 @@ import Foundation
 
 public struct Expense {
     public let id: UUID
-    public let data: Date
+    public let date: Date
     public let note: String?
     public let amount: Amount
 
     public init(id: UUID, data: Date, note: String?, amount: Amount) {
         self.id = id
-        self.data = data
+        self.date = data
         self.note = note
         self.amount = amount
     }

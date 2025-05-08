@@ -49,7 +49,7 @@ final class ExpenseStorageService: ExpenseStorageServiceProtocol {
 
         coreDataManager.save { (expenseCD: ExpenseCD, context) in
             expenseCD.id = expense.id
-            expenseCD.date = expense.data
+            expenseCD.date = expense.date
             expenseCD.note = expense.note
             expenseCD.category = category
 

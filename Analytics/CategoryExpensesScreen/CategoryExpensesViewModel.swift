@@ -115,7 +115,7 @@ public final class CategoryExpensesViewModel {
 
         let calendar = Calendar.current
         let groupedByDay = Dictionary(grouping: allExpenses) { expense in
-            calendar.startOfDay(for: expense.data)
+            calendar.startOfDay(for: expense.date)
         }
 
         let sortedDates = groupedByDay.keys.sorted(by: >)
@@ -123,7 +123,7 @@ public final class CategoryExpensesViewModel {
         let headers = sortedDates.map { ExpenseHeaderViewModel(date: $0, dateFormatter: dateFormatter) }
 
         let cellViewModels: [[ExpenseCellViewModel]] = sortedDates.map { date in
-            let expenses = groupedByDay[date]?.sorted(by: { $0.data > $1.data }) ?? []
+            let expenses = groupedByDay[date]?.sorted(by: { $0.date > $1.date }) ?? []
             return expenses.enumerated().map { index, expense in
                 ExpenseCellViewModel(expense: expense, isLastExpense: index == expenses.count - 1, settings: settings)
             }
