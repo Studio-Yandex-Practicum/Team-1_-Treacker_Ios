@@ -90,11 +90,13 @@ public final class AnalyticsViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.isPagingEnabled = true
+        collectionView.backgroundColor = .secondaryBg
         return collectionView
     }()
 
     private lazy var pageControl: UIPageControl = {
         let pageControl = UIPageControl()
+        pageControl.isUserInteractionEnabled = false
         pageControl.numberOfPages = viewModel.pieChartDisplayItem.count
         pageControl.currentPage = viewModel.selectedIndex
         pageControl.pageIndicatorTintColor = .lightGray

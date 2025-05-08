@@ -60,5 +60,6 @@ final class UIPieChart: UIView {
         self.segments = newSegments
         layer.sublayers?.forEach { $0.removeFromSuperlayer() }
         setNeedsDisplay()
+        layoutIfNeeded()
     }
 }
