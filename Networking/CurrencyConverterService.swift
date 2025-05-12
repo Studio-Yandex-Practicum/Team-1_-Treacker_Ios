@@ -33,11 +33,13 @@ public final class CurrencyConverterService: CurrencyConverterServiceProtocol {
 
     // MARK: - Public Method
 
-    public func convert(from base: Currencies,
-                 to target: Currencies,
-                 amount: Double,
-                 date: String?,
-                 completion: @escaping (Result<Double, NetworkError>) -> Void
+    public func convert(
+        from base: Currencies,
+        to target: Currencies,
+        amount: Double,
+        date: String?,
+        completion: @escaping (Result<Double, NetworkError>
+        ) -> Void
     ) {
         fetchRates(base: base, date: date) { result in
             switch result {

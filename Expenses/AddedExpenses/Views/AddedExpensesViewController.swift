@@ -337,8 +337,6 @@ private extension AddedExpensesViewController {
             return
         }
 
-        let amount = Amount(rub: amountValue, usd: amountValue, eur: amountValue)
-
         switch mode {
         case .create:
             let descriptionExpense = DescriptionExpense(
