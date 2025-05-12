@@ -4,12 +4,6 @@ options:
     deploymentTarget:
     iOS: "15.0"
 
-settings:
-    SUPPORTED_DEVICE_FAMILIES: 1
-    UISupportedInterfaceOrientations:
-        - UIInterfaceOrientationPortrait
-        - UIInterfaceOrientationPortraitUpsideDown
-
 packages:
   SwiftLint:
     url: https://github.com/realm/SwiftLint.git
@@ -53,6 +47,8 @@ targets:
         base:
           PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise'
           INFOPLIST_FILE: SpendWise/Resouces/Info.plist
+          UISupportedInterfaceOrientations:
+            - UIInterfaceOrientationPortrait
     preBuildScripts:
       - script: |
           export PATH="$PATH:/opt/homebrew/bin"

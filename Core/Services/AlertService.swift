@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import Core
 
 public struct AlertAction {
     public let title: String
