@@ -1,0 +1,239 @@
+name: SpendWise
+options:
+    bundleIdPrefix: KV.Lyashenko.SpendWise
+    deploymentTarget:
+    iOS: "15.0"
+
+packages:
+  SwiftLint:
+    url: https://github.com/realm/SwiftLint.git
+    from: 0.58.2
+  FirebaseSDK:
+    url: https://github.com/firebase/firebase-ios-sdk
+    from: 11.10.0
+  GoogleSignIn:
+    url: https://github.com/google/GoogleSignIn-iOS
+    from: 8.0.0
+  JTAppleCalendar:
+    url: https://github.com/patchthecode/JTAppleCalendar
+    from: 8.0.5
+  PrettyCards:
+    url: https://github.com/simla-tech/PrettyCards
+    from: 1.0.7
+
+
+targets:
+  SpendWise:
+    type: application
+    platform: iOS
+    sources:
+      - path: SpendWise
+        excludes:
+          - Supporting SpendWise/Resouces/Info.plist
+    dependencies:
+      - target: Core
+      - target: Auth
+      - target: Expenses
+      - target: Analytics
+      - target: Settings
+      - target: UIComponents
+      - target: Persistence
+      - target: Router
+      - target: Networking
+      - target: Fastis
+    bundleId: KV.Lyashenko.SpendWise.SpendWise
+    deploymentTarget: "15.0"
+    settings:
+        base:
+          PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise'
+          INFOPLIST_FILE: SpendWise/Resouces/Info.plist
+          UISupportedInterfaceOrientations:
+            - UIInterfaceOrientationPortrait
+    preBuildScripts:
+      - script: |
+          export PATH="$PATH:/opt/homebrew/bin"
+          if which swiftlint > /dev/null; then
+            swiftlint
+          else
+            echo "warning: SwiftLint не установлен. Установите через SPM или Homebrew"
+          fi
+
+  Core:
+    type: framework
+    platform: iOS
+    sources:
+      - path: Core
+        excludes:
+          - Supporting SpendWise/Resouces/Info.plist
+    bundleId: KV.Lyashenko.SpendWise.Core
+    deploymentTarget: "15.0"
+    settings:
+        base:
+          PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Core'
+          INFOPLIST_FILE: SpendWise/Resouces/Info.plist
+
+  Auth:
+    type: framework
+    platform: iOS
+    sources:
+      - path: Auth
+        excludes:
+          - Supporting SpendWise/Resouces/Info.plist
+    dependencies:
+      - target: Core
+      - target: UIComponents
+      - package: FirebaseSDK
+        product: FirebaseAuth
+      - package: GoogleSignIn
+        product: GoogleSignIn
+      - package: GoogleSignIn
+        product: GoogleSignInSwift
+    bundleId: KV.Lyashenko.SpendWise.Auth
+    deploymentTarget: "15.0"
+    settings:
+        base:
+          PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Auth'
+          INFOPLIST_FILE: SpendWise/Resouces/Info.plist
+
+  Expenses:
+    type: framework
+    platform: iOS
+    sources:
+      - path: Expenses
+        excludes:
+          - Supporting SpendWise/Resouces/Info.plist
+    dependencies:
+      - target: Core
+      - target: Persistence
+      - target: Auth
+      - target: Networking
+    bundleId: KV.Lyashenko.SpendWise.Expenses
+    deploymentTarget: "15.0"
+    settings:
+        base:
+          PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Expenses'
+          INFOPLIST_FILE: SpendWise/Resouces/Info.plist
+
+  Analytics:
+    type: framework
+    platform: iOS
+    sources:
+      - path: Analytics
+        excludes:
+          - Supporting SpendWise/Resouces/Info.plist
+    dependencies:
+      - target: Core
+      - target: UIComponents
+      - target: Persistence
+    bundleId: KV.Lyashenko.SpendWise.Analytics
+    deploymentTarget: "15.0"
+    settings:
+        base:
+          PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Analytics'
+          INFOPLIST_FILE: SpendWise/Resouces/Info.plist
+
+  Settings:
+    type: framework
+    platform: iOS
+    sources:
+      - path: Settings
+        excludes:
+          - Supporting SpendWise/Resouces/Info.plist
+    dependencies:
+      - target: Core
+      - target: UIComponents
+      - target: Auth
+    bundleId: KV.Lyashenko.SpendWise.Settings
+    deploymentTarget: "15.0"
+    settings:
+        base:
+          PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Settings'
+          INFOPLIST_FILE: SpendWise/Resouces/Info.plist
+
+  UIComponents:
+    type: framework
+    platform: iOS
+    sources:
+      - path: UIComponents
+        excludes:
+          - Supporting SpendWise/Resouces/Info.plist
+    dependencies:
+      - target: Core
+    bundleId: KV.Lyashenko.SpendWise.UIComponents
+    deploymentTarget: "15.0"
+    settings:
+        base:
+          PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.UIComponents'
+          INFOPLIST_FILE: SpendWise/Resouces/Info.plist
+
+  Persistence:
+    type: framework
+    platform: iOS
+    sources:
+      - path: Persistence
+        excludes:
+          - Supporting SpendWise/Resouces/Info.plist
+    dependencies:
+      - target: Core
+    bundleId: KV.Lyashenko.SpendWise.Persistence
+    deploymentTarget: "15.0"
+    settings:
+        base:
+          PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Persistence'
+          INFOPLIST_FILE: SpendWise/Resouces/Info.plist
+
+  Router:
+    type: framework
+    platform: iOS
+    sources:
+      - path: Router
+        excludes:
+          - Supporting SpendWise/Resouces/Info.plist
+    dependencies:
+      - target: Core
+      - target: Expenses
+      - target: Auth
+      - target: Analytics
+      - target: Fastis
+      - target: Settings
+    bundleId: KV.Lyashenko.SpendWise.Router
+    deploymentTarget: "15.0"
+    settings:
+        base:
+          PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Router'
+          INFOPLIST_FILE: SpendWise/Resouces/Info.plist
+
+  Networking:
+    type: framework
+    platform: iOS
+    sources:
+      - path: Networking
+        excludes:
+          - Supporting SpendWise/Resouces/Info.plist
+    dependencies:
+      - target: Core
+    bundleId: KV.Lyashenko.SpendWise.Networking
+    deploymentTarget: "15.0"
+    settings:
+        base:
+          PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Networking'
+          INFOPLIST_FILE: SpendWise/Resouces/Info.plist
+
+  Fastis:
+    type: framework
+    platform: iOS
+    sources:
+      - path: Fastis
+        excludes:
+          - Supporting SpendWise/Resouces/Info.plist
+    dependencies:
+      - target: Core
+      - target: UIComponents
+      - package: JTAppleCalendar
+      - package: PrettyCards
+    bundleId: KV.Lyashenko.SpendWise.Fastis
+    deploymentTarget: "15.0"
+    settings:
+        base:
+          PRODUCT_BUNDLE_IDENTIFIER: 'KV.Lyashenko.SpendWise.Fastis'
+          INFOPLIST_FILE: SpendWise/Resouces/Info.plist

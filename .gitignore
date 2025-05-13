@@ -1,0 +1,47 @@
+# Xcode project files
+*.xcworkspace
+*.xcodeproj
+
+# Xcode build artifacts
+DerivedData/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+*.xcdebugger
+*.xcassets/*.xcassets
+*.xcassets/.xcassets
+
+# Swift Package Manager
+/.swiftpm
+/.build
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Carthage
+Carthage/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+
+# SwiftLint
+.swiftlint-cache
+
+# XcodeGen
+*.xcodeproj
+*.xcworkspace
+
+### Xcode Patch ###
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcodeproj/project.xcworkspace/
+!*.xcworkspace/contents.xcworkspacedata
+/*.gcno
+**/xcshareddata/WorkspaceSettings.xcsettings
+
+# Ключи для API
+Keys.xcconfig
