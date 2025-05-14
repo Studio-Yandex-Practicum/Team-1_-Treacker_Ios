@@ -315,7 +315,7 @@ private extension AddedExpensesViewController {
             AlertService.present(on: self, title: .error, message: message, actions: [retryAction, cancelAction])
         }
 
-        viewModel.onExpenseCreated = { [weak self] in
+        viewModel.onDismissView = { [weak self] in
             DispatchQueue.main.async {
                 self?.dismiss(animated: true)
             }

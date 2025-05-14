@@ -24,7 +24,7 @@ public protocol AddedExpensesViewModelProtocol: AnyObject {
     var onFormValidationChanged: ((Bool) -> Void)? { get set }
     var onDateChanged: ((Date) -> Void)? { get set }
     var onCategoriesLoaded: (([ExpenseCategory]) -> Void)? { get set }
-    var onExpenseCreated: (() -> Void) { get set }
+    var onDismissView: (() -> Void)? { get set }
     var onError: ((String, @escaping () -> Void) -> Void)? { get set }
 
     // State
@@ -87,6 +87,7 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
     public var onFormValidationChanged: ((Bool) -> Void)?
     public var onDateChanged: ((Date) -> Void)?
     public var onCategoriesLoaded: (([ExpenseCategory]) -> Void)?
+    public var onDismissView: (() -> Void)?
     public var onExpenseCreated: (() -> Void)
     public var onError: ((String, @escaping () -> Void) -> Void)?
 
@@ -191,6 +192,7 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
             case .success(let expense):
                 self?.expenseService.addExpense(expense, toCategory: descriptionExpense.categoryId)
                 self?.onExpenseCreated()
+                self?.onDismissView?()
             case .failure(let error):
                 self?.onError?(error.localizedDescription) { [weak self] in
                     self?.addExpense(descriptionExpense)
@@ -212,6 +214,7 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
                 self?.expenseService.deleteExpense(expense.id)
                 self?.expenseService.addExpense(expense, toCategory: descriptionExpense.categoryId)
                 self?.onExpenseCreated()
+                self?.onDismissView?()
             case .failure(let error):
                 self?.onError?(error.localizedDescription) { [weak self] in
                     self?.addExpense(descriptionExpense)
