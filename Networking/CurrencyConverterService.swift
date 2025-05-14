@@ -60,6 +60,11 @@ public final class CurrencyConverterService: CurrencyConverterServiceProtocol {
                     ))
                 }
             case .failure(let error):
+                Logger.shared.log(
+                    .error,
+                    message: "Ошибка конвертации",
+                    metadata: ["❌: CurrencyConverterService": "\(error.localizedDescription)"]
+                )
                 completion(.failure(error))
             }
         }

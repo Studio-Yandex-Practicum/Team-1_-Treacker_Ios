@@ -24,6 +24,8 @@ public protocol AddedExpensesViewModelProtocol: AnyObject {
     var onFormValidationChanged: ((Bool) -> Void)? { get set }
     var onDateChanged: ((Date) -> Void)? { get set }
     var onCategoriesLoaded: (([ExpenseCategory]) -> Void)? { get set }
+    var onDismissView: (() -> Void)? { get set }
+    var onError: ((String, @escaping () -> Void) -> Void)? { get set }
 
     // State
 
@@ -85,7 +87,9 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
     public var onFormValidationChanged: ((Bool) -> Void)?
     public var onDateChanged: ((Date) -> Void)?
     public var onCategoriesLoaded: (([ExpenseCategory]) -> Void)?
+    public var onDismissView: (() -> Void)?
     public var onExpenseCreated: (() -> Void)
+    public var onError: ((String, @escaping () -> Void) -> Void)?
 
     // MARK: - State
 
@@ -188,7 +192,11 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
             case .success(let expense):
                 self?.expenseService.addExpense(expense, toCategory: descriptionExpense.categoryId)
                 self?.onExpenseCreated()
+                self?.onDismissView?()
             case .failure(let error):
+                self?.onError?(error.localizedDescription) { [weak self] in
+                    self?.addExpense(descriptionExpense)
+                }
                 Logger.shared.log(.error, message: "❌ Не удалось создать расход: \(error)")
             }
         }
@@ -206,7 +214,11 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
                 self?.expenseService.deleteExpense(expense.id)
                 self?.expenseService.addExpense(expense, toCategory: descriptionExpense.categoryId)
                 self?.onExpenseCreated()
+                self?.onDismissView?()
             case .failure(let error):
+                self?.onError?(error.localizedDescription) { [weak self] in
+                    self?.addExpense(descriptionExpense)
+                }
                 Logger.shared.log(.error, message: "❌ Не удалось создать расход: \(error)")
             }
         }
@@ -253,11 +265,12 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
                 switch result {
                 case .success(let value):
                     convertedAmounts[index] = value
+                    group.leave()
                 case .failure(let error):
                     errorOccurred = error
                     Logger.shared.log(.error, message: "No currency \(error)")
+                    group.leave()
                 }
-                group.leave()
             }
         }
 
@@ -269,7 +282,7 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
                 return
             }
 
-            let amount: Amount
+            var amount: Amount?
 
             switch self.settings.currency {
             case .rub:
@@ -279,6 +292,8 @@ public final class AddedExpensesViewModel: AddedExpensesViewModelProtocol {
             case .eur:
                 amount = Amount(rub: convertedAmounts[0], usd: convertedAmounts[1], eur: descriptionExpense.amount)
             }
+
+            guard let amount else { return }
 
             let expense = Expense(
                 id: descriptionExpense.expenseId,
