@@ -307,6 +307,19 @@ private extension AddedExpensesViewController {
             self.pageControl.numberOfPages = Int(ceil(Double(categories.count) / 10.0))
             self.collectionView.reloadData()
         }
+
+        viewModel.onError = { [weak self] message, retry in
+            guard let self else { return }
+            let retryAction = AlertAction(title: GlobalConstants.repeatAgain.rawValue) { retry() }
+            let cancelAction = AlertAction(title: GlobalConstants.alertCancelButton.rawValue, style: .cancel)
+            AlertService.present(on: self, title: .error, message: message, actions: [retryAction, cancelAction])
+        }
+
+        viewModel.onExpenseCreated = { [weak self] in
+            DispatchQueue.main.async {
+                self?.dismiss(animated: true)
+            }
+        }
     }
 }
 
@@ -357,8 +370,8 @@ private extension AddedExpensesViewController {
             )
             viewModel.saveEditExpense(descriptionExpense)
         }
-
-        dismiss(animated: true)
+//
+//        dismiss(animated: true)
     }
 
     @objc private func deleteTapped() {

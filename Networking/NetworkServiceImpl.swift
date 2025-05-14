@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Core
 
 public class NetworkServiceImpl: NetworkService {
 
@@ -21,6 +22,11 @@ public class NetworkServiceImpl: NetworkService {
         let task = session.dataTask(with: url) { data, response, error in
             if let error {
                 completion(.failure(.requestFailed(error)))
+                Logger.shared.log(
+                    .error,
+                    message: "Ошибка сетевого запроса",
+                    metadata: ["❌: NetworkServiceImpl": "\(error.localizedDescription)"]
+                )
                 return
             }
             guard let http = response as? HTTPURLResponse else {
@@ -28,10 +34,20 @@ public class NetworkServiceImpl: NetworkService {
                 return
             }
             guard (200...299).contains(http.statusCode) else {
+                Logger.shared.log(
+                    .fault,
+                    message: "Статус сетевого запроса",
+                    metadata: ["‼️: NetworkServiceImpl": "\(http.statusCode)"]
+                )
                 completion(.failure(.httpError(statusCode: http.statusCode)))
                 return
             }
             guard let data else {
+                Logger.shared.log(
+                    .error,
+                    message: "Пустые данные",
+                    metadata: ["❌: NetworkServiceImpl": ""]
+                )
                 completion(.failure(.emptyData))
                 return
             }

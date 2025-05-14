@@ -95,7 +95,7 @@ public enum GlobalConstants: String {
     case alertMessage = "Удалить запись?"
     case alertCancelButton = "Отменить"
     case deleteButton = "Удалить"
-    case repeatAgain = "Попробойте снова"
+    case repeatAgain = "Попробовать снова"
     case okButton = "OK"
     case sendMessage = "Письмо отправлено"
     case checkMail = "Проверьте почту для сброса пароля"
