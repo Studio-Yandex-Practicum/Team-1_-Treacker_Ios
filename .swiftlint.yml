@@ -1,0 +1,23 @@
+# Включаем или отключаем правила
+disabled_rules:
+  - trailing_whitespace
+  - line_length
+
+# Максимальная длина строки
+line_length: 120
+
+# Игнорируемые пути (например, сгенерированный код)
+excluded:
+  - Pods
+  - Generated
+
+opt_in_rules:
+  - empty_count
+  - force_unwrapping
+  - implicit_return
+  - unused_import
+  - private_outlet
+  - redundant_optional_initialization
+
+  # Можно явно задавать уровень серьезности для правил
+force_unwrapping: error
